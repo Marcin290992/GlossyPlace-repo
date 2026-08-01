@@ -1,0 +1,713 @@
+---
+const navItems = [
+	{
+		label: "Shop",
+		href: "/shop",
+		active: false,
+		children: [
+			{
+				label: "Bracelets",
+				href: "/shop/bracelets",
+				image: "https://images.unsplash.com/photo-1655255114527-d0a834d9a774?fm=jpg&q=80&w=700&auto=format&fit=crop",
+			},
+			{
+				label: "Necklaces",
+				href: "/shop/necklaces",
+				image: "https://images.unsplash.com/photo-1611107683227-e9060eccd846?fm=jpg&q=80&w=700&auto=format&fit=crop",
+			},
+			{
+				label: "Rings",
+				href: "/shop/rings",
+				image: "https://images.unsplash.com/photo-1656010280156-fa8c1793c235?fm=jpg&q=80&w=700&auto=format&fit=crop",
+			},
+		],
+	},
+	{ label: "Collections", href: "/collections", active: true },
+	{ label: "About", href: "/about", active: false },
+	{ label: "Journal", href: "/journal", active: false },
+];
+---
+
+<header class="navbar">
+	<button type="button" class="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav">
+		<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+			<line class="bar bar-top" x1="2" y1="5" x2="18" y2="5" stroke="#111827" stroke-width="1.3" stroke-linecap="round" />
+			<line class="bar bar-middle" x1="2" y1="10" x2="18" y2="10" stroke="#111827" stroke-width="1.3" stroke-linecap="round" />
+			<line
+				class="bar bar-bottom"
+				x1="2"
+				y1="15"
+				x2="18"
+				y2="15"
+				stroke="#111827"
+				stroke-width="1.3"
+				stroke-linecap="round"
+			/>
+		</svg>
+	</button>
+
+	<a href="/" class="logo">GLOSSYPLACE</a>
+
+	<nav class="nav-menu">
+		<ul>
+			{
+				navItems.map((item) => (
+					<li class={`${item.active ? "active" : ""}${item.children ? " has-dropdown" : ""}`}>
+						<a href={item.href}>{item.label}</a>
+						{item.children && (
+							<div class="dropdown">
+								{item.children.map((child) => (
+									<a href={child.href} class="dropdown-column">
+										<img src={child.image} alt={child.label} loading="lazy" />
+										<span class="dropdown-column-label">{child.label}</span>
+									</a>
+								))}
+							</div>
+						)}
+					</li>
+				))
+			}
+			<span class="nav-indicator"></span>
+		</ul>
+	</nav>
+
+	<div class="nav-utilities">
+		<div class="search-wrapper">
+			<input type="search" class="search-input" placeholder="Search..." aria-label="Search" />
+			<button type="button" class="search-toggle" aria-label="Search" aria-expanded="false">
+				<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+					<circle cx="8" cy="8" r="6.5" stroke="#111827" stroke-width="1.3" />
+					<line x1="12.5" y1="12.5" x2="17" y2="17" stroke="#111827" stroke-width="1.3" stroke-linecap="round" />
+				</svg>
+			</button>
+		</div>
+		<a href="/cart" class="cart">
+			<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+				<path
+					d="M4 6h10l-.7 8.2a1.5 1.5 0 0 1-1.5 1.3H6.2a1.5 1.5 0 0 1-1.5-1.3L4 6Z"
+					stroke="#111827"
+					stroke-width="1.3"
+					stroke-linejoin="round"
+				/>
+				<path d="M6.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="#111827" stroke-width="1.3" stroke-linecap="round" />
+			</svg>
+			<span>(0)</span>
+		</a>
+	</div>
+</header>
+
+<div class="mobile-nav" id="mobile-nav">
+	<div class="mobile-nav-panel" data-panel="main">
+		<ul>
+			{
+				navItems.map((item) =>
+					item.children ? (
+						<li>
+							<button type="button" class="mobile-nav-trigger" data-panel-target="shop">
+								{item.label}
+								<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+									<path
+										d="M6 3l5 5-5 5"
+										stroke="#111827"
+										stroke-width="1.3"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+								</svg>
+							</button>
+						</li>
+					) : (
+						<li>
+							<a href={item.href}>{item.label}</a>
+						</li>
+					),
+				)
+			}
+		</ul>
+
+		<div class="mobile-nav-footer">
+			<a href="mailto:hello@glossyplace.com" class="mobile-footer-link">
+				<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+					<rect x="1.5" y="3.5" width="15" height="11" rx="1" stroke="#111827" stroke-width="1.3" />
+					<path d="M1.5 4.5l7 5.5 7-5.5" stroke="#111827" stroke-width="1.3" stroke-linejoin="round" />
+				</svg>
+				Contact Us
+			</a>
+			<a href="tel:+441234567890" class="mobile-footer-link">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+					<path
+						d="M21 16.42v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 1.5h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.41a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 21 16.42Z"
+						stroke="#111827"
+						stroke-width="1.6"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+				+44 1234 567 890
+			</a>
+			<a href="/newsletter" class="mobile-footer-link">
+				<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+					<path
+						d="M16 2 1.5 8.3c-.5.2-.5.9.1 1l4 1.2m10.4-8.5-5.6 13c-.2.5-.9.5-1.1 0l-2.2-4.7m8.9-8.3-8.9 8.3m0 0v4.2c0 .5.6.8 1 .4l2-2"
+						stroke="#111827"
+						stroke-width="1.2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+				Newsletter
+			</a>
+		</div>
+	</div>
+
+	{
+		navItems
+			.filter((item) => item.children)
+			.map((item) => (
+				<div class="mobile-nav-panel mobile-nav-subpanel" data-panel="shop" hidden>
+					<button type="button" class="mobile-nav-back" data-panel-target="main">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+							<path
+								d="M10 3L5 8l5 5"
+								stroke="#111827"
+								stroke-width="1.3"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						{item.label}
+					</button>
+					<div class="mobile-subpanel-cards">
+						{item.children?.map((child) => (
+							<a href={child.href} class="mobile-subpanel-card">
+								<img src={child.image} alt={child.label} loading="lazy" />
+								<span>{child.label}</span>
+							</a>
+						))}
+					</div>
+				</div>
+			))
+	}
+</div>
+
+<style>
+	.navbar {
+		position: sticky;
+		top: 35px;
+		z-index: 20;
+		display: flex;
+		height: 76px;
+		padding: 0 64px;
+		justify-content: space-between;
+		align-items: center;
+		flex-shrink: 0;
+		align-self: stretch;
+		background: #fff;
+		border-bottom: 1px solid rgba(17, 24, 39, 0.1);
+	}
+
+	.logo {
+		color: #111;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 24px;
+		font-weight: 400;
+		line-height: normal;
+		letter-spacing: 6px;
+		text-transform: uppercase;
+		text-decoration: none;
+	}
+
+	.menu-toggle {
+		display: none;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	.menu-toggle .bar {
+		transform-origin: 10px 10px;
+		transition:
+			transform 0.3s ease,
+			opacity 0.3s ease;
+	}
+
+	.menu-toggle[aria-expanded="true"] .bar-top {
+		transform: rotate(45deg) translateY(5px);
+	}
+
+	.menu-toggle[aria-expanded="true"] .bar-middle {
+		opacity: 0;
+	}
+
+	.menu-toggle[aria-expanded="true"] .bar-bottom {
+		transform: rotate(-45deg) translateY(-5px);
+	}
+
+	@media (max-width: 1024px) {
+		.navbar {
+			display: grid;
+			grid-template-columns: 1fr auto 1fr;
+			align-items: center;
+			column-gap: 12px;
+			padding: 0 24px;
+		}
+
+		.menu-toggle {
+			display: flex;
+			justify-self: start;
+		}
+
+		.logo {
+			grid-column: 2;
+			justify-self: center;
+			font-size: 20px;
+		}
+
+		.nav-menu {
+			display: none;
+		}
+
+		.nav-utilities {
+			grid-column: 3;
+			justify-self: end;
+		}
+	}
+
+	.nav-menu {
+		align-self: stretch;
+	}
+
+	.nav-menu > ul {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 100%;
+		gap: 40px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.nav-menu li {
+		display: flex;
+		align-items: center;
+		height: 100%;
+	}
+
+	.nav-menu a {
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		text-decoration: none;
+	}
+
+	.dropdown {
+		/* fixed + hardcoded top: bypasses positioned ancestors (.nav-menu > ul) so it spans the true viewport width; keep top in sync with AnnouncementBar (35px) + navbar (76px) */
+		position: fixed;
+		top: 111px;
+		left: 0;
+		display: flex;
+		width: 100vw;
+		background: #fff;
+		box-shadow: 0 16px 40px rgba(17, 24, 39, 0.1);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(6px);
+		transition:
+			opacity 0.25s ease,
+			transform 0.25s ease,
+			visibility 0.25s ease;
+		z-index: 20;
+	}
+
+	.has-dropdown:hover .dropdown {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.dropdown-column {
+		position: relative;
+		flex: 1;
+		aspect-ratio: 6 / 5;
+		overflow: hidden;
+	}
+
+	.dropdown-column::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: rgba(17, 24, 39, 0.4);
+		pointer-events: none;
+	}
+
+	.dropdown-column img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.4s ease;
+	}
+
+	.dropdown-column:hover img {
+		transform: scale(1.04);
+	}
+
+	.dropdown-column-label {
+		position: absolute;
+		z-index: 1;
+		left: 50%;
+		bottom: 32%;
+		transform: translateX(-50%);
+		padding-bottom: 8px;
+		border-bottom: 1px solid #fff;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.nav-indicator {
+		position: absolute;
+		bottom: 28px;
+		left: 0;
+		width: 0;
+		height: 1px;
+		background: #111827;
+		opacity: 0;
+		transition:
+			left 0.3s ease,
+			width 0.3s ease,
+			opacity 0.2s ease;
+	}
+
+	.nav-utilities {
+		display: flex;
+		align-items: center;
+		gap: 24px;
+	}
+
+	.search-wrapper {
+		display: flex;
+		align-items: center;
+	}
+
+	.search-input {
+		width: 0;
+		padding: 0;
+		border: none;
+		border-bottom: 1px solid transparent;
+		outline: none;
+		background: none;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		opacity: 0;
+		transition:
+			width 0.3s ease,
+			opacity 0.2s ease,
+			padding 0.3s ease,
+			border-color 0.3s ease;
+	}
+
+	.search-wrapper.open .search-input {
+		width: 180px;
+		padding: 4px 8px;
+		opacity: 1;
+		border-bottom-color: rgba(17, 24, 39, 0.3);
+	}
+
+	.search-toggle {
+		display: flex;
+		flex-shrink: 0;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	.nav-utilities button {
+		display: flex;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	.cart {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		text-decoration: none;
+	}
+
+	.mobile-nav {
+		display: none;
+	}
+
+	@media (max-width: 1024px) {
+		.mobile-nav {
+			display: block;
+			position: fixed;
+			top: 111px;
+			left: 0;
+			width: 100%;
+			height: calc(100vh - 111px);
+			background: #fff;
+			overflow-y: auto;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(-8px);
+			transition:
+				opacity 0.25s ease,
+				transform 0.25s ease,
+				visibility 0.25s ease;
+			z-index: 15;
+		}
+
+		.mobile-nav.open {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
+		}
+
+		.mobile-nav-panel[hidden] {
+			display: none;
+		}
+
+		.mobile-nav-panel[data-panel="main"] ul {
+			list-style: none;
+			margin: 0;
+			padding: 24px;
+		}
+
+		.mobile-nav-panel[data-panel="main"] li {
+			border-bottom: 1px solid rgba(17, 24, 39, 0.1);
+		}
+
+		.mobile-nav-panel[data-panel="main"] li > a,
+		.mobile-nav-trigger {
+			display: flex;
+			width: 100%;
+			align-items: center;
+			justify-content: space-between;
+			padding: 18px 0;
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: #111827;
+			font-family: "Manrope", sans-serif;
+			font-size: 15px;
+			font-weight: 500;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			text-decoration: none;
+		}
+
+		.mobile-nav-footer {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			padding: 24px;
+			background: #f5f5f5;
+		}
+
+		.mobile-footer-link {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			color: #111827;
+			font-family: "Manrope", sans-serif;
+			font-size: 14px;
+			font-weight: 500;
+			text-decoration: none;
+		}
+
+		.mobile-nav-back {
+			position: sticky;
+			top: 0;
+			z-index: 1;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			width: 100%;
+			padding: 24px;
+			background: #fff;
+			border: none;
+			border-bottom: 1px solid rgba(17, 24, 39, 0.1);
+			cursor: pointer;
+			color: #111827;
+			font-family: "Manrope", sans-serif;
+			font-size: 13px;
+			font-weight: 500;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		.mobile-subpanel-cards {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.mobile-subpanel-card {
+			position: relative;
+			aspect-ratio: 16 / 10;
+			overflow: hidden;
+			text-decoration: none;
+		}
+
+		.mobile-subpanel-card::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: rgba(17, 24, 39, 0.4);
+		}
+
+		.mobile-subpanel-card img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.mobile-subpanel-card span {
+			position: absolute;
+			z-index: 1;
+			left: 50%;
+			bottom: 24px;
+			transform: translateX(-50%);
+			padding-bottom: 8px;
+			border-bottom: 1px solid #fff;
+			color: #fff;
+			font-family: "Manrope", sans-serif;
+			font-size: 13px;
+			font-weight: 500;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			white-space: nowrap;
+		}
+	}
+</style>
+
+<script>
+	const navMenu = document.querySelector(".nav-menu ul");
+	const navIndicator = navMenu?.querySelector(".nav-indicator");
+	const navItems = navMenu?.querySelectorAll(":scope > li");
+
+	if (navMenu instanceof HTMLElement && navIndicator instanceof HTMLElement && navItems) {
+		let isHovering = false;
+
+		navItems.forEach((item) => {
+			if (item instanceof HTMLElement) {
+				item.addEventListener("mouseenter", () => {
+					if (!isHovering) {
+						navIndicator.style.transition = "opacity 0.2s ease";
+						navIndicator.style.left = `${item.offsetLeft}px`;
+						navIndicator.style.width = `${item.offsetWidth}px`;
+						navIndicator.offsetHeight;
+						navIndicator.style.transition = "left 0.3s ease, width 0.3s ease, opacity 0.2s ease";
+						isHovering = true;
+					} else {
+						navIndicator.style.left = `${item.offsetLeft}px`;
+						navIndicator.style.width = `${item.offsetWidth}px`;
+					}
+					navIndicator.style.opacity = "1";
+				});
+			}
+		});
+
+		navMenu.addEventListener("mouseleave", () => {
+			navIndicator.style.opacity = "0";
+			isHovering = false;
+		});
+	}
+
+	const wrapper = document.querySelector(".search-wrapper");
+	const toggle = wrapper?.querySelector(".search-toggle");
+	const input = wrapper?.querySelector(".search-input");
+
+	if (wrapper instanceof HTMLElement && toggle instanceof HTMLElement && input instanceof HTMLInputElement) {
+		const closeSearch = () => {
+			wrapper.classList.remove("open");
+			toggle.setAttribute("aria-expanded", "false");
+			input.value = "";
+		};
+
+		toggle.addEventListener("click", () => {
+			const isOpen = wrapper.classList.toggle("open");
+			toggle.setAttribute("aria-expanded", String(isOpen));
+			if (isOpen) {
+				input.focus();
+			} else {
+				input.value = "";
+			}
+		});
+
+		input.addEventListener("keydown", (event) => {
+			if (event instanceof KeyboardEvent && event.key === "Escape") closeSearch();
+		});
+
+		document.addEventListener("click", (event) => {
+			const target = event.target;
+			if (wrapper.classList.contains("open") && target instanceof Node && !wrapper.contains(target)) {
+				closeSearch();
+			}
+		});
+	}
+
+	const menuToggle = document.querySelector(".menu-toggle");
+	const mobileNav = document.querySelector(".mobile-nav");
+
+	if (menuToggle instanceof HTMLElement && mobileNav instanceof HTMLElement) {
+		const showPanel = (name = "") => {
+			mobileNav.querySelectorAll(".mobile-nav-panel").forEach((panel) => {
+				if (panel instanceof HTMLElement) {
+					panel.hidden = panel.dataset.panel !== name;
+				}
+			});
+		};
+
+		const closeMobileNav = () => {
+			mobileNav.classList.remove("open");
+			menuToggle.setAttribute("aria-expanded", "false");
+			document.body.classList.remove("no-scroll");
+			showPanel("main");
+		};
+
+		menuToggle.addEventListener("click", () => {
+			const isOpen = mobileNav.classList.toggle("open");
+			menuToggle.setAttribute("aria-expanded", String(isOpen));
+			document.body.classList.toggle("no-scroll", isOpen);
+		});
+
+		mobileNav.querySelectorAll("[data-panel-target]").forEach((button) => {
+			button.addEventListener("click", () => {
+				const target = button instanceof HTMLElement ? button.dataset.panelTarget : null;
+				if (target) showPanel(target);
+			});
+		});
+
+		mobileNav.querySelectorAll("a").forEach((link) => {
+			link.addEventListener("click", closeMobileNav);
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event instanceof KeyboardEvent && event.key === "Escape") closeMobileNav();
+		});
+
+		window.addEventListener("resize", () => {
+			if (window.innerWidth > 1024) closeMobileNav();
+		});
+	}
+</script>

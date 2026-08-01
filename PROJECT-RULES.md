@@ -10,11 +10,13 @@
 - Rynek: **UK** (język angielski, waluta **GBP**).
 - Projekt wchodzi też do portfolio agencji — ma wyglądać i działać na najwyższym poziomie.
 - Start: **do 20 produktów**, każdy produkt to osobna, prosta pozycja **bez wariantów** (rozmiar/kolor).
+- Kategorie produktowe: **Bracelets, Necklaces, Rings** (rozszerzone o Necklaces/Rings względem pierwotnego "same bransoletki" — potwierdzone 2026-07-29). Segmentacja Women's/Men's/Kids' oraz Chakra Dictionary/Stone Guide z projektu Figma — **jeszcze nie potwierdzone**, traktować jako otwarte.
 
 ## 2. Zasady współpracy
 
-- **Ja (Marcin) piszę kod. Claude pełni rolę mentora**: tłumaczy, doradza architekturę, robi review, pomaga debugować.
+- **Domyślnie: Ja (Marcin) piszę kod. Claude pełni rolę mentora**: tłumaczy, doradza architekturę, robi review, pomaga debugować.
 - Claude nie generuje gotowych plików z kodem, chyba że wyraźnie o to poproszę.
+- **[TYMCZASOWO od 2026-07-29]**: z powodu presji czasowej Claude pisze kod bezpośrednio. Wracamy do domyślnego trybu (ja piszę) jak dam znać.
 - Jestem w połowie kursu na Scrimbie — wyjaśnienia mają być konkretne, bez zakładania wiedzy, której jeszcze nie mam.
 
 ## 3. Stack techniczny
@@ -24,10 +26,18 @@
 | Framework strony | **Astro** | Statyczne strony, minimalny JS wysyłany do przeglądarki — kluczowe pod Core Web Vitals |
 | Stylowanie | **CSS** (vanilla) | Bez frameworków CSS typu Tailwind/Bootstrap, chyba że ustalimy inaczej |
 | Interaktywność | **Vanilla JS** | Tylko tam, gdzie Astro tego wymaga (islands) |
-| Animacje | **GSAP** (opcjonalnie) | Tylko jeśli poprawia odczucie "premium", nie na siłę |
+| Animacje | **GSAP** (opcjonalnie, zainstalowany) | Tylko jeśli poprawia odczucie "premium", nie na siłę |
 | CMS | **Sanity** | Treść produktów i bloga |
 | Płatności | **Stripe Checkout (hosted)** | Strona płatności nie musi wyglądać jak część sklepu — wybieramy prostszą, szybszą opcję zamiast custom Stripe Elements |
 | Hosting | **Netlify** | |
+| Slidery/karuzele | **Swiper.js** | Użytkownik ma licencję (Swiper Element/Premium) |
+
+## 3a. Funkcje odrzucone / świadomie pominięte
+
+- **Konta klientów (auth) i Supabase** — rozważone i **odrzucone na ten moment**. Powód: brak realnej potrzeby biznesowej (nie ma programu lojalnościowego), a konta wymagałyby SSR w Astro (zamiast statycznych stron), własnego systemu logowania, powiązania Stripe Customer z kontem i realnych obowiązków RODO (prawo do usunięcia danych) — nieproporcjonalny narzut względem 20-produktowego sklepu na start. Można wrócić do tego, jeśli pojawi się konkretna potrzeba biznesowa.
+- **Wishlist** — realizowana bez backendu, w **`localStorage`** (zapamiętywanie ulubionych produktów lokalnie w przeglądarce, bez logowania). Nie synchronizuje się między urządzeniami — akceptowalne przy tej skali sklepu.
+- **Gwiazdki / recenzje produktów** — realizowane przez **Sanity** (nowy typ dokumentu, zgłoszenia klientów zapisywane przez małą funkcję serverless z sekretnym tokenem zapisu), moderowane w tym samym Sanity Studio, którego klient już używa do produktów/bloga. Nie wymaga nowego serwisu ani kont użytkowników.
+- **Snipcart / gotowy koszyk-jako-usługa** — odrzucone. Dokłada ~2% prowizji **ponad** prowizję Stripe (razem ~3.5–5.25% + 20p zamiast ~1.5–3.25% + 20p) i dodatkowy JS na każdej stronie (uderza w Core Web Vitals). Automatyczne "sold out" po sprzedaży unikatowego produktu robimy sami: webhook Stripe → mała funkcja serverless → aktualizacja statusu w Sanity. To wystarcza przy modelu "1 produkt = 1 unikatowa sztuka, bez wariantów", nawet przy większym wolumenie sprzedaży.
 
 ## 4. Panel klienta (odpowiednik "WordPressa")
 

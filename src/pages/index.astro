@@ -1,5 +1,9 @@
 ---
-
+import "../styles/global.css";
+import AnnouncementBar from "../components/AnnouncementBar.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import OurCollections from "../components/OurCollections.astro";
 ---
 
 <html lang="en">
@@ -9,9 +13,12 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Glossy Place</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<AnnouncementBar />
+		<Header />
+		<Hero />
+		<OurCollections />
 	</body>
 </html>

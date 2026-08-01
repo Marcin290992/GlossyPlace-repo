@@ -1,0 +1,98 @@
+---
+import { Image } from "astro:assets";
+import obsidianBracelet from "../images/bracelet/1-bracelet.webp";
+
+const bracelets = [
+	{ label: "Obsidian Grounding Bracelet", image: obsidianBracelet },
+	{ label: "Seven Chakras Alignment Bracelet", image: null },
+	{ label: "Tiger Eye Protection Bracelet", image: null },
+	{ label: "Lapis Lazuli Wisdom Bracelet", image: null },
+	{ label: "Rose Quartz Love Bracelet", image: null },
+];
+---
+
+<section class="our-collections">
+	<h2 class="our-collections-title">Choose Your Energy</h2>
+	<div class="cards-grid">
+		{
+			bracelets.map((bracelet) => (
+				<div class="card">
+					<div class="card-image">
+						{bracelet.image && <Image src={bracelet.image} alt={bracelet.label} class="card-image-photo" />}
+					</div>
+					<p class="card-label">{bracelet.label}</p>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.our-collections {
+		display: flex;
+		width: 100%;
+		padding: 120px 64px 163.2px 64px;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 32px;
+	}
+
+	.our-collections-title {
+		width: 1312px;
+		max-width: 100%;
+		margin: 0;
+		color: #111;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: normal;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.cards-grid {
+		display: flex;
+		align-items: flex-start;
+		align-self: stretch;
+		gap: 16px;
+	}
+
+	.card {
+		display: flex;
+		flex: 1;
+		min-width: 0;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.card-image {
+		position: relative;
+		align-self: stretch;
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		background: #f4f0ea;
+		overflow: hidden;
+	}
+
+	.card-image-photo {
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 80%;
+		height: 80%;
+		object-fit: contain;
+	}
+
+	.card-label {
+		margin: 0;
+		text-align: center;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 1.5px;
+		text-transform: uppercase;
+	}
+</style>
