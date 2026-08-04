@@ -48,8 +48,17 @@ export function addToCart(id: string, quantity = 1) {
 }
 
 export function setQuantity(id: string, quantity: number) {
-	const lines = readCart().filter((line) => line.id !== id);
-	if (quantity > 0) {
+	const lines = readCart();
+
+	if (quantity <= 0) {
+		writeCart(lines.filter((line) => line.id !== id));
+		return;
+	}
+
+	const existing = lines.find((line) => line.id === id);
+	if (existing) {
+		existing.quantity = quantity;
+	} else {
 		lines.push({ id, quantity });
 	}
 	writeCart(lines);

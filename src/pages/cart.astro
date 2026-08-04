@@ -25,13 +25,18 @@ import { formatPrice } from "../lib/format";
 							<p class="cart-item-name">{product.name}</p>
 							<p class="cart-item-price">{formatPrice(product.priceInPence)}</p>
 						</div>
-						<div class="qty-stepper">
-							<button type="button" class="qty-btn" data-qty-minus aria-label={`Decrease quantity of ${product.name}`}>
-								−
-							</button>
-							<span class="qty-value" data-qty-value>0</span>
-							<button type="button" class="qty-btn" data-qty-plus aria-label={`Increase quantity of ${product.name}`}>
-								+
+						<div class="qty-column">
+							<div class="qty-stepper">
+								<button type="button" class="qty-btn" data-qty-minus aria-label={`Decrease quantity of ${product.name}`}>
+									−
+								</button>
+								<span class="qty-value" data-qty-value>0</span>
+								<button type="button" class="qty-btn" data-qty-plus aria-label={`Increase quantity of ${product.name}`}>
+									+
+								</button>
+							</div>
+							<button type="button" class="cart-item-remove" data-remove-id={product.id}>
+								Remove
 							</button>
 						</div>
 					</li>
@@ -136,6 +141,27 @@ import { formatPrice } from "../lib/format";
 		font-size: 13px;
 	}
 
+	.qty-column {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 8px;
+	}
+
+	.cart-item-remove {
+		border: none;
+		background: none;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.cart-item-remove:hover {
+		color: #111827;
+	}
+
 	.cart-summary {
 		display: flex;
 		flex-direction: column;
@@ -171,7 +197,7 @@ import { formatPrice } from "../lib/format";
 </style>
 
 <script>
-	import { getCartLines, getCartSubtotalPence, addToCart, setQuantity, CART_EVENT } from "../lib/cart";
+	import { getCartLines, getCartSubtotalPence, addToCart, setQuantity, removeFromCart, CART_EVENT } from "../lib/cart";
 	import { formatPrice } from "../lib/format";
 
 	function render() {
@@ -211,6 +237,13 @@ import { formatPrice } from "../lib/format";
 			const item = button.closest<HTMLElement>("[data-cart-item]");
 			const id = item?.dataset.productId;
 			if (id) addToCart(id, 1);
+		});
+	});
+
+	document.querySelectorAll<HTMLButtonElement>("[data-remove-id]").forEach((button) => {
+		button.addEventListener("click", () => {
+			const id = button.dataset.removeId;
+			if (id) removeFromCart(id);
 		});
 	});
 

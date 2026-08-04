@@ -216,10 +216,38 @@ for (const [id, image] of Object.entries(productImages)) {
 		font-size: 12px;
 	}
 
+	.cart-drawer-item-qty {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 6px;
+	}
+
+	.cart-drawer-item-remove {
+		border: none;
+		background: none;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.cart-drawer-item-remove:hover {
+		color: #111827;
+	}
 </style>
 
 <script>
-	import { getCartItems, getCartSubtotalPence, addToCart, setQuantity, CART_EVENT, CART_OPEN_EVENT } from "../lib/cart";
+	import {
+		getCartItems,
+		getCartSubtotalPence,
+		addToCart,
+		setQuantity,
+		removeFromCart,
+		CART_EVENT,
+		CART_OPEN_EVENT,
+	} from "../lib/cart";
 	import { formatPrice } from "../lib/format";
 
 	const drawer = document.getElementById("cart-drawer");
@@ -249,10 +277,13 @@ for (const [id, image] of Object.entries(productImages)) {
 						<p class="cart-drawer-item-name">${product.name}</p>
 						<p class="cart-drawer-item-price">${formatPrice(product.priceInPence)}</p>
 					</div>
-					<div class="qty-stepper">
-						<button type="button" class="qty-btn" data-qty-minus="${product.id}" aria-label="Decrease quantity of ${product.name}">−</button>
-						<span class="qty-value">${quantity}</span>
-						<button type="button" class="qty-btn" data-qty-plus="${product.id}" aria-label="Increase quantity of ${product.name}">+</button>
+					<div class="cart-drawer-item-qty">
+						<div class="qty-stepper">
+							<button type="button" class="qty-btn" data-qty-minus="${product.id}" aria-label="Decrease quantity of ${product.name}">−</button>
+							<span class="qty-value">${quantity}</span>
+							<button type="button" class="qty-btn" data-qty-plus="${product.id}" aria-label="Increase quantity of ${product.name}">+</button>
+						</div>
+						<button type="button" class="cart-drawer-item-remove" data-remove-id="${product.id}">Remove</button>
 					</div>
 				`;
 				body.appendChild(row);
@@ -274,6 +305,13 @@ for (const [id, image] of Object.entries(productImages)) {
 			button.addEventListener("click", () => {
 				const id = button.dataset.qtyPlus;
 				if (id) addToCart(id, 1);
+			});
+		});
+
+		body.querySelectorAll<HTMLButtonElement>("[data-remove-id]").forEach((button) => {
+			button.addEventListener("click", () => {
+				const id = button.dataset.removeId;
+				if (id) removeFromCart(id);
 			});
 		});
 	}
