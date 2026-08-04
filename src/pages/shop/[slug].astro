@@ -36,6 +36,10 @@ const image = productImages[product.id] ?? null;
 					{product.available ? "Add to bag" : "Sold out"}
 				</button>
 
+				<p class="handmade-note">
+					Handmade to order — natural stone patterns vary, so your piece may differ slightly from the photo.
+				</p>
+
 				<p class="highlights-title">Highlights</p>
 				<div class="highlights">
 					{product.highlights.map((highlight) => (
@@ -179,7 +183,15 @@ const image = productImages[product.id] ?? null;
 			opacity 0.2s ease,
 			background-color 0.2s ease,
 			color 0.2s ease;
-		margin-bottom: 40px;
+		margin-bottom: 16px;
+	}
+
+	.handmade-note {
+		margin: 0 0 32px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		line-height: 1.5;
 	}
 
 	.cta-btn:hover:not(:disabled) {
