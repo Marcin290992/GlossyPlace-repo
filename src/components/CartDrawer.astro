@@ -216,23 +216,10 @@ for (const [id, image] of Object.entries(productImages)) {
 		font-size: 12px;
 	}
 
-	.cart-drawer-item-remove {
-		border: none;
-		background: none;
-		color: #6b7280;
-		font-family: "Manrope", sans-serif;
-		font-size: 11px;
-		text-decoration: underline;
-		cursor: pointer;
-	}
-
-	.cart-drawer-item-remove:hover {
-		color: #111827;
-	}
 </style>
 
 <script>
-	import { getCartItems, getCartSubtotalPence, removeFromCart, CART_EVENT, CART_OPEN_EVENT } from "../lib/cart";
+	import { getCartItems, getCartSubtotalPence, addToCart, setQuantity, CART_EVENT, CART_OPEN_EVENT } from "../lib/cart";
 	import { formatPrice } from "../lib/format";
 
 	const drawer = document.getElementById("cart-drawer");
@@ -252,7 +239,7 @@ for (const [id, image] of Object.entries(productImages)) {
 		if (items.length === 0) {
 			body.innerHTML = `<p class="cart-drawer-empty">Your bag is empty.</p>`;
 		} else {
-			items.forEach((product) => {
+			items.forEach(({ product, quantity }) => {
 				const row = document.createElement("div");
 				row.className = "cart-drawer-item";
 				const image = imageMap[product.id];
@@ -262,7 +249,11 @@ for (const [id, image] of Object.entries(productImages)) {
 						<p class="cart-drawer-item-name">${product.name}</p>
 						<p class="cart-drawer-item-price">${formatPrice(product.priceInPence)}</p>
 					</div>
-					<button type="button" class="cart-drawer-item-remove" data-remove-id="${product.id}">Remove</button>
+					<div class="qty-stepper">
+						<button type="button" class="qty-btn" data-qty-minus="${product.id}" aria-label="Decrease quantity of ${product.name}">−</button>
+						<span class="qty-value">${quantity}</span>
+						<button type="button" class="qty-btn" data-qty-plus="${product.id}" aria-label="Increase quantity of ${product.name}">+</button>
+					</div>
 				`;
 				body.appendChild(row);
 			});
@@ -270,10 +261,19 @@ for (const [id, image] of Object.entries(productImages)) {
 
 		subtotalEl.textContent = formatPrice(getCartSubtotalPence());
 
-		body.querySelectorAll<HTMLButtonElement>("[data-remove-id]").forEach((button) => {
+		body.querySelectorAll<HTMLButtonElement>("[data-qty-minus]").forEach((button) => {
 			button.addEventListener("click", () => {
-				const id = button.dataset.removeId;
-				if (id) removeFromCart(id);
+				const id = button.dataset.qtyMinus;
+				if (!id) return;
+				const current = getCartItems().find((item) => item.product.id === id)?.quantity ?? 0;
+				setQuantity(id, current - 1);
+			});
+		});
+
+		body.querySelectorAll<HTMLButtonElement>("[data-qty-plus]").forEach((button) => {
+			button.addEventListener("click", () => {
+				const id = button.dataset.qtyPlus;
+				if (id) addToCart(id, 1);
 			});
 		});
 	}

@@ -24,8 +24,8 @@ const image = productImages[product.id] ?? null;
 			</div>
 
 			<div class="product-info">
-				<p class={`stock-badge ${product.available ? "" : "sold-out"}`}>
-					{product.available ? "One of a kind — only 1 available" : "Sold out"}
+				<p class={`stock-badge ${product.available ? "" : "unavailable"}`}>
+					{product.available ? "Made to order" : "Currently not taking orders for this design"}
 				</p>
 
 				<h1 class="product-title">{product.name}</h1>
@@ -33,11 +33,12 @@ const image = productImages[product.id] ?? null;
 				<p class="product-price">{formatPrice(product.priceInPence)}</p>
 
 				<button type="button" class="cta-btn" data-add-id={product.id} disabled={!product.available}>
-					{product.available ? "Add to bag" : "Sold out"}
+					{product.available ? "Add to bag" : "Currently unavailable"}
 				</button>
 
 				<p class="handmade-note">
-					Handmade to order — natural stone patterns vary, so your piece may differ slightly from the photo.
+					Handmade to order — your piece is made after you order, so natural stone patterns mean it may differ
+					slightly from the photo.
 				</p>
 
 				<p class="highlights-title">Highlights</p>
@@ -137,7 +138,7 @@ const image = productImages[product.id] ?? null;
 		text-transform: uppercase;
 	}
 
-	.stock-badge.sold-out {
+	.stock-badge.unavailable {
 		color: #b45309;
 	}
 

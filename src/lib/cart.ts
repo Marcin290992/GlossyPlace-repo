@@ -4,45 +4,72 @@ export const CART_STORAGE_KEY = "glossy-place-cart";
 export const CART_EVENT = "cart:change";
 export const CART_OPEN_EVENT = "cart:open";
 
-function readCart(): string[] {
+type CartLine = { id: string; quantity: number };
+
+function readCart(): CartLine[] {
 	try {
 		const raw = localStorage.getItem(CART_STORAGE_KEY);
 		const parsed = raw ? JSON.parse(raw) : [];
-		return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === "string") : [];
+		if (!Array.isArray(parsed)) return [];
+		return parsed
+			.map((line) =>
+				line && typeof line === "object" && typeof line.id === "string"
+					? { id: line.id, quantity: Number(line.quantity) || 0 }
+					: null,
+			)
+			.filter((line): line is CartLine => line !== null && line.quantity > 0);
 	} catch {
 		return [];
 	}
 }
 
-function writeCart(ids: string[]) {
-	localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(ids));
+function writeCart(lines: CartLine[]) {
+	localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(lines));
 	window.dispatchEvent(new CustomEvent(CART_EVENT));
 }
 
-export function getCartIds(): string[] {
+export function getCartLines(): CartLine[] {
 	return readCart();
 }
 
-export function addToCart(id: string) {
-	const ids = readCart();
-	if (!ids.includes(id)) {
-		writeCart([...ids, id]);
+export function getCartCount(): number {
+	return readCart().reduce((sum, line) => sum + line.quantity, 0);
+}
+
+export function addToCart(id: string, quantity = 1) {
+	const lines = readCart();
+	const existing = lines.find((line) => line.id === id);
+	if (existing) {
+		existing.quantity += quantity;
+	} else {
+		lines.push({ id, quantity });
 	}
+	writeCart(lines);
+}
+
+export function setQuantity(id: string, quantity: number) {
+	const lines = readCart().filter((line) => line.id !== id);
+	if (quantity > 0) {
+		lines.push({ id, quantity });
+	}
+	writeCart(lines);
 }
 
 export function removeFromCart(id: string) {
-	writeCart(readCart().filter((existing) => existing !== id));
+	writeCart(readCart().filter((line) => line.id !== id));
 }
 
-export function getCartItems(): Product[] {
-	const ids = readCart();
-	return ids
-		.map((id) => products.find((product) => product.id === id))
-		.filter((product): product is Product => Boolean(product));
+export function getCartItems(): { product: Product; quantity: number }[] {
+	return readCart()
+		.map((line) => {
+			const product = products.find((existing) => existing.id === line.id);
+			return product ? { product, quantity: line.quantity } : null;
+		})
+		.filter((item): item is { product: Product; quantity: number } => item !== null);
 }
 
 export function getCartSubtotalPence(): number {
-	return getCartItems().reduce((sum, product) => sum + product.priceInPence, 0);
+	return getCartItems().reduce((sum, item) => sum + item.product.priceInPence * item.quantity, 0);
 }
 
 export function openCartDrawer() {

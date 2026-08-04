@@ -35,3 +35,35 @@ img {
 body.no-scroll {
 	overflow: hidden;
 }
+
+.qty-stepper {
+	display: flex;
+	align-items: center;
+	border: 1px solid #e5e7eb;
+}
+
+.qty-btn {
+	width: 26px;
+	height: 26px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: none;
+	color: #111827;
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.qty-btn:hover {
+	background: #f4f0ea;
+}
+
+.qty-value {
+	min-width: 22px;
+	text-align: center;
+	color: #111827;
+	font-family: "Manrope", sans-serif;
+	font-size: 12px;
+}

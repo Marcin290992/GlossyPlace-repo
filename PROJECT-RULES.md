@@ -37,14 +37,14 @@
 - **Konta klientów (auth) i Supabase** — rozważone i **odrzucone na ten moment**. Powód: brak realnej potrzeby biznesowej (nie ma programu lojalnościowego), a konta wymagałyby SSR w Astro (zamiast statycznych stron), własnego systemu logowania, powiązania Stripe Customer z kontem i realnych obowiązków RODO (prawo do usunięcia danych) — nieproporcjonalny narzut względem 20-produktowego sklepu na start. Można wrócić do tego, jeśli pojawi się konkretna potrzeba biznesowa.
 - **Wishlist** — realizowana bez backendu, w **`localStorage`** (zapamiętywanie ulubionych produktów lokalnie w przeglądarce, bez logowania). Nie synchronizuje się między urządzeniami — akceptowalne przy tej skali sklepu.
 - **Gwiazdki / recenzje produktów** — realizowane przez **Sanity** (nowy typ dokumentu, zgłoszenia klientów zapisywane przez małą funkcję serverless z sekretnym tokenem zapisu), moderowane w tym samym Sanity Studio, którego klient już używa do produktów/bloga. Nie wymaga nowego serwisu ani kont użytkowników.
-- **Snipcart / gotowy koszyk-jako-usługa** — odrzucone. Dokłada ~2% prowizji **ponad** prowizję Stripe (razem ~3.5–5.25% + 20p zamiast ~1.5–3.25% + 20p) i dodatkowy JS na każdej stronie (uderza w Core Web Vitals). Automatyczne "sold out" po sprzedaży unikatowego produktu robimy sami: webhook Stripe → mała funkcja serverless → aktualizacja statusu w Sanity. To wystarcza przy modelu "1 produkt = 1 unikatowa sztuka, bez wariantów", nawet przy większym wolumenie sprzedaży.
+- **Snipcart / gotowy koszyk-jako-usługa** — odrzucone. Dokłada ~2% prowizji **ponad** prowizję Stripe (razem ~3.5–5.25% + 20p zamiast ~1.5–3.25% + 20p) i dodatkowy JS na każdej stronie (uderza w Core Web Vitals). Koszyk robimy sami, patrz niżej.
 
-### Koszyk — model B (potwierdzone 2026-08-04)
+### Koszyk — model B (potwierdzone 2026-08-04, skorygowane po ustaleniu modelu produkcji 2026-08-04)
 
-- Koszyk lokalny w **`localStorage`** (spójnie z wishlist) — dodawanie/usuwanie produktów, mini-cart lub strona `/cart`, bez logowania.
+- Koszyk lokalny w **`localStorage`** (spójnie z wishlist) — dodawanie/usuwanie produktów, mini-cart (panel wysuwany) lub strona `/cart`, bez logowania.
 - Przy kliknięciu "Checkout" jedna serverless function tworzy **jedną Stripe Checkout Session z wieloma line items** (wszystkie produkty z koszyka naraz, jedna wysyłka).
-- Ilości nie są obsługiwane w klasycznym sensie (unikatowe sztuki, max 1 na produkt).
-- **Kluczowe ryzyko do zaadresowania**: przy tworzeniu Checkout Session function musi sprawdzić aktualny status dostępności każdego produktu w Sanity i odrzucić/wywalić z koszyka te, które w międzyczasie stały się `sold out` (żeby uniknąć sprzedania tej samej unikatowej sztuki dwa razy). To jedyny naprawdę trudny element tego modelu.
+- Ilości nie są obsługiwane w klasycznym sensie (na razie max 1 sztuka danego wzoru w koszyku na klienta).
+- **Ryzyko "podwójnej sprzedaży" w dużej mierze nieaktualne** — patrz sekcja 5, produkty są robione na zamówienie, nie ze stałego stanu magazynowego, więc więcej niż jedna osoba może zamówić ten sam wzór. Function przy tworzeniu Checkout Session powinna wciąż sprawdzić pole `available` w Sanity (czy dany wzór jest aktualnie przyjmowany do zamówień), ale to prostszy, ręcznie ustawiany flag, nie automatyczny mechanizm "sold out po sprzedaży".
 - Odrzucony alternatywny model: "Buy now" bez koszyka (1 produkt = 1 osobna transakcja) — prostszy technicznie, ale gorszy UX przy zakupie kilku produktów naraz (np. prezenty), więc niewybrany mimo prostoty.
 
 ## 4. Panel klienta (odpowiednik "WordPressa")
@@ -57,7 +57,11 @@
 
 - Każda bransoletka = osobny, prosty produkt (bez wariantów rozmiaru/koloru na start).
 - Struktura pojedynczego produktu (do potwierdzenia z Sanity schema): nazwa, opis, cena, zdjęcia, kamienie/materiały, przypisana czakra, znaczenie/symbolika.
-- Unikatowość sztuk i częstotliwość dodawania nowych produktów — **[DO UZUPEŁNIENIA od klienta]**.
+- **Model produkcji: na zamówienie (potwierdzone 2026-08-04)** — produkty nie są gotowym stanem magazynowym (nie "1 sztuka i koniec"). Klientka wykonuje bransoletkę dopiero po złożeniu zamówienia. Konsekwencje:
+  - Ten sam wzór może zamówić więcej niż jedna osoba — nie ma ryzyka sprzedania "tej samej unikatowej sztuki" dwa razy, bo każde zamówienie to osobna produkcja.
+  - Zdjęcie produktu to przykładowy egzemplarz — gotowa sztuka może się nieznacznie różnić (naturalne wzory kamienia, ręczna robota). Stąd notka o tym na stronie produktu.
+  - Pole dostępności produktu (`available`) oznacza teraz "czy aktualnie przyjmujemy zamówienia na ten wzór" (np. wstrzymane z powodu braku materiału albo zbyt dużej liczby zamówień w kolejce), a nie "czy jest na stanie". Etykieta na stronie produktu: "Made to order", nie "only 1 available".
+  - Otwarte na przyszłość: czy jest limit czasu realizacji (np. "ships within 2 weeks") — do ustalenia razem z sekcją 7 (wysyłka).
 
 ## 6. Płatności i podatki
 

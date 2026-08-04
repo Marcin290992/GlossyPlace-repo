@@ -794,12 +794,12 @@ const navItems = [
 </script>
 
 <script>
-	import { getCartIds, CART_EVENT } from "../lib/cart";
+	import { getCartCount, CART_EVENT } from "../lib/cart";
 
 	const cartCount = document.getElementById("cart-count");
 
 	const updateCartCount = () => {
-		if (cartCount) cartCount.textContent = `(${getCartIds().length})`;
+		if (cartCount) cartCount.textContent = `(${getCartCount()})`;
 	};
 
 	updateCartCount();

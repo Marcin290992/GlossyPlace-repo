@@ -25,9 +25,15 @@ import { formatPrice } from "../lib/format";
 							<p class="cart-item-name">{product.name}</p>
 							<p class="cart-item-price">{formatPrice(product.priceInPence)}</p>
 						</div>
-						<button type="button" class="cart-item-remove" data-remove-id={product.id}>
-							Remove
-						</button>
+						<div class="qty-stepper">
+							<button type="button" class="qty-btn" data-qty-minus aria-label={`Decrease quantity of ${product.name}`}>
+								−
+							</button>
+							<span class="qty-value" data-qty-value>0</span>
+							<button type="button" class="qty-btn" data-qty-plus aria-label={`Increase quantity of ${product.name}`}>
+								+
+							</button>
+						</div>
 					</li>
 				))
 			}
@@ -130,20 +136,6 @@ import { formatPrice } from "../lib/format";
 		font-size: 13px;
 	}
 
-	.cart-item-remove {
-		border: none;
-		background: none;
-		color: #6b7280;
-		font-family: "Manrope", sans-serif;
-		font-size: 12px;
-		text-decoration: underline;
-		cursor: pointer;
-	}
-
-	.cart-item-remove:hover {
-		color: #111827;
-	}
-
 	.cart-summary {
 		display: flex;
 		flex-direction: column;
@@ -179,30 +171,46 @@ import { formatPrice } from "../lib/format";
 </style>
 
 <script>
-	import { getCartIds, getCartSubtotalPence, removeFromCart, CART_EVENT } from "../lib/cart";
+	import { getCartLines, getCartSubtotalPence, addToCart, setQuantity, CART_EVENT } from "../lib/cart";
 	import { formatPrice } from "../lib/format";
 
 	function render() {
-		const ids = getCartIds();
+		const lines = getCartLines();
+		const quantityById = new Map(lines.map((line) => [line.id, line.quantity]));
 
 		document.querySelectorAll<HTMLElement>("[data-cart-item]").forEach((item) => {
 			const id = item.dataset.productId;
-			item.hidden = !(id && ids.includes(id));
+			const quantity = id ? (quantityById.get(id) ?? 0) : 0;
+			item.hidden = quantity === 0;
+
+			const qtyValue = item.querySelector("[data-qty-value]");
+			if (qtyValue) qtyValue.textContent = String(quantity);
 		});
 
 		const empty = document.getElementById("cart-empty");
 		const summary = document.getElementById("cart-summary");
-		if (empty) empty.hidden = ids.length > 0;
-		if (summary) summary.hidden = ids.length === 0;
+		if (empty) empty.hidden = lines.length > 0;
+		if (summary) summary.hidden = lines.length === 0;
 
 		const subtotalEl = document.getElementById("cart-subtotal");
 		if (subtotalEl) subtotalEl.textContent = formatPrice(getCartSubtotalPence());
 	}
 
-	document.querySelectorAll<HTMLButtonElement>("[data-remove-id]").forEach((button) => {
+	document.querySelectorAll<HTMLButtonElement>("[data-qty-minus]").forEach((button) => {
 		button.addEventListener("click", () => {
-			const id = button.dataset.removeId;
-			if (id) removeFromCart(id);
+			const item = button.closest<HTMLElement>("[data-cart-item]");
+			const id = item?.dataset.productId;
+			if (!id) return;
+			const current = getCartLines().find((line) => line.id === id)?.quantity ?? 0;
+			setQuantity(id, current - 1);
+		});
+	});
+
+	document.querySelectorAll<HTMLButtonElement>("[data-qty-plus]").forEach((button) => {
+		button.addEventListener("click", () => {
+			const item = button.closest<HTMLElement>("[data-cart-item]");
+			const id = item?.dataset.productId;
+			if (id) addToCart(id, 1);
 		});
 	});
 
