@@ -39,6 +39,14 @@
 - **Gwiazdki / recenzje produktów** — realizowane przez **Sanity** (nowy typ dokumentu, zgłoszenia klientów zapisywane przez małą funkcję serverless z sekretnym tokenem zapisu), moderowane w tym samym Sanity Studio, którego klient już używa do produktów/bloga. Nie wymaga nowego serwisu ani kont użytkowników.
 - **Snipcart / gotowy koszyk-jako-usługa** — odrzucone. Dokłada ~2% prowizji **ponad** prowizję Stripe (razem ~3.5–5.25% + 20p zamiast ~1.5–3.25% + 20p) i dodatkowy JS na każdej stronie (uderza w Core Web Vitals). Automatyczne "sold out" po sprzedaży unikatowego produktu robimy sami: webhook Stripe → mała funkcja serverless → aktualizacja statusu w Sanity. To wystarcza przy modelu "1 produkt = 1 unikatowa sztuka, bez wariantów", nawet przy większym wolumenie sprzedaży.
 
+### Koszyk — model B (potwierdzone 2026-08-04)
+
+- Koszyk lokalny w **`localStorage`** (spójnie z wishlist) — dodawanie/usuwanie produktów, mini-cart lub strona `/cart`, bez logowania.
+- Przy kliknięciu "Checkout" jedna serverless function tworzy **jedną Stripe Checkout Session z wieloma line items** (wszystkie produkty z koszyka naraz, jedna wysyłka).
+- Ilości nie są obsługiwane w klasycznym sensie (unikatowe sztuki, max 1 na produkt).
+- **Kluczowe ryzyko do zaadresowania**: przy tworzeniu Checkout Session function musi sprawdzić aktualny status dostępności każdego produktu w Sanity i odrzucić/wywalić z koszyka te, które w międzyczasie stały się `sold out` (żeby uniknąć sprzedania tej samej unikatowej sztuki dwa razy). To jedyny naprawdę trudny element tego modelu.
+- Odrzucony alternatywny model: "Buy now" bez koszyka (1 produkt = 1 osobna transakcja) — prostszy technicznie, ale gorszy UX przy zakupie kilku produktów naraz (np. prezenty), więc niewybrany mimo prostoty.
+
 ## 4. Panel klienta (odpowiednik "WordPressa")
 
 - Klient dostaje dostęp do **Sanity Studio** ze **schematem zablokowanym pod treść**.

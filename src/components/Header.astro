@@ -97,7 +97,7 @@ const navItems = [
 				/>
 				<path d="M6.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="#111827" stroke-width="1.3" stroke-linecap="round" />
 			</svg>
-			<span>(0)</span>
+			<span id="cart-count">(0)</span>
 		</a>
 	</div>
 </header>
@@ -791,4 +791,18 @@ const navItems = [
 			if (window.innerWidth > 1024) closeMobileNav();
 		});
 	}
+</script>
+
+<script>
+	import { getCartIds, CART_EVENT } from "../lib/cart";
+
+	const cartCount = document.getElementById("cart-count");
+
+	const updateCartCount = () => {
+		if (cartCount) cartCount.textContent = `(${getCartIds().length})`;
+	};
+
+	updateCartCount();
+	window.addEventListener(CART_EVENT, updateCartCount);
+	window.addEventListener("storage", updateCartCount);
 </script>

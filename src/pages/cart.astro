@@ -1,0 +1,211 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import { products } from "../data/products";
+import { productImages } from "../data/productImages";
+import { formatPrice } from "../lib/format";
+---
+
+<BaseLayout title="Your Bag — Glossy Place">
+	<main class="cart-page">
+		<h1 class="cart-title">Your Bag</h1>
+
+		<p id="cart-empty" class="cart-empty" hidden>
+			Your bag is empty. <a href="/">Continue shopping</a>
+		</p>
+
+		<ul class="cart-list">
+			{
+				products.map((product) => (
+					<li class="cart-item" data-cart-item data-product-id={product.id} hidden>
+						<div class="cart-item-image">
+							{productImages[product.id] && <Image src={productImages[product.id]} alt={product.name} />}
+						</div>
+						<div class="cart-item-info">
+							<p class="cart-item-name">{product.name}</p>
+							<p class="cart-item-price">{formatPrice(product.priceInPence)}</p>
+						</div>
+						<button type="button" class="cart-item-remove" data-remove-id={product.id}>
+							Remove
+						</button>
+					</li>
+				))
+			}
+		</ul>
+
+		<div id="cart-summary" class="cart-summary" hidden>
+			<div class="cart-subtotal-row">
+				<span>Subtotal</span>
+				<span id="cart-subtotal"></span>
+			</div>
+			<button type="button" class="checkout-button" disabled title="Coming soon">
+				Checkout — coming soon
+			</button>
+		</div>
+	</main>
+</BaseLayout>
+
+<style>
+	.cart-page {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 80px 24px 120px;
+	}
+
+	.cart-title {
+		margin: 0 0 40px;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 32px;
+		font-weight: 400;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	}
+
+	.cart-empty {
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+	}
+
+	.cart-empty a {
+		color: #111827;
+		text-decoration: underline;
+	}
+
+	.cart-list {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		margin: 0 0 32px;
+		padding: 0;
+		list-style: none;
+	}
+
+	.cart-item {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		padding-bottom: 24px;
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.cart-item[hidden] {
+		display: none;
+	}
+
+	.cart-item-image {
+		flex-shrink: 0;
+		width: 88px;
+		height: 112px;
+		background: #f4f0ea;
+		overflow: hidden;
+	}
+
+	.cart-item-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	.cart-item-info {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.cart-item-name {
+		margin: 0;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.cart-item-price {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+	}
+
+	.cart-item-remove {
+		border: none;
+		background: none;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.cart-item-remove:hover {
+		color: #111827;
+	}
+
+	.cart-summary {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.cart-summary[hidden] {
+		display: none;
+	}
+
+	.cart-subtotal-row {
+		display: flex;
+		justify-content: space-between;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 15px;
+		font-weight: 500;
+	}
+
+	.checkout-button {
+		padding: 14px;
+		border: 1px solid #111827;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+</style>
+
+<script>
+	import { getCartIds, getCartSubtotalPence, removeFromCart, CART_EVENT } from "../lib/cart";
+	import { formatPrice } from "../lib/format";
+
+	function render() {
+		const ids = getCartIds();
+
+		document.querySelectorAll<HTMLElement>("[data-cart-item]").forEach((item) => {
+			const id = item.dataset.productId;
+			item.hidden = !(id && ids.includes(id));
+		});
+
+		const empty = document.getElementById("cart-empty");
+		const summary = document.getElementById("cart-summary");
+		if (empty) empty.hidden = ids.length > 0;
+		if (summary) summary.hidden = ids.length === 0;
+
+		const subtotalEl = document.getElementById("cart-subtotal");
+		if (subtotalEl) subtotalEl.textContent = formatPrice(getCartSubtotalPence());
+	}
+
+	document.querySelectorAll<HTMLButtonElement>("[data-remove-id]").forEach((button) => {
+		button.addEventListener("click", () => {
+			const id = button.dataset.removeId;
+			if (id) removeFromCart(id);
+		});
+	});
+
+	window.addEventListener(CART_EVENT, render);
+	render();
+</script>

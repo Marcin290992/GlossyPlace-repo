@@ -1,14 +1,15 @@
 ---
 import { Image } from "astro:assets";
-import obsidianBracelet from "../images/bracelet/1-bracelet.webp";
+import { products } from "../data/products";
+import { productImages } from "../data/productImages";
+import { formatPrice } from "../lib/format";
 
-const bracelets = [
-	{ label: "Obsidian Grounding Bracelet", image: obsidianBracelet },
-	{ label: "Seven Chakras Alignment Bracelet", image: null },
-	{ label: "Tiger Eye Protection Bracelet", image: null },
-	{ label: "Lapis Lazuli Wisdom Bracelet", image: null },
-	{ label: "Rose Quartz Love Bracelet", image: null },
-];
+const bracelets = products.map((product) => ({
+	id: product.id,
+	label: product.name,
+	image: productImages[product.id] ?? null,
+	price: formatPrice(product.priceInPence),
+}));
 ---
 
 <section class="our-collections">
@@ -17,10 +18,16 @@ const bracelets = [
 		{
 			bracelets.map((bracelet) => (
 				<div class="card">
-					<div class="card-image">
-						{bracelet.image && <Image src={bracelet.image} alt={bracelet.label} class="card-image-photo" />}
-					</div>
-					<p class="card-label">{bracelet.label}</p>
+					<a href={`/shop/${bracelet.id}`} class="card-link">
+						<div class="card-image">
+							{bracelet.image && <Image src={bracelet.image} alt={bracelet.label} class="card-image-photo" />}
+						</div>
+						<p class="card-label">{bracelet.label}</p>
+					</a>
+					<p class="card-price">{bracelet.price}</p>
+					<button type="button" class="add-to-bag" data-add-id={bracelet.id}>
+						Add to bag
+					</button>
 				</div>
 			))
 		}
@@ -65,6 +72,16 @@ const bracelets = [
 		flex-direction: column;
 		align-items: center;
 		gap: 12px;
+	}
+
+	.card-link {
+		display: flex;
+		width: 100%;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		color: inherit;
+		text-decoration: none;
 	}
 
 	@media (max-width: 1024px) {
@@ -115,4 +132,67 @@ const bracelets = [
 		letter-spacing: 1.5px;
 		text-transform: uppercase;
 	}
+
+	.card-price {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.add-to-bag {
+		width: 100%;
+		padding: 12px 16px;
+		border: 1px solid #111827;
+		background: transparent;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 1.5px;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.add-to-bag:hover {
+		background: #111827;
+		color: #fff;
+	}
+
+	.add-to-bag[data-added="true"] {
+		border-color: #b8a68a;
+		background: #b8a68a;
+		color: #fff;
+	}
 </style>
+
+<script>
+	import { addToCart, openCartDrawer } from "../lib/cart";
+
+	document.querySelectorAll<HTMLButtonElement>("[data-add-id]").forEach((button) => {
+		const defaultLabel = button.textContent ?? "Add to bag";
+		let revertTimeout: number | undefined;
+
+		button.addEventListener("click", () => {
+			const id = button.dataset.addId;
+			if (!id) return;
+
+			addToCart(id);
+			openCartDrawer();
+
+			button.dataset.added = "true";
+			button.textContent = "Added";
+
+			clearTimeout(revertTimeout);
+			revertTimeout = window.setTimeout(() => {
+				delete button.dataset.added;
+				button.textContent = defaultLabel;
+			}, 1500);
+		});
+	});
+</script>

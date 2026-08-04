@@ -1,0 +1,318 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import { products, type Product } from "../../data/products";
+import { productImages } from "../../data/productImages";
+import { formatPrice } from "../../lib/format";
+
+export function getStaticPaths() {
+	return products.map((product) => ({
+		params: { slug: product.id },
+		props: { product },
+	}));
+}
+
+const { product } = Astro.props as { product: Product };
+const image = productImages[product.id] ?? null;
+---
+
+<BaseLayout title={`${product.name} — Glossy Place`}>
+	<main class="product-page">
+		<div class="product-grid">
+			<div class="product-image">
+				{image ? <Image src={image} alt={product.name} /> : <div class="product-image-placeholder" />}
+			</div>
+
+			<div class="product-info">
+				<p class={`stock-badge ${product.available ? "" : "sold-out"}`}>
+					{product.available ? "One of a kind — only 1 available" : "Sold out"}
+				</p>
+
+				<h1 class="product-title">{product.name}</h1>
+				<p class="product-materials">{product.materials}</p>
+				<p class="product-price">{formatPrice(product.priceInPence)}</p>
+
+				<button type="button" class="cta-btn" data-add-id={product.id} disabled={!product.available}>
+					{product.available ? "Add to bag" : "Sold out"}
+				</button>
+
+				<p class="highlights-title">Highlights</p>
+				<div class="highlights">
+					{product.highlights.map((highlight) => (
+						<span class="highlight-pill">{highlight}</span>
+					))}
+				</div>
+
+				<div class="accordions">
+					<div class="accordion-item active">
+						<button type="button" class="accordion-header">
+							Description
+							<span class="accordion-icon">+</span>
+						</button>
+						<div class="accordion-content">
+							<div class="accordion-content-inner">
+								<p>{product.description}</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-item">
+						<button type="button" class="accordion-header">
+							Materials &amp; Chakra
+							<span class="accordion-icon">+</span>
+						</button>
+						<div class="accordion-content">
+							<div class="accordion-content-inner">
+								<p>{product.materials}. Associated with the {product.chakra}.</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-item">
+						<button type="button" class="accordion-header">
+							Shipping &amp; Returns
+							<span class="accordion-icon">+</span>
+						</button>
+						<div class="accordion-content">
+							<div class="accordion-content-inner">
+								<p>
+									Shipping details to be confirmed. UK customers are covered by the standard 14-day right
+									to cancel under the Consumer Contracts Regulations.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</BaseLayout>
+
+<style>
+	.product-page {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 64px 24px 120px;
+	}
+
+	.product-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 64px;
+	}
+
+	.product-image {
+		aspect-ratio: 4 / 5;
+		background: #f4f0ea;
+		overflow: hidden;
+	}
+
+	.product-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.product-image-placeholder {
+		width: 100%;
+		height: 100%;
+	}
+
+	.product-info {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.stock-badge {
+		margin: 0 0 12px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.stock-badge.sold-out {
+		color: #b45309;
+	}
+
+	.product-title {
+		margin: 0 0 12px;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 40px;
+		font-weight: 400;
+		line-height: 1.1;
+	}
+
+	.product-materials {
+		margin: 0 0 20px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.product-price {
+		margin: 0 0 24px;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 20px;
+		font-weight: 500;
+	}
+
+	.cta-btn {
+		width: 100%;
+		padding: 16px;
+		border: 1px solid #111827;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition:
+			opacity 0.2s ease,
+			background-color 0.2s ease,
+			color 0.2s ease;
+		margin-bottom: 40px;
+	}
+
+	.cta-btn:hover:not(:disabled) {
+		opacity: 0.85;
+	}
+
+	.cta-btn[data-added="true"] {
+		background: #b8a68a;
+		border-color: #b8a68a;
+	}
+
+	.cta-btn:disabled {
+		background: transparent;
+		color: #6b7280;
+		border-color: #e5e7eb;
+		cursor: not-allowed;
+	}
+
+	.highlights-title {
+		margin: 0 0 12px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.highlights {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 40px;
+	}
+
+	.highlight-pill {
+		padding: 6px 14px;
+		border: 1px solid #e5e7eb;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+	}
+
+	.accordion-item {
+		border-top: 1px solid #e5e7eb;
+	}
+
+	.accordion-item:last-child {
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.accordion-header {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 16px 0;
+		border: none;
+		background: transparent;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+
+	.accordion-icon {
+		font-size: 18px;
+		font-weight: 300;
+		color: #6b7280;
+		transition: transform 0.25s ease;
+	}
+
+	.accordion-item.active .accordion-icon {
+		transform: rotate(45deg);
+	}
+
+	.accordion-content {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.25s ease;
+	}
+
+	.accordion-item.active .accordion-content {
+		grid-template-rows: 1fr;
+	}
+
+	.accordion-content-inner {
+		overflow: hidden;
+	}
+
+	.accordion-content p {
+		margin: 0;
+		padding-bottom: 20px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		line-height: 1.6;
+	}
+
+	@media (max-width: 768px) {
+		.product-grid {
+			grid-template-columns: 1fr;
+			gap: 32px;
+		}
+
+		.product-title {
+			font-size: 32px;
+		}
+	}
+</style>
+
+<script>
+	import { addToCart, openCartDrawer } from "../../lib/cart";
+
+	const addButton = document.querySelector<HTMLButtonElement>("[data-add-id]");
+	if (addButton) {
+		addButton.addEventListener("click", () => {
+			const id = addButton.dataset.addId;
+			if (!id) return;
+
+			addToCart(id);
+			openCartDrawer();
+		});
+	}
+
+	document.querySelectorAll<HTMLButtonElement>(".accordion-header").forEach((header) => {
+		header.addEventListener("click", () => {
+			header.parentElement?.classList.toggle("active");
+		});
+	});
+</script>
