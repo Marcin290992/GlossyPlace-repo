@@ -66,6 +66,24 @@ for (const [id, image] of Object.entries(productImages)) {
 		transform: translateX(0);
 	}
 
+	@media (max-width: 640px) {
+		.cart-drawer {
+			top: auto;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			max-width: 100%;
+			height: auto;
+			max-height: 85vh;
+			box-shadow: 0 -8px 24px rgba(17, 24, 39, 0.12);
+			transform: translateY(100%);
+		}
+
+		.cart-drawer.open {
+			transform: translateY(0);
+		}
+	}
+
 	.cart-drawer-header {
 		display: flex;
 		align-items: center;
