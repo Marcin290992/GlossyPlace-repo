@@ -1,0 +1,138 @@
+---
+// TODO(Sender.net): once you've created a form in Sender, paste its action URL here.
+// Dashboard: Forms -> your form -> Embed -> copy the <form action="..."> value.
+const SENDER_FORM_ACTION = "";
+---
+
+<section class="newsletter">
+	<h2 class="newsletter-title">Join the GlossyPlace World</h2>
+	<p class="newsletter-subtitle">Subscribe to receive exclusive offers, crystal wisdom, and new collection updates.</p>
+
+	<form
+		class="newsletter-form"
+		method="post"
+		action={SENDER_FORM_ACTION || undefined}
+		data-newsletter-form
+		data-configured={SENDER_FORM_ACTION ? "true" : "false"}
+	>
+		<input
+			type="email"
+			name="email"
+			required
+			placeholder="Enter your email address"
+			class="newsletter-input"
+			aria-label="Email address"
+		/>
+		<button type="submit" class="newsletter-submit">Subscribe</button>
+	</form>
+	<p class="newsletter-message" data-newsletter-message role="status" hidden></p>
+</section>
+
+<style>
+	.newsletter {
+		display: flex;
+		width: 100%;
+		padding: 80px 64px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 24px;
+		text-align: center;
+	}
+
+	.newsletter-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.newsletter-subtitle {
+		margin: 0;
+		max-width: 560px;
+		color: #807a73;
+		font-family: "Manrope", sans-serif;
+		font-size: 15px;
+		line-height: 1.7;
+	}
+
+	.newsletter-form {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+		justify-content: center;
+		gap: 16px;
+	}
+
+	.newsletter-input {
+		width: 220px;
+		max-width: 100%;
+		padding: 16px 24px;
+		border: 1px solid #ccc7bf;
+		background: #fff;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+	}
+
+	.newsletter-input::placeholder {
+		color: #99948c;
+	}
+
+	.newsletter-submit {
+		padding: 16px 36px;
+		border: none;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-weight: 600;
+		font-size: 11px;
+		letter-spacing: 2.5px;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: opacity 0.2s ease;
+	}
+
+	.newsletter-submit:hover {
+		opacity: 0.85;
+	}
+
+	.newsletter-message {
+		margin: 0;
+		color: #807a73;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+	}
+
+	@media (max-width: 1024px) {
+		.newsletter {
+			padding: 64px 24px;
+			gap: 20px;
+		}
+
+		.newsletter-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+	}
+</style>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>("[data-newsletter-form]");
+	const message = document.querySelector<HTMLElement>("[data-newsletter-message]");
+
+	form?.addEventListener("submit", (event) => {
+		if (form.dataset.configured !== "true") {
+			event.preventDefault();
+			if (message) {
+				message.textContent = "Newsletter signup isn't connected yet — check back soon.";
+				message.hidden = false;
+			}
+			return;
+		}
+		// Sender.net form action is configured: let the native submit go through.
+	});
+</script>
