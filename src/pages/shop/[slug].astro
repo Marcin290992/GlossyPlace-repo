@@ -310,18 +310,9 @@ const image = productImages[product.id] ?? null;
 </style>
 
 <script>
-	import { addToCart, openCartDrawer } from "../../lib/cart";
+	import { initAddToBagButtons } from "../../lib/cart";
 
-	const addButton = document.querySelector<HTMLButtonElement>("[data-add-id]");
-	if (addButton) {
-		addButton.addEventListener("click", () => {
-			const id = addButton.dataset.addId;
-			if (!id) return;
-
-			addToCart(id);
-			openCartDrawer();
-		});
-	}
+	initAddToBagButtons(document.querySelector(".product-page") ?? document);
 
 	document.querySelectorAll<HTMLButtonElement>(".accordion-header").forEach((header) => {
 		header.addEventListener("click", () => {

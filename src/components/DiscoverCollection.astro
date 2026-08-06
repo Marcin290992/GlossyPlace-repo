@@ -4,8 +4,8 @@ import { products } from "../data/products";
 import { productImages } from "../data/productImages";
 import { formatPrice } from "../lib/format";
 
-const bracelets = products
-	.filter((product) => product.collection === "our-collections")
+const items = products
+	.filter((product) => product.collection === "discover-collection")
 	.map((product) => ({
 		id: product.id,
 		label: product.name,
@@ -14,22 +14,24 @@ const bracelets = products
 	}));
 ---
 
-<section class="our-collections">
-	<h2 class="our-collections-title">Find Your Ritual</h2>
-	<div class="cards-grid">
+<section class="discover-collection">
+	<h2 class="discover-collection-title">Discover Collection</h2>
+	<div class="discover-cards-grid">
 		{
-			bracelets.map((bracelet) => (
-				<div class="card">
-					<a href={`/shop/${bracelet.id}`} class="card-link">
-						<div class="card-image">
-							{bracelet.image && <Image src={bracelet.image} alt={bracelet.label} class="card-image-photo" />}
+			items.map((item) => (
+				<div class="discover-card">
+					<a href={`/shop/${item.id}`} class="discover-card-image-link">
+						<div class="discover-card-image">
+							{item.image && <Image src={item.image} alt={item.label} class="discover-card-photo" />}
+							<p class="discover-card-name">{item.label}</p>
 						</div>
-						<p class="card-label">{bracelet.label}</p>
 					</a>
-					<p class="card-price">{bracelet.price}</p>
-					<button type="button" class="add-to-bag" data-add-id={bracelet.id}>
-						Add to bag
-					</button>
+					<div class="discover-card-footer">
+						<p class="discover-card-price">{item.price}</p>
+						<button type="button" class="add-to-bag" data-add-id={item.id}>
+							Add to bag
+						</button>
+					</div>
 				</div>
 			))
 		}
@@ -37,105 +39,80 @@ const bracelets = products
 </section>
 
 <style>
-	.our-collections {
+	.discover-collection {
 		display: flex;
 		width: 100%;
-		padding: 120px 64px 163.2px 64px;
+		padding: 120px 64px 140px;
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 32px;
 	}
 
-	.our-collections-title {
-		width: 1312px;
-		max-width: 100%;
+	.discover-collection-title {
 		margin: 0;
 		color: #111;
 		font-family: "Cormorant Garamond", serif;
 		font-size: 36px;
-		font-style: normal;
 		font-weight: 400;
-		line-height: normal;
 		letter-spacing: 4px;
 		text-transform: uppercase;
 	}
 
-	.cards-grid {
+	.discover-cards-grid {
 		display: grid;
 		grid-template-columns: repeat(5, 1fr);
-		align-items: start;
 		align-self: stretch;
 		gap: 16px;
 	}
 
-	.card {
+	.discover-card {
 		display: flex;
 		min-width: 0;
 		flex-direction: column;
-		align-items: center;
 		gap: 12px;
 	}
 
-	.card-link {
-		display: flex;
-		width: 100%;
-		flex-direction: column;
-		align-items: center;
-		gap: 12px;
+	.discover-card-image-link {
+		display: block;
 		color: inherit;
 		text-decoration: none;
 	}
 
-	@media (max-width: 1024px) {
-		.our-collections {
-			padding: 64px 24px 80px 24px;
-			gap: 20px;
-		}
-
-		.our-collections-title {
-			font-size: 26px;
-			letter-spacing: 2px;
-		}
-
-		.cards-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-
-		.card:last-child {
-			display: none;
-		}
-	}
-
-	.card-image {
+	.discover-card-image {
 		position: relative;
-		align-self: stretch;
-		width: 100%;
-		aspect-ratio: 3 / 4;
+		aspect-ratio: 250 / 333;
+		border-radius: 18px;
 		background: #f4f0ea;
 		overflow: hidden;
 	}
 
-	.card-image-photo {
+	.discover-card-photo {
 		position: absolute;
-		top: 10%;
-		left: 10%;
-		width: 80%;
-		height: 80%;
-		object-fit: contain;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
-	.card-label {
+	.discover-card-name {
+		position: absolute;
+		left: 16px;
+		bottom: 16px;
+		max-width: calc(100% - 32px);
 		margin: 0;
-		text-align: center;
 		color: #111827;
-		font-family: "Manrope", sans-serif;
-		font-size: 12px;
+		font-family: "Cormorant Garamond", serif;
 		font-weight: 500;
-		letter-spacing: 1.5px;
-		text-transform: uppercase;
+		font-size: 18px;
 	}
 
-	.card-price {
+	.discover-card-footer {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.discover-card-price {
 		margin: 0;
 		color: #6b7280;
 		font-family: "Manrope", sans-serif;
@@ -171,10 +148,26 @@ const bracelets = products
 		background: #b8a68a;
 		color: #fff;
 	}
+
+	@media (max-width: 1024px) {
+		.discover-collection {
+			padding: 64px 24px 80px;
+			gap: 20px;
+		}
+
+		.discover-collection-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+
+		.discover-cards-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
 </style>
 
 <script>
 	import { initAddToBagButtons } from "../lib/cart";
 
-	initAddToBagButtons(document.querySelector(".our-collections") ?? document);
+	initAddToBagButtons(document.querySelector(".discover-collection") ?? document);
 </script>

@@ -84,3 +84,27 @@ export function getCartSubtotalPence(): number {
 export function openCartDrawer() {
 	window.dispatchEvent(new CustomEvent(CART_OPEN_EVENT));
 }
+
+export function initAddToBagButtons(root: ParentNode = document) {
+	root.querySelectorAll<HTMLButtonElement>("[data-add-id]").forEach((button) => {
+		const defaultLabel = button.textContent ?? "Add to bag";
+		let revertTimeout: number | undefined;
+
+		button.addEventListener("click", () => {
+			const id = button.dataset.addId;
+			if (!id) return;
+
+			addToCart(id);
+			openCartDrawer();
+
+			button.dataset.added = "true";
+			button.textContent = "Added";
+
+			clearTimeout(revertTimeout);
+			revertTimeout = window.setTimeout(() => {
+				delete button.dataset.added;
+				button.textContent = defaultLabel;
+			}, 1500);
+		});
+	});
+}
