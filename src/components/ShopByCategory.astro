@@ -1,0 +1,87 @@
+---
+const categories = [
+	{ label: "Bracelets", href: "/shop/bracelets" },
+	{ label: "Necklaces", href: "/shop/necklaces" },
+	{ label: "Rings", href: "/shop/rings" },
+];
+---
+
+<section class="shop-by-category">
+	<h2 class="shop-by-category-title">Shop by Category</h2>
+	<div class="category-grid">
+		{
+			categories.map((category) => (
+				<a href={category.href} class="category-card">
+					<div class="category-image" />
+					<p class="category-label">{category.label}</p>
+				</a>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.shop-by-category {
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+		padding: 120px 64px 140px;
+	}
+
+	.shop-by-category-title {
+		margin: 0;
+		color: #111;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.category-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 16px;
+	}
+
+	.category-card {
+		display: flex;
+		flex-direction: column;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.category-image {
+		aspect-ratio: 427 / 410;
+		border-radius: 18px;
+		background: #f4f0ea;
+	}
+
+	.category-label {
+		margin: 16px 0 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 20px;
+		font-weight: 400;
+		text-align: center;
+	}
+
+	@media (max-width: 1024px) {
+		.shop-by-category {
+			padding: 64px 24px 80px;
+			gap: 20px;
+		}
+
+		.shop-by-category-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.category-grid {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+	}
+</style>
