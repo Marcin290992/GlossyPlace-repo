@@ -258,62 +258,68 @@ for (const [id, image] of Object.entries(productImages)) {
 	const dataEl = document.getElementById("cart-drawer-image-data");
 	const imageMap: Record<string, string> = dataEl ? JSON.parse(dataEl.dataset.images || "{}") : {};
 
+	function createRow(productId: string, name: string, priceInPence: number): HTMLDivElement {
+		const row = document.createElement("div");
+		row.className = "cart-drawer-item";
+		row.dataset.itemRow = productId;
+		const image = imageMap[productId];
+		row.innerHTML = `
+			<div class="cart-drawer-item-image">${image ? `<img src="${image}" alt="${name}">` : ""}</div>
+			<div class="cart-drawer-item-info">
+				<p class="cart-drawer-item-name">${name}</p>
+				<p class="cart-drawer-item-price">${formatPrice(priceInPence)}</p>
+			</div>
+			<div class="cart-drawer-item-qty">
+				<div class="qty-stepper">
+					<button type="button" class="qty-btn" data-qty-minus aria-label="Decrease quantity of ${name}">−</button>
+					<span class="qty-value">0</span>
+					<button type="button" class="qty-btn" data-qty-plus aria-label="Increase quantity of ${name}">+</button>
+				</div>
+				<button type="button" class="cart-drawer-item-remove" data-remove-id>Remove</button>
+			</div>
+		`;
+
+		row.querySelector("[data-qty-minus]")?.addEventListener("click", () => {
+			const current = getCartItems().find((item) => item.product.id === productId)?.quantity ?? 0;
+			setQuantity(productId, current - 1);
+		});
+		row.querySelector("[data-qty-plus]")?.addEventListener("click", () => {
+			addToCart(productId, 1);
+		});
+		row.querySelector("[data-remove-id]")?.addEventListener("click", () => {
+			removeFromCart(productId);
+		});
+
+		return row;
+	}
+
 	function render() {
 		if (!body || !subtotalEl) return;
 
 		const items = getCartItems();
-		body.innerHTML = "";
 
 		if (items.length === 0) {
 			body.innerHTML = `<p class="cart-drawer-empty">Your bag is empty.</p>`;
 		} else {
+			body.querySelector(".cart-drawer-empty")?.remove();
+
+			const currentIds = new Set(items.map((item) => item.product.id));
+			body.querySelectorAll<HTMLElement>("[data-item-row]").forEach((row) => {
+				if (!currentIds.has(row.dataset.itemRow ?? "")) row.remove();
+			});
+
 			items.forEach(({ product, quantity }) => {
-				const row = document.createElement("div");
-				row.className = "cart-drawer-item";
-				const image = imageMap[product.id];
-				row.innerHTML = `
-					<div class="cart-drawer-item-image">${image ? `<img src="${image}" alt="${product.name}">` : ""}</div>
-					<div class="cart-drawer-item-info">
-						<p class="cart-drawer-item-name">${product.name}</p>
-						<p class="cart-drawer-item-price">${formatPrice(product.priceInPence)}</p>
-					</div>
-					<div class="cart-drawer-item-qty">
-						<div class="qty-stepper">
-							<button type="button" class="qty-btn" data-qty-minus="${product.id}" aria-label="Decrease quantity of ${product.name}">−</button>
-							<span class="qty-value">${quantity}</span>
-							<button type="button" class="qty-btn" data-qty-plus="${product.id}" aria-label="Increase quantity of ${product.name}">+</button>
-						</div>
-						<button type="button" class="cart-drawer-item-remove" data-remove-id="${product.id}">Remove</button>
-					</div>
-				`;
-				body.appendChild(row);
+				let row = body.querySelector<HTMLElement>(`[data-item-row="${product.id}"]`);
+				if (!row) {
+					row = createRow(product.id, product.name, product.priceInPence);
+					body.appendChild(row);
+				}
+				const qtyValue = row.querySelector(".qty-value");
+				if (qtyValue) qtyValue.textContent = String(quantity);
 			});
 		}
 
 		subtotalEl.textContent = formatPrice(getCartSubtotalPence());
-
-		body.querySelectorAll<HTMLButtonElement>("[data-qty-minus]").forEach((button) => {
-			button.addEventListener("click", () => {
-				const id = button.dataset.qtyMinus;
-				if (!id) return;
-				const current = getCartItems().find((item) => item.product.id === id)?.quantity ?? 0;
-				setQuantity(id, current - 1);
-			});
-		});
-
-		body.querySelectorAll<HTMLButtonElement>("[data-qty-plus]").forEach((button) => {
-			button.addEventListener("click", () => {
-				const id = button.dataset.qtyPlus;
-				if (id) addToCart(id, 1);
-			});
-		});
-
-		body.querySelectorAll<HTMLButtonElement>("[data-remove-id]").forEach((button) => {
-			button.addEventListener("click", () => {
-				const id = button.dataset.removeId;
-				if (id) removeFromCart(id);
-			});
-		});
 	}
 
 	function openDrawer() {
