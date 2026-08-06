@@ -23,8 +23,8 @@ const items = products
 					<a href={`/shop/${item.id}`} class="discover-card-image-link">
 						<div class="discover-card-image">
 							{item.image && <Image src={item.image} alt={item.label} class="discover-card-photo" />}
-							<p class="discover-card-name">{item.label}</p>
 						</div>
+						<p class="discover-card-name">{item.label}</p>
 					</a>
 					<div class="discover-card-footer">
 						<p class="discover-card-price">{item.price}</p>
@@ -73,7 +73,9 @@ const items = products
 	}
 
 	.discover-card-image-link {
-		display: block;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
 		color: inherit;
 		text-decoration: none;
 	}
@@ -94,11 +96,8 @@ const items = products
 	}
 
 	.discover-card-name {
-		position: absolute;
-		left: 16px;
-		bottom: 16px;
-		max-width: calc(100% - 32px);
 		margin: 0;
+		text-align: center;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
 		font-weight: 500;
