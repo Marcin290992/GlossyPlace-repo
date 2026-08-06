@@ -87,6 +87,7 @@
 
 - **Core Web Vitals są priorytetem** — kod ma być lekki, czytelny, szybki.
 - Minimalizm wizualny — "premium minimal", nie przeładowany.
+- **Zero `border-radius` w całym UI (potwierdzone 2026-08-04)** — wszystkie elementy mają ostre rogi (karty, przyciski, zdjęcia, overlaye). Dotyczy to również sytuacji, gdy projekt w Figmie pokazuje zaokrąglone rogi (np. karty kategorii, karty produktów w "Discover Collection", karta z tekstem na bannerach kolekcji) — w takich przypadkach świadomie odstępujemy od Figmy na rzecz spójności z resztą strony. Przy implementacji nowych sekcji z Figmy najpierw usuwać `border-radius`/`rounded-*`, nie kopiować go z referencyjnego kodu.
 - Dostępność (a11y) na rozsądnym poziomie — to też wizytówka jakości w portfolio.
 - SEO: podstawy pod sklep i blog (meta tagi, sitemap, dane strukturalne produktów) — do rozwinięcia w osobnej sekcji, gdy ruszymy z implementacją.
 
