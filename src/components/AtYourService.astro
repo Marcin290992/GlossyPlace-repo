@@ -1,0 +1,96 @@
+---
+import { Image } from "astro:assets";
+import fastShippingIcon from "../images/icons/fast-shipping.png";
+import freeReturnsIcon from "../images/icons/free-returns.png";
+import giftBoxIcon from "../images/icons/gift-box.png";
+
+const services = [
+	{ icon: fastShippingIcon, label: "Fast Shipping" },
+	{ icon: freeReturnsIcon, label: "Free Returns Within 30 Days" },
+	{ icon: giftBoxIcon, label: "Complimentary Gift Box" },
+];
+---
+
+<section class="at-your-service">
+	<h2 class="at-your-service-title">At Your Service</h2>
+	<div class="service-row">
+		{
+			services.map((service) => (
+				<div class="service-item">
+					<Image src={service.icon} alt="" class="service-icon" width={48} height={48} />
+					<p class="service-label">{service.label}</p>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.at-your-service {
+		display: flex;
+		width: 100%;
+		padding: 80px 64px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 48px;
+	}
+
+	.at-your-service-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+		text-align: center;
+	}
+
+	.service-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 120px;
+		flex-wrap: wrap;
+	}
+
+	.service-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 20px;
+	}
+
+	.service-icon {
+		width: 48px;
+		height: 48px;
+	}
+
+	.service-label {
+		margin: 0;
+		max-width: 200px;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		letter-spacing: 0.5px;
+		text-align: center;
+	}
+
+	@media (max-width: 1024px) {
+		.at-your-service {
+			padding: 64px 24px;
+			gap: 32px;
+		}
+
+		.at-your-service-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+
+		.service-row {
+			gap: 40px;
+		}
+	}
+</style>
