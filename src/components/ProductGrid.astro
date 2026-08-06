@@ -70,6 +70,10 @@ const items = products
 		.cards-grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
+
+		.cards-grid :global(.card:nth-child(5)) {
+			display: none;
+		}
 	}
 </style>
 
