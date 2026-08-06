@@ -94,6 +94,6 @@
 ## 11. Otwarte pytania / do ustalenia później
 
 - Domena, dostępność brand assets (logo, kolory, fonty).
-- Newsletter / zbieranie maili.
+- ~~Newsletter / zbieranie maili~~ — **usługa: Sender.net (potwierdzone 2026-08-04)**. Formularz na stronie głównej jest już zbudowany (prawdziwy `<form>`, natywna walidacja email), ale konto/formularz w Sender jeszcze nie istnieje — `SENDER_FORM_ACTION` w `src/components/Newsletter.astro` czeka na realny action URL z panelu Sendera (Forms → embed).
 - Zdjęcia produktowe — czy są gotowe, czy trzeba zaplanować sesję.
 - Warianty produktów w przyszłości (obecnie: brak).
