@@ -1,0 +1,82 @@
+---
+import { products, type Product } from "../data/products";
+import { productImages } from "../data/productImages";
+import { formatPrice } from "../lib/format";
+import ProductCard from "./ProductCard.astro";
+
+interface Props {
+	title: string;
+	collection: Product["collection"];
+}
+
+const { title, collection } = Astro.props;
+
+const items = products
+	.filter((product) => product.collection === collection)
+	.map((product) => ({
+		id: product.id,
+		label: product.name,
+		image: productImages[product.id] ?? null,
+		price: formatPrice(product.priceInPence),
+	}));
+---
+
+<section class="product-grid-section" data-collection={collection}>
+	<h2 class="product-grid-title">{title}</h2>
+	<div class="cards-grid">
+		{items.map((item) => <ProductCard {...item} />)}
+	</div>
+</section>
+
+<style>
+	.product-grid-section {
+		display: flex;
+		width: 100%;
+		padding: 120px 64px 140px;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 32px;
+	}
+
+	.product-grid-title {
+		margin: 0;
+		color: #111;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.cards-grid {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		align-items: start;
+		align-self: stretch;
+		gap: 16px;
+	}
+
+	@media (max-width: 1024px) {
+		.product-grid-section {
+			padding: 64px 24px 80px;
+			gap: 20px;
+		}
+
+		.product-grid-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+
+		.cards-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+</style>
+
+<script>
+	import { initAddToBagButtons } from "../lib/cart";
+
+	document.querySelectorAll<HTMLElement>(".product-grid-section").forEach((section) => {
+		initAddToBagButtons(section);
+	});
+</script>

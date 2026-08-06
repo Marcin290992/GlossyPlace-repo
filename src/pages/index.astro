@@ -1,17 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
-import OurCollections from "../components/OurCollections.astro";
+import ProductGrid from "../components/ProductGrid.astro";
 import CollectionBanner from "../components/CollectionBanner.astro";
 import ShopByCategory from "../components/ShopByCategory.astro";
-import DiscoverCollection from "../components/DiscoverCollection.astro";
 
 const womensImageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w=2400&q=80&fm=jpg&fit=crop";
 ---
 
 <BaseLayout title="Glossy Place">
 	<Hero />
-	<OurCollections />
+	<ProductGrid title="Find Your Ritual" collection="our-collections" />
 	<CollectionBanner
 		title="Women's Collection"
 		href="/shop"
@@ -20,6 +19,6 @@ const womensImageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ec
 	/>
 	<ShopByCategory />
 	<CollectionBanner title="Men's Collection" href="/shop" />
-	<DiscoverCollection />
+	<ProductGrid title="Discover Collection" collection="discover-collection" />
 	<CollectionBanner title="Kids' Collection" href="/shop" />
 </BaseLayout>
