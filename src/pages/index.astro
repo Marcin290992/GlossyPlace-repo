@@ -4,6 +4,7 @@ import Hero from "../components/Hero.astro";
 import ProductGrid from "../components/ProductGrid.astro";
 import CollectionBanner from "../components/CollectionBanner.astro";
 import ShopByCategory from "../components/ShopByCategory.astro";
+import MoreToExplore from "../components/MoreToExplore.astro";
 
 const womensImageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w=2400&q=80&fm=jpg&fit=crop";
 ---
@@ -21,4 +22,5 @@ const womensImageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ec
 	<CollectionBanner title="Men's Collection" href="/shop" />
 	<ProductGrid title="Discover Collection" collection="discover-collection" />
 	<CollectionBanner title="Kids' Collection" href="/shop" />
+	<MoreToExplore />
 </BaseLayout>

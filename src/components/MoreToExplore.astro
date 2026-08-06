@@ -1,0 +1,105 @@
+---
+const cards = [
+	{ title: "Journal", linkLabel: "Read Now", href: "/journal" },
+	{ title: "Chakra Dictionary", linkLabel: "Explore", href: "/chakra-dictionary" },
+	{ title: "Stone Guide", linkLabel: "Learn More", href: "/stone-guide" },
+];
+---
+
+<section class="more-to-explore">
+	<h2 class="more-to-explore-title">More to Explore</h2>
+	<div class="explore-grid">
+		{
+			cards.map((card) => (
+				<a href={card.href} class="explore-card">
+					<div class="explore-card-image" />
+					<p class="explore-card-title">{card.title}</p>
+					<p class="explore-card-link">{card.linkLabel}</p>
+				</a>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.more-to-explore {
+		display: flex;
+		width: 100%;
+		padding: 120px 64px 80px;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 32px;
+	}
+
+	.more-to-explore-title {
+		margin: 0;
+		color: #111;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.explore-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 16px;
+		align-self: stretch;
+	}
+
+	.explore-card {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.explore-card-image {
+		aspect-ratio: 427 / 390;
+		background: #f4f0ea;
+	}
+
+	.explore-card-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 18px;
+		font-weight: 400;
+		text-transform: uppercase;
+	}
+
+	.explore-card-link {
+		margin: 0;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-weight: 600;
+		font-size: 11px;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		text-decoration: underline;
+	}
+
+	.explore-card:hover .explore-card-link,
+	.explore-card:focus-visible .explore-card-link {
+		opacity: 0.7;
+	}
+
+	@media (max-width: 1024px) {
+		.more-to-explore {
+			padding: 64px 24px 80px;
+			gap: 20px;
+		}
+
+		.more-to-explore-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+
+		.explore-grid {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+	}
+</style>
