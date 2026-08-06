@@ -1,0 +1,275 @@
+---
+import { Image } from "astro:assets";
+import facebookIcon from "../images/icons/facebook.svg";
+import instagramIcon from "../images/icons/instagram.svg";
+
+const shopLinks = [
+	{ label: "Bracelets", href: "/shop/bracelets" },
+	{ label: "Necklaces", href: "/shop/necklaces" },
+	{ label: "Rings", href: "/shop/rings" },
+	{ label: "Gift Sets", href: "/shop/gift-sets" },
+	{ label: "New Arrivals", href: "/shop/new-arrivals" },
+];
+
+const aboutLinks = [
+	{ label: "Our Story", href: "/about" },
+	{ label: "Journal", href: "/journal" },
+	{ label: "Stone Guide", href: "/stone-guide" },
+	{ label: "Chakra Dictionary", href: "/chakra-dictionary" },
+];
+
+const helpLinks = [
+	{ label: "Contact Us", href: "/contact" },
+	{ label: "Shipping & Returns", href: "/shipping-returns" },
+	{ label: "Size Guide", href: "/size-guide" },
+	{ label: "FAQ", href: "/faq" },
+];
+
+const legalLinks = [
+	{ label: "Privacy Policy", href: "/privacy" },
+	{ label: "Terms of Service", href: "/terms" },
+	{ label: "Cookie Policy", href: "/cookie-policy" },
+];
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="footer-top">
+		<div class="footer-brand">
+			<p class="footer-logo">GLOSSYPLACE</p>
+			<p class="footer-tagline">Handcrafted crystal jewelry for mindful living.</p>
+		</div>
+
+		<div class="footer-nav-columns">
+			<div class="footer-nav-column">
+				<p class="footer-nav-heading">Shop</p>
+				<ul class="footer-link-list">
+					{
+						shopLinks.map((link) => (
+							<li>
+								<a href={link.href}>{link.label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div class="footer-nav-column">
+				<p class="footer-nav-heading">About</p>
+				<ul class="footer-link-list">
+					{
+						aboutLinks.map((link) => (
+							<li>
+								<a href={link.href}>{link.label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div class="footer-nav-column">
+				<p class="footer-nav-heading">Help</p>
+				<ul class="footer-link-list">
+					{
+						helpLinks.map((link) => (
+							<li>
+								<a href={link.href}>{link.label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+
+		<div class="footer-find-us">
+			<p class="footer-find-us-title">Find us :</p>
+			<div class="footer-social-icons">
+				<!-- TODO: point at the real Facebook/Instagram profile URLs once the client provides them (PROJECT-RULES.md section 9). -->
+				<a href="#" class="footer-social-link" aria-label="Facebook">
+					<Image src={facebookIcon} alt="" width={28} height={28} />
+				</a>
+				<a href="#" class="footer-social-link" aria-label="Instagram">
+					<Image src={instagramIcon} alt="" width={28} height={28} />
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="footer-divider"></div>
+
+	<div class="footer-bottom">
+		<p class="footer-copyright">© {currentYear} GlossyPlace. All rights reserved.</p>
+		<ul class="footer-legal-links">
+			{
+				legalLinks.map((link) => (
+					<li>
+						<a href={link.href}>{link.label}</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		background: #111;
+	}
+
+	.footer-top {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 40px;
+		padding: 80px 64px 60px;
+	}
+
+	.footer-brand {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.footer-logo {
+		margin: 0;
+		color: #f4f0ea;
+		font-family: "Cormorant Garamond", serif;
+		font-weight: 500;
+		font-size: 24px;
+		letter-spacing: 6px;
+	}
+
+	.footer-tagline {
+		margin: 0;
+		color: #a6a199;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		line-height: 1.7;
+	}
+
+	.footer-nav-columns {
+		display: flex;
+		gap: 80px;
+		flex-wrap: wrap;
+	}
+
+	.footer-nav-column {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.footer-nav-heading {
+		margin: 0;
+		color: #f4f0ea;
+		font-family: "Manrope", sans-serif;
+		font-weight: 600;
+		font-size: 11px;
+		letter-spacing: 2.5px;
+		text-transform: uppercase;
+	}
+
+	.footer-link-list {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.footer-link-list a {
+		color: #a6a199;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		text-decoration: none;
+	}
+
+	.footer-link-list a:hover {
+		color: #f4f0ea;
+	}
+
+	.footer-find-us {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.footer-find-us-title {
+		margin: 0;
+		color: #f4f0ea;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 28px;
+		font-weight: 400;
+	}
+
+	.footer-social-icons {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+	}
+
+	.footer-social-link {
+		display: block;
+		width: 28px;
+		height: 28px;
+	}
+
+	.footer-social-link:hover {
+		opacity: 0.8;
+	}
+
+	.footer-divider {
+		height: 1px;
+		background: #333;
+	}
+
+	.footer-bottom {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		align-items: center;
+		justify-content: space-between;
+		padding: 24px 64px 32px;
+	}
+
+	.footer-copyright {
+		margin: 0;
+		color: #66615c;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+	}
+
+	.footer-legal-links {
+		display: flex;
+		gap: 32px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.footer-legal-links a {
+		color: #66615c;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		text-decoration: none;
+	}
+
+	.footer-legal-links a:hover {
+		color: #f4f0ea;
+	}
+
+	@media (max-width: 1024px) {
+		.footer-top {
+			padding: 64px 24px 40px;
+			gap: 32px;
+		}
+
+		.footer-nav-columns {
+			gap: 40px;
+		}
+
+		.footer-bottom {
+			padding: 20px 24px 24px;
+		}
+	}
+</style>
