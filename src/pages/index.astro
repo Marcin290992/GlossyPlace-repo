@@ -2,13 +2,21 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import OurCollections from "../components/OurCollections.astro";
-import WomensCollection from "../components/WomensCollection.astro";
+import CollectionBanner from "../components/CollectionBanner.astro";
 import ShopByCategory from "../components/ShopByCategory.astro";
+
+const womensImageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w=2400&q=80&fm=jpg&fit=crop";
 ---
 
 <BaseLayout title="Glossy Place">
 	<Hero />
 	<OurCollections />
-	<WomensCollection />
+	<CollectionBanner
+		title="Women's Collection"
+		href="/shop"
+		imageUrl={womensImageUrl}
+		imageAlt="Woman relaxing in silk loungewear wearing a Glossy Place bracelet"
+	/>
 	<ShopByCategory />
+	<CollectionBanner title="Men's Collection" href="/shop" />
 </BaseLayout>

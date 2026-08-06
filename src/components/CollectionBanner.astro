@@ -1,23 +1,30 @@
 ---
-// Placeholder photo from Unsplash — swap for real lifestyle photography once available.
-const imageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w=2400&q=80&fm=jpg&fit=crop";
+interface Props {
+	title: string;
+	href: string;
+	imageUrl?: string;
+	imageAlt?: string;
+}
+
+const { title, href, imageUrl, imageAlt = "" } = Astro.props;
 ---
 
-<section class="womens-collection">
-	<img
-		src={imageUrl}
-		alt="Woman relaxing in silk loungewear wearing a Glossy Place bracelet"
-		class="womens-collection-image"
-		loading="lazy"
-	/>
-	<div class="womens-collection-card">
-		<p class="womens-collection-title">Women's Collection</p>
-		<a href="/shop" class="womens-collection-link">Shop the Collection</a>
+<section class="collection-banner">
+	{
+		imageUrl ? (
+			<img src={imageUrl} alt={imageAlt} class="collection-banner-image" loading="lazy" />
+		) : (
+			<div class="collection-banner-image collection-banner-placeholder" />
+		)
+	}
+	<div class="collection-banner-card">
+		<p class="collection-banner-title">{title}</p>
+		<a href={href} class="collection-banner-link">Shop the Collection</a>
 	</div>
 </section>
 
 <style>
-	.womens-collection {
+	.collection-banner {
 		position: relative;
 		width: 100%;
 		height: 400px;
@@ -25,12 +32,12 @@ const imageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w
 	}
 
 	@media (min-width: 1025px) {
-		.womens-collection {
+		.collection-banner {
 			height: 500px;
 		}
 	}
 
-	.womens-collection-image {
+	.collection-banner-image {
 		position: absolute;
 		inset: 0;
 		width: 100%;
@@ -39,7 +46,11 @@ const imageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w
 		object-position: center 30%;
 	}
 
-	.womens-collection-card {
+	.collection-banner-placeholder {
+		background: #f4f0ea;
+	}
+
+	.collection-banner-card {
 		position: absolute;
 		left: 24px;
 		bottom: 24px;
@@ -57,7 +68,7 @@ const imageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w
 		-webkit-backdrop-filter: blur(4px);
 	}
 
-	.womens-collection-title {
+	.collection-banner-title {
 		margin: 0;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
@@ -68,12 +79,12 @@ const imageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w
 	}
 
 	@media (min-width: 1025px) {
-		.womens-collection-title {
+		.collection-banner-title {
 			font-size: 48px;
 		}
 	}
 
-	.womens-collection-link {
+	.collection-banner-link {
 		margin: 0;
 		color: #111827;
 		font-family: "Manrope", sans-serif;
@@ -84,8 +95,8 @@ const imageUrl = "https://images.unsplash.com/photo-1770294760762-1cd821ecc567?w
 		text-decoration: underline;
 	}
 
-	.womens-collection-link:hover,
-	.womens-collection-link:focus-visible {
+	.collection-banner-link:hover,
+	.collection-banner-link:focus-visible {
 		opacity: 0.7;
 	}
 </style>
