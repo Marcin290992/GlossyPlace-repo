@@ -58,8 +58,10 @@ body.no-scroll {
 	cursor: pointer;
 }
 
-.qty-btn:hover {
-	background: #f4f0ea;
+@media (hover: hover) {
+	.qty-btn:hover {
+		background: #f4f0ea;
+	}
 }
 
 .qty-value {

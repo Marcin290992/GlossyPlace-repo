@@ -195,8 +195,10 @@ const image = productImages[product.id] ?? null;
 		line-height: 1.5;
 	}
 
-	.cta-btn:hover:not(:disabled) {
-		opacity: 0.85;
+	@media (hover: hover) {
+		.cta-btn:hover:not(:disabled) {
+			opacity: 0.85;
+		}
 	}
 
 	.cta-btn[data-added="true"] {

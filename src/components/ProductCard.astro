@@ -99,9 +99,11 @@ const { id, label, image, price } = Astro.props;
 			border-color 0.2s ease;
 	}
 
-	.add-to-bag:hover {
-		background: #111827;
-		color: #fff;
+	@media (hover: hover) {
+		.add-to-bag:hover {
+			background: #111827;
+			color: #fff;
+		}
 	}
 
 	.add-to-bag[data-added="true"] {

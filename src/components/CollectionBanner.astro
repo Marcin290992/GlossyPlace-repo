@@ -94,8 +94,13 @@ const { title, href, imageUrl, imageAlt = "" } = Astro.props;
 		text-decoration: underline;
 	}
 
-	.collection-banner-link:hover,
 	.collection-banner-link:focus-visible {
 		opacity: 0.7;
+	}
+
+	@media (hover: hover) {
+		.collection-banner-link:hover {
+			opacity: 0.7;
+		}
 	}
 </style>
