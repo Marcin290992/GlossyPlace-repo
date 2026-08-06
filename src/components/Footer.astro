@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import facebookIcon from "../images/icons/facebook.svg";
 import instagramIcon from "../images/icons/instagram.svg";
+import logo from "../logo/Glossy Place logo.svg";
 
 const shopLinks = [
 	{ label: "Bracelets", href: "/shop/bracelets" },
@@ -37,7 +38,7 @@ const currentYear = new Date().getFullYear();
 <footer class="site-footer">
 	<div class="footer-top">
 		<div class="footer-brand">
-			<p class="footer-logo">GLOSSYPLACE</p>
+			<Image src={logo} alt="Glossy Place" width={144} height={144} format="webp" class="footer-logo" />
 			<p class="footer-tagline">Handcrafted crystal jewelry for mindful living.</p>
 		</div>
 
@@ -130,12 +131,10 @@ const currentYear = new Date().getFullYear();
 	}
 
 	.footer-logo {
-		margin: 0;
-		color: #f4f0ea;
-		font-family: "Cormorant Garamond", serif;
-		font-weight: 500;
-		font-size: 24px;
-		letter-spacing: 6px;
+		display: block;
+		width: 64px;
+		height: 64px;
+		filter: invert(1);
 	}
 
 	.footer-tagline {
@@ -184,10 +183,6 @@ const currentYear = new Date().getFullYear();
 		text-decoration: none;
 	}
 
-	.footer-link-list a:hover {
-		color: #f4f0ea;
-	}
-
 	.footer-find-us {
 		display: flex;
 		flex-direction: column;
@@ -212,10 +207,6 @@ const currentYear = new Date().getFullYear();
 		display: block;
 		width: 28px;
 		height: 28px;
-	}
-
-	.footer-social-link:hover {
-		opacity: 0.8;
 	}
 
 	.footer-divider {
@@ -254,8 +245,18 @@ const currentYear = new Date().getFullYear();
 		text-decoration: none;
 	}
 
-	.footer-legal-links a:hover {
-		color: #f4f0ea;
+	@media (hover: hover) {
+		.footer-link-list a:hover {
+			color: #f4f0ea;
+		}
+
+		.footer-social-link:hover {
+			opacity: 0.8;
+		}
+
+		.footer-legal-links a:hover {
+			color: #f4f0ea;
+		}
 	}
 
 	@media (max-width: 1024px) {
