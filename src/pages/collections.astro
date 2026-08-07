@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CollectionBanner from "../components/CollectionBanner.astro";
+import { womensImageUrl } from "../data/collectionImages";
+---
+
+<BaseLayout title="Collections — Glossy Place">
+	<main>
+		<CollectionBanner
+			title="Women's Collection"
+			href="/shop"
+			imageUrl={womensImageUrl}
+			imageAlt="Woman relaxing in silk loungewear wearing a Glossy Place bracelet"
+		/>
+		<CollectionBanner title="Men's Collection" href="/shop" />
+		<CollectionBanner title="Kids' Collection" href="/shop" />
+	</main>
+</BaseLayout>

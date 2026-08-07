@@ -1,0 +1,97 @@
+---
+import { products, type Product } from "../data/products";
+import { productImages } from "../data/productImages";
+import { formatPrice } from "../lib/format";
+import ProductCard from "./ProductCard.astro";
+
+interface Props {
+	title: string;
+	category?: Product["category"];
+}
+
+const { title, category } = Astro.props;
+
+const items = products
+	.filter((product) => !category || product.category === category)
+	.map((product) => ({
+		id: product.id,
+		label: product.name,
+		image: productImages[product.id] ?? null,
+		price: formatPrice(product.priceInPence),
+	}));
+---
+
+<section class="category-grid-section">
+	<h1 class="category-grid-title">{title}</h1>
+	{
+		items.length === 0 ? (
+			<p class="category-grid-empty">No products in this category yet.</p>
+		) : (
+			<div class="cards-grid">
+				{items.map((item) => (
+					<ProductCard {...item} />
+				))}
+			</div>
+		)
+	}
+</section>
+
+<style>
+	.category-grid-section {
+		display: flex;
+		width: 100%;
+		padding: 120px 64px 140px;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 32px;
+	}
+
+	.category-grid-title {
+		margin: 0;
+		color: #111;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.category-grid-empty {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+	}
+
+	.cards-grid {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		align-items: start;
+		align-self: stretch;
+		gap: 16px;
+	}
+
+	@media (max-width: 1024px) {
+		.category-grid-section {
+			padding: 64px 24px 80px;
+			gap: 20px;
+		}
+
+		.category-grid-title {
+			font-size: 26px;
+			letter-spacing: 2px;
+		}
+
+		.cards-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+</style>
+
+<script>
+	import { initAddToBagButtons } from "../lib/cart";
+
+	document.querySelectorAll<HTMLElement>(".category-grid-section").forEach((section) => {
+		initAddToBagButtons(section);
+	});
+</script>

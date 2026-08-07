@@ -1,0 +1,59 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+	title: string;
+	heading?: string;
+}
+
+const { title, heading = title } = Astro.props;
+---
+
+<BaseLayout title={`${title} — Glossy Place`}>
+	<main class="placeholder-page">
+		<h1 class="placeholder-title">{heading}</h1>
+		<p class="placeholder-message">This page is coming soon.</p>
+		<a href="/" class="placeholder-link">Back to homepage</a>
+	</main>
+</BaseLayout>
+
+<style>
+	.placeholder-page {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 16px;
+		min-height: 40vh;
+		padding: 120px 24px;
+		text-align: center;
+	}
+
+	.placeholder-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+		letter-spacing: 4px;
+		text-transform: uppercase;
+	}
+
+	.placeholder-message {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+	}
+
+	.placeholder-link {
+		margin-top: 8px;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		text-decoration: underline;
+	}
+</style>
