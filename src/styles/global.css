@@ -16,6 +16,11 @@ body {
 	padding: 0;
 }
 
+a,
+button {
+	-webkit-tap-highlight-color: transparent;
+}
+
 body {
 	min-height: 100vh;
 }
