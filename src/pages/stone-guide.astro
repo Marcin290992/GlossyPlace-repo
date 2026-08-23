@@ -201,7 +201,7 @@ const stoneData = stones.map((stone, index) => ({
 		height: calc(100vh - 111px - var(--guide-header-offset, 0px));
 		padding: 40px 24px 40px 64px;
 		display: flex;
-		align-items: stretch;
+		align-items: center;
 		/* Opaque so the padding around the image isn't a transparent gap
 		   the scrolling list can show through — only the wrapper had a
 		   background before, leaving this box's own padding see-through. */
@@ -210,14 +210,14 @@ const stoneData = stones.map((stone, index) => ({
 
 	.guide-preview-wrapper {
 		position: relative;
-		/* Fill the pane exactly rather than fitting a fixed 4:3 box inside
-		   it — a fixed ratio always leaves blank space on one axis at
-		   some screen size (too tall on wide/short screens, too small on
-		   narrower ones). Filling both dimensions and letting the img's
-		   object-fit: cover handle the crop keeps the photo edge-to-edge
-		   at every size. */
-		width: 100%;
-		height: 100%;
+		/* Keep a true 4:3 box — the surrounding whitespace when the pane's
+		   own proportions don't match 4:3 is intentional, not a bug (it's
+		   what makes it look right at the wide reference size). Compute
+		   the width directly so the ratio holds exactly rather than
+		   relying on max-height to clamp it, which can leave the box
+		   wider than 4:3 once squeezed instead of shrinking it whole. */
+		width: min(100%, calc((100vh - 111px - var(--guide-header-offset, 0px)) * 4 / 3));
+		aspect-ratio: 4 / 3;
 		overflow: hidden;
 		background: #f4f0ea;
 	}
@@ -391,6 +391,12 @@ const stoneData = stones.map((stone, index) => ({
 			width: 100%;
 			height: 45vh;
 			padding: 16px 24px;
+		}
+
+		.guide-preview-wrapper {
+			width: 100%;
+			height: 100%;
+			aspect-ratio: auto;
 		}
 
 		.guide-letter-marker {
