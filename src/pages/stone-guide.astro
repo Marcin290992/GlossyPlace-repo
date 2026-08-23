@@ -1,5 +1,603 @@
 ---
-import PlaceholderPage from "../layouts/PlaceholderPage.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { stones } from "../data/stones";
+
+const placeholderImages = [
+	"/images/about/placeholder-craft.svg",
+	"/images/about/placeholder-lifestyle.svg",
+	"/images/about/placeholder-detail.svg",
+];
+
+type ListEntry = { type: "marker"; letter: string } | { type: "item"; index: number; name: string; symbol: string; meaning: string[] };
+
+const listEntries: ListEntry[] = [];
+const seenLetters = new Set<string>();
+
+stones.forEach((stone, index) => {
+	const letter = stone.name[0]?.toUpperCase() ?? "";
+	if (!seenLetters.has(letter)) {
+		seenLetters.add(letter);
+		listEntries.push({ type: "marker", letter });
+	}
+	listEntries.push({ type: "item", index, name: stone.name, symbol: stone.symbol, meaning: stone.meaning });
+});
+
+const availableLetters = [...seenLetters];
+
+const stoneData = stones.map((stone, index) => ({
+	...stone,
+	image: stone.image ?? placeholderImages[index % placeholderImages.length],
+}));
 ---
 
-<PlaceholderPage title="Gemstone Guide" />
+<BaseLayout title="Gemstone Guide — Glossy Place">
+	<main class="guide">
+		<section class="guide-intro">
+			<p class="guide-eyebrow">Gemstone Guide</p>
+			<h1 class="guide-title">The Meaning Behind Every Stone</h1>
+			<p class="guide-lead">
+				Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
+				stone to see it up close.
+			</p>
+		</section>
+
+		<nav class="guide-az-nav" aria-label="Jump to letter">
+			{
+				availableLetters.map((letter) => (
+					<a href={`#guide-letter-${letter}`} class="guide-az-link">
+						{letter}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="guide-layout">
+			<div class="guide-preview-pane">
+				<div class="guide-preview-wrapper" id="guide-preview"></div>
+			</div>
+
+			<ul class="guide-list" id="guide-list">
+				{
+					listEntries.map((entry) =>
+						entry.type === "marker" ? (
+							<li class="guide-letter-marker" id={`guide-letter-${entry.letter}`} aria-hidden="true">
+								{entry.letter}
+							</li>
+						) : (
+							<li>
+								<button type="button" class="guide-item" data-index={entry.index}>
+									<span class="guide-item-indicator" aria-hidden="true">
+										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M5 12h14M12 5l7 7-7 7" />
+										</svg>
+									</span>
+									<span class="guide-item-name">{entry.name}</span>
+									<span class="guide-item-desc">{entry.symbol}</span>
+									<span class="guide-item-tags">
+										{entry.meaning.map((tag) => (
+											<span class="guide-tag">{tag}</span>
+										))}
+									</span>
+								</button>
+							</li>
+						)
+					)
+				}
+			</ul>
+		</div>
+	</main>
+
+	<div id="guide-modal-backdrop" class="guide-modal-backdrop"></div>
+	<div id="guide-modal" class="guide-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="guide-modal-name">
+		<button type="button" id="guide-modal-close" class="guide-modal-close" aria-label="Close">✕</button>
+		<div class="guide-modal-image" id="guide-modal-image"></div>
+		<div class="guide-modal-body">
+			<p class="guide-modal-name" id="guide-modal-name"></p>
+			<p class="guide-modal-symbol" id="guide-modal-symbol"></p>
+			<div class="guide-modal-tags" id="guide-modal-tags"></div>
+		</div>
+	</div>
+
+	<div id="guide-stone-data" data-stones={JSON.stringify(stoneData)} hidden></div>
+</BaseLayout>
+
+<style>
+	.guide {
+		background: #fff;
+	}
+
+	.guide-intro {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		max-width: 720px;
+		padding: 120px 64px 0;
+	}
+
+	.guide-eyebrow {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+	}
+
+	.guide-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 42px;
+		font-weight: 400;
+		letter-spacing: 1px;
+	}
+
+	.guide-lead {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 15px;
+		line-height: 1.7;
+	}
+
+	.guide-az-nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		padding: 32px 64px;
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.guide-az-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		text-decoration: none;
+	}
+
+	@media (hover: hover) {
+		.guide-az-link:hover {
+			color: #111827;
+		}
+	}
+
+	.guide-layout {
+		display: flex;
+		align-items: flex-start;
+	}
+
+	.guide-preview-pane {
+		position: sticky;
+		top: 111px;
+		width: 40%;
+		height: calc(100vh - 111px);
+		padding: 40px 24px 40px 64px;
+		display: flex;
+		align-items: center;
+	}
+
+	.guide-preview-wrapper {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: #f4f0ea;
+	}
+
+	.guide-list {
+		margin: 0;
+		width: 60%;
+		list-style: none;
+		padding: 8px 64px 120px 24px;
+	}
+
+	.guide-letter-marker {
+		padding: 24px 0 8px;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		scroll-margin-top: 140px;
+	}
+
+	.guide-item {
+		display: flex;
+		align-items: center;
+		gap: 24px;
+		width: 100%;
+		padding: 20px 0;
+		border: none;
+		border-bottom: 1px solid #e5e7eb;
+		background: none;
+		cursor: pointer;
+		text-align: left;
+		transition:
+			opacity 0.3s ease,
+			padding-left 0.3s ease,
+			border-color 0.3s ease;
+	}
+
+	.guide-item-indicator {
+		display: none;
+		flex-shrink: 0;
+		color: #b8a68a;
+	}
+
+	.guide-item-name {
+		flex: 1;
+		min-width: 160px;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 20px;
+		font-weight: 400;
+	}
+
+	.guide-item-desc {
+		flex: 1;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+	}
+
+	.guide-item-tags {
+		display: flex;
+		flex: 1.4;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.guide-tag {
+		padding: 4px 10px;
+		border: 1px solid #e5e7eb;
+		border-radius: 20px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 10px;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+	}
+
+	@media (min-width: 901px) {
+		.guide-list:hover .guide-item {
+			opacity: 0.35;
+		}
+
+		.guide-list .guide-item:hover {
+			opacity: 1;
+			padding-left: 12px;
+			border-color: #111827;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.guide-intro {
+			padding: 100px 24px 0;
+		}
+
+		.guide-title {
+			font-size: 30px;
+		}
+
+		.guide-az-nav {
+			padding: 24px;
+		}
+
+		.guide-layout {
+			flex-direction: column;
+		}
+
+		.guide-preview-pane {
+			width: 100%;
+			height: 45vh;
+			padding: 16px 24px;
+		}
+
+		.guide-preview-wrapper {
+			height: 100%;
+			aspect-ratio: auto;
+		}
+
+		.guide-list {
+			width: 100%;
+			padding: 8px 24px 100px 48px;
+		}
+
+		.guide-item {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 10px;
+			opacity: 0.4;
+			position: relative;
+			transition: opacity 0.3s ease;
+		}
+
+		.guide-item.active {
+			opacity: 1;
+		}
+
+		.guide-item-indicator {
+			display: block;
+			position: absolute;
+			left: -32px;
+			top: 24px;
+			opacity: 0;
+			transform: translateX(-8px);
+			transition: all 0.3s ease;
+		}
+
+		.guide-item.active .guide-item-indicator {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+</style>
+
+<style is:global>
+	.guide-preview-wrapper img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		will-change: transform, clip-path;
+	}
+
+	.guide-modal-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 900;
+		background: rgba(17, 24, 39, 0.5);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.25s ease;
+	}
+
+	.guide-modal-backdrop.open {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.guide-modal {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		z-index: 901;
+		width: calc(100% - 48px);
+		max-width: 480px;
+		max-height: 85vh;
+		overflow-y: auto;
+		background: #fff;
+		transform: translate(-50%, -50%) scale(0.96);
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			opacity 0.25s ease,
+			transform 0.25s ease;
+	}
+
+	.guide-modal.open {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+		pointer-events: auto;
+	}
+
+	.guide-modal-close {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+		z-index: 1;
+		width: 32px;
+		height: 32px;
+		border: none;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.85);
+		color: #111827;
+		font-size: 14px;
+		cursor: pointer;
+	}
+
+	.guide-modal-image {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		background: #f4f0ea;
+	}
+
+	.guide-modal-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.guide-modal-body {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 28px 28px 32px;
+	}
+
+	.guide-modal-name {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 28px;
+		font-weight: 400;
+	}
+
+	.guide-modal-symbol {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.guide-modal-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-top: 8px;
+	}
+
+	.guide-modal-tags .guide-tag {
+		font-size: 11px;
+	}
+</style>
+
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	type StoneRecord = { name: string; symbol: string; meaning: string[]; image: string };
+
+	const dataEl = document.getElementById("guide-stone-data");
+	const stoneData: StoneRecord[] = dataEl ? JSON.parse(dataEl.dataset.stones || "[]") : [];
+
+	const previewContainer = document.getElementById("guide-preview");
+	const items = document.querySelectorAll<HTMLButtonElement>(".guide-item");
+
+	const images: HTMLImageElement[] = [];
+	let currentIndex = -1;
+
+	if (previewContainer) {
+		stoneData.forEach((stone) => {
+			const img = document.createElement("img");
+			img.src = stone.image;
+			img.alt = "";
+			previewContainer.appendChild(img);
+			images.push(img);
+		});
+
+		if (images[0]) {
+			gsap.set(images[0], { clipPath: "inset(0% 0% 0% 0%)", scale: 1, opacity: 0.6 });
+			currentIndex = 0;
+		}
+	}
+
+	function showImage(index: number) {
+		const nextImg = images[index];
+		if (!nextImg || index === currentIndex) return;
+
+		const prevImg = currentIndex !== -1 ? images[currentIndex] : null;
+		const direction = currentIndex === -1 || index > currentIndex ? 1 : -1;
+
+		gsap.set(nextImg, { zIndex: 2 });
+		if (prevImg) gsap.set(prevImg, { zIndex: 1 });
+
+		const startClip = direction === 1 ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)";
+
+		gsap.fromTo(
+			nextImg,
+			{ clipPath: startClip, scale: 1.08, opacity: 1 },
+			{ clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 0.6, ease: "power3.out", overwrite: "auto" }
+		);
+
+		if (prevImg && prevImg !== nextImg) {
+			gsap.to(prevImg, {
+				scale: 0.97,
+				opacity: 0,
+				duration: 0.6,
+				ease: "power3.out",
+				overwrite: "auto",
+			});
+		}
+
+		currentIndex = index;
+	}
+
+	const mm = gsap.matchMedia();
+
+	mm.add("(min-width: 901px)", () => {
+		items.forEach((item) => item.classList.remove("active"));
+
+		const listeners: Array<() => void> = [];
+		items.forEach((item) => {
+			const index = Number(item.dataset.index);
+			const onEnter = () => showImage(index);
+			item.addEventListener("mouseenter", onEnter);
+			listeners.push(() => item.removeEventListener("mouseenter", onEnter));
+		});
+
+		return () => listeners.forEach((cleanup) => cleanup());
+	});
+
+	mm.add("(max-width: 900px)", () => {
+		items[0]?.classList.add("active");
+
+		const triggers = Array.from(items).map((item) => {
+			const index = Number(item.dataset.index);
+			return ScrollTrigger.create({
+				trigger: item,
+				start: "top 65%",
+				end: "bottom 65%",
+				onEnter: () => activate(index, item),
+				onEnterBack: () => activate(index, item),
+			});
+		});
+
+		function activate(index: number, item: HTMLButtonElement) {
+			showImage(index);
+			items.forEach((el) => el.classList.remove("active"));
+			item.classList.add("active");
+		}
+
+		return () => triggers.forEach((trigger) => trigger.kill());
+	});
+
+	// --- Modal ---
+	const modal = document.getElementById("guide-modal");
+	const modalBackdrop = document.getElementById("guide-modal-backdrop");
+	const modalClose = document.getElementById("guide-modal-close");
+	const modalImage = document.getElementById("guide-modal-image");
+	const modalName = document.getElementById("guide-modal-name");
+	const modalSymbol = document.getElementById("guide-modal-symbol");
+	const modalTags = document.getElementById("guide-modal-tags");
+
+	function openModal(index: number) {
+		const stone = stoneData[index];
+		if (!stone || !modal || !modalBackdrop || !modalImage || !modalName || !modalSymbol || !modalTags) return;
+
+		modalImage.innerHTML = `<img src="${stone.image}" alt="${stone.name}">`;
+		modalName.textContent = stone.name;
+		modalSymbol.textContent = stone.symbol;
+		modalTags.innerHTML = stone.meaning.map((tag) => `<span class="guide-tag">${tag}</span>`).join("");
+
+		modal.classList.add("open");
+		modalBackdrop.classList.add("open");
+		modal.setAttribute("aria-hidden", "false");
+		document.body.classList.add("no-scroll");
+	}
+
+	function closeModal() {
+		modal?.classList.remove("open");
+		modalBackdrop?.classList.remove("open");
+		modal?.setAttribute("aria-hidden", "true");
+		document.body.classList.remove("no-scroll");
+	}
+
+	items.forEach((item) => {
+		item.addEventListener("click", () => openModal(Number(item.dataset.index)));
+	});
+
+	modalClose?.addEventListener("click", closeModal);
+	modalBackdrop?.addEventListener("click", closeModal);
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") closeModal();
+	});
+</script>
