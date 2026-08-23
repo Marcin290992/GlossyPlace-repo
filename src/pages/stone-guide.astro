@@ -455,12 +455,21 @@ const stoneData = stones.map((stone, index) => ({
 		   sticky pane it inherits the exact same sticky behaviour, so it
 		   sits right below the photo whether the pane is stuck or still
 		   in normal flow, and is simply always there, no show/hide logic
-		   needed. */
+		   needed.
+
+		   Its vertical offset is solved so that, once the pane is stuck
+		   (top: 111px, height: 45vh), the indicator's center lands exactly
+		   on the viewport's 65%-down line — the same "top 65%" threshold
+		   the ScrollTrigger below uses to decide which stone is active.
+		   That's what makes the arrow actually point at the row that's
+		   really about to activate, instead of an unrelated fixed spot.
+		   bottom = -(65vh − (111px + 45vh) + half the icon's height)
+		          = -(20vh − 111px + 14px) = calc(97px - 20vh) */
 		.guide-active-indicator {
 			display: flex;
 			position: absolute;
 			left: 0;
-			bottom: -148px;
+			bottom: calc(97px - 20vh);
 			z-index: 5;
 			align-items: center;
 			justify-content: center;
