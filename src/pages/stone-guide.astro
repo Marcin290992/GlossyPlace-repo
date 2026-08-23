@@ -55,26 +55,27 @@ const stoneData = stones.map((stone, index) => ({
 			</div>
 
 			<div class="guide-layout">
-			<div class="guide-preview-pane">
-				<div class="guide-preview-wrapper" id="guide-preview"></div>
-			</div>
+				<div class="guide-preview-pane">
+					<div class="guide-preview-wrapper" id="guide-preview">
+						<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M9 6l6 6-6 6" />
+							</svg>
+						</span>
+					</div>
+				</div>
 
-			<ul class="guide-list" id="guide-list">
-				{
-					listEntries.map((entry) =>
-						entry.type === "marker" ? (
-							<li class="guide-letter-marker" id={`guide-letter-${entry.letter}`} aria-hidden="true">
-								{entry.letter}
-							</li>
-						) : (
-							<li>
-								<button type="button" class="guide-item" data-index={entry.index}>
-									<span class="guide-item-indicator" aria-hidden="true">
-										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-											<path d="M9 6l6 6-6 6" />
-										</svg>
-									</span>
-									<span class="guide-item-name">{entry.name}</span>
+				<ul class="guide-list" id="guide-list">
+					{
+						listEntries.map((entry) =>
+							entry.type === "marker" ? (
+								<li class="guide-letter-marker" id={`guide-letter-${entry.letter}`} aria-hidden="true">
+									{entry.letter}
+								</li>
+							) : (
+								<li>
+									<button type="button" class="guide-item" data-index={entry.index}>
+										<span class="guide-item-name">{entry.name}</span>
 									<span class="guide-item-desc">{entry.symbol}</span>
 									<span class="guide-item-tags">
 										{entry.meaning.map((tag) => (
@@ -303,10 +304,8 @@ const stoneData = stones.map((stone, index) => ({
 			border-color 0.3s ease;
 	}
 
-	.guide-item-indicator {
+	.guide-active-indicator {
 		display: none;
-		flex-shrink: 0;
-		color: #b8a68a;
 	}
 
 	.guide-item-name {
@@ -421,16 +420,27 @@ const stoneData = stones.map((stone, index) => ({
 			opacity: 1;
 		}
 
-		.guide-item-indicator {
-			display: block;
+		/* A single fixed indicator on the pinned photo itself, rather than
+		   one per row — it never moves, it just lights up once scrolling
+		   has picked out a stone to show. */
+		.guide-active-indicator {
+			display: flex;
 			position: absolute;
-			left: -28px;
-			top: 24px;
+			left: 12px;
+			bottom: 12px;
+			z-index: 3;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.85);
+			color: #b8a68a;
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
 
-		.guide-item.active .guide-item-indicator {
+		.guide-active-indicator.visible {
 			opacity: 1;
 		}
 	}
@@ -576,6 +586,7 @@ const stoneData = stones.map((stone, index) => ({
 	const stoneData: StoneRecord[] = dataEl ? JSON.parse(dataEl.dataset.stones || "[]") : [];
 
 	const previewContainer = document.getElementById("guide-preview");
+	const activeIndicator = document.getElementById("guide-active-indicator");
 	const items = document.querySelectorAll<HTMLButtonElement>(".guide-item");
 
 	const images: HTMLImageElement[] = [];
@@ -666,6 +677,7 @@ const stoneData = stones.map((stone, index) => ({
 
 	mm.add("(max-width: 900px)", () => {
 		items[0]?.classList.add("active");
+		activeIndicator?.classList.add("visible");
 
 		const triggers = Array.from(items).map((item) => {
 			const index = Number(item.dataset.index);
@@ -684,7 +696,10 @@ const stoneData = stones.map((stone, index) => ({
 			item.classList.add("active");
 		}
 
-		return () => triggers.forEach((trigger) => trigger.kill());
+		return () => {
+			triggers.forEach((trigger) => trigger.kill());
+			activeIndicator?.classList.remove("visible");
+		};
 	});
 
 	// --- Modal ---
