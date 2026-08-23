@@ -94,11 +94,11 @@ const details = [
 		}
 
 		<section class="workshops-steps">
-			<h2 class="workshops-steps-title">How It Works</h2>
+			<h2 class="workshops-steps-title workshops-fade-item">How It Works</h2>
 			<div class="workshops-steps-grid">
 				{
 					steps.map((step) => (
-						<div class="workshops-step">
+						<div class="workshops-step workshops-fade-item">
 							<p class="workshops-step-title">{step.title}</p>
 							<p class="workshops-step-description">{step.description}</p>
 						</div>
@@ -108,18 +108,18 @@ const details = [
 		</section>
 
 		<section class="workshops-details">
-			<h2 class="workshops-details-title">What to Expect</h2>
+			<h2 class="workshops-details-title workshops-fade-item">What to Expect</h2>
 			<div class="workshops-details-grid">
 				{
 					details.map((detail) => (
-						<div class="workshops-detail-item">
+						<div class="workshops-detail-item workshops-fade-item">
 							<p class="workshops-detail-label">{detail.label}</p>
 							<p class="workshops-detail-value">{detail.value}</p>
 						</div>
 					))
 				}
 			</div>
-			<a href="/contact" class="workshops-cta">
+			<a href="/contact" class="workshops-cta workshops-fade-item">
 				Get in Touch to Book
 			</a>
 		</section>
@@ -518,6 +518,37 @@ const details = [
 				stagger: type === "letters" ? 0.02 : 0.08,
 			},
 			photoWrapper ? 0.15 : 0
+		);
+	});
+
+	// A lighter, non-blur reveal for the practical sections below the
+	// scroll statements (How It Works / What to Expect) — these are
+	// read for information, not felt as a moment, so the animation
+	// stays quiet: a gentle fade and rise, staggered per item.
+	document.querySelectorAll<HTMLElement>(".workshops-steps, .workshops-details").forEach((group) => {
+		const fadeItems = group.querySelectorAll<HTMLElement>(".workshops-fade-item");
+		if (!fadeItems.length) return;
+
+		if (reduceMotion) {
+			gsap.set(fadeItems, { opacity: 1, y: 0 });
+			return;
+		}
+
+		gsap.fromTo(
+			fadeItems,
+			{ opacity: 0, y: 24 },
+			{
+				opacity: 1,
+				y: 0,
+				duration: 0.6,
+				ease: "power2.out",
+				stagger: 0.1,
+				scrollTrigger: {
+					trigger: group,
+					start: "top 85%",
+					toggleActions: "play none none reverse",
+				},
+			}
 		);
 	});
 </script>
