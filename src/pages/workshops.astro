@@ -1,5 +1,480 @@
 ---
-import PlaceholderPage from "../layouts/PlaceholderPage.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+type Statement = {
+	text: string;
+	type: "words" | "letters";
+	dir: "up" | "down" | "left" | "right";
+	blur: number;
+	align: "center" | "left" | "right";
+	photo?: string;
+};
+
+const placeholderImages = [
+	"/images/about/placeholder-craft.svg",
+	"/images/about/placeholder-lifestyle.svg",
+];
+
+const statements: Statement[] = [
+	{ text: "Learn to create jewellery with your own hands.", type: "words", dir: "up", blur: 10, align: "center" },
+	{
+		text: "Choose your stones, shape your story, take home something truly yours.",
+		type: "letters",
+		dir: "up",
+		blur: 4,
+		align: "left",
+		photo: placeholderImages[0],
+	},
+	{
+		text: "A hands-on experience in a warm, welcoming space.",
+		type: "words",
+		dir: "right",
+		blur: 0,
+		align: "right",
+		photo: placeholderImages[1],
+	},
+	{ text: "Come craft something meaningful, just for you.", type: "words", dir: "down", blur: 0, align: "center" },
+];
+
+const steps = [
+	{
+		number: "01",
+		title: "Choose Your Stones",
+		description: "Browse a curated selection of natural gemstones and pick the ones that speak to you.",
+	},
+	{
+		number: "02",
+		title: "Learn & Create",
+		description: "With hands-on guidance, learn simple techniques and design your own piece of jewellery.",
+	},
+	{
+		number: "03",
+		title: "Take It Home",
+		description: "Leave with a finished piece made entirely by you — and the skills to make more.",
+	},
+];
+
+const details = [
+	{ label: "Duration", value: "Details coming soon" },
+	{ label: "Location", value: "Details coming soon" },
+	{ label: "Group Size", value: "Details coming soon" },
+	{ label: "Price", value: "Details coming soon" },
+];
 ---
 
-<PlaceholderPage title="Workshops" />
+<BaseLayout title="Workshops — Glossy Place">
+	<main class="workshops">
+		<section class="workshops-hero">
+			<p class="workshops-eyebrow">Workshops</p>
+			<h1 class="workshops-title">Scroll Down</h1>
+		</section>
+
+		{
+			statements.map((statement) => (
+				<section
+					class={`workshops-section workshops-align-${statement.align}${statement.photo ? " workshops-has-photo" : ""}`}
+				>
+					<div
+						class="workshops-animate-text"
+						data-type={statement.type}
+						data-dir={statement.dir}
+						data-blur={statement.blur}
+					>
+						{statement.text}
+					</div>
+					{statement.photo && (
+						<div class="workshops-photo">
+							<img src={statement.photo} alt="" />
+						</div>
+					)}
+				</section>
+			))
+		}
+
+		<section class="workshops-steps">
+			<h2 class="workshops-steps-title">How It Works</h2>
+			<div class="workshops-steps-grid">
+				{
+					steps.map((step) => (
+						<div class="workshops-step">
+							<p class="workshops-step-number">{step.number}</p>
+							<p class="workshops-step-title">{step.title}</p>
+							<p class="workshops-step-description">{step.description}</p>
+						</div>
+					))
+				}
+			</div>
+		</section>
+
+		<section class="workshops-details">
+			<h2 class="workshops-details-title">What to Expect</h2>
+			<div class="workshops-details-grid">
+				{
+					details.map((detail) => (
+						<div class="workshops-detail-item">
+							<p class="workshops-detail-label">{detail.label}</p>
+							<p class="workshops-detail-value">{detail.value}</p>
+						</div>
+					))
+				}
+			</div>
+			<a href="/contact" class="workshops-cta">
+				Get in Touch to Book
+			</a>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	.workshops {
+		background: #fff;
+	}
+
+	.workshops-hero {
+		display: grid;
+		place-content: center;
+		min-height: 60vh;
+		padding: 120px 24px;
+		text-align: center;
+		gap: 16px;
+	}
+
+	.workshops-eyebrow {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+	}
+
+	.workshops-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: clamp(32px, 6vw, 56px);
+		font-weight: 400;
+	}
+
+	.workshops-section {
+		display: flex;
+		min-height: 60vh;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 40px;
+		padding: 80px 24px;
+	}
+
+	.workshops-align-center {
+		align-items: center;
+		text-align: center;
+	}
+
+	.workshops-align-left {
+		align-items: flex-start;
+		text-align: left;
+	}
+
+	.workshops-align-right {
+		align-items: flex-end;
+		text-align: right;
+	}
+
+	@media (min-width: 640px) {
+		.workshops-section {
+			padding: 100px 64px;
+		}
+	}
+
+	@media (min-width: 900px) {
+		.workshops-has-photo {
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			gap: 64px;
+		}
+
+		.workshops-align-right.workshops-has-photo {
+			flex-direction: row-reverse;
+		}
+
+		.workshops-has-photo .workshops-animate-text {
+			flex: 1;
+			max-width: 460px;
+		}
+	}
+
+	.workshops-photo {
+		width: 100%;
+		max-width: 460px;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: #f4f0ea;
+	}
+
+	@media (min-width: 900px) {
+		.workshops-photo {
+			flex: 1;
+		}
+	}
+
+	.workshops-steps {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 48px;
+		padding: 100px 24px;
+		text-align: center;
+		border-top: 1px solid #e5e7eb;
+	}
+
+	.workshops-steps-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 32px;
+		font-weight: 400;
+		letter-spacing: 1px;
+	}
+
+	.workshops-steps-grid {
+		display: grid;
+		width: 100%;
+		max-width: 960px;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 40px;
+	}
+
+	.workshops-step {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.workshops-step-number {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 32px;
+		font-weight: 400;
+	}
+
+	.workshops-step-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.workshops-step-description {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		line-height: 1.6;
+	}
+
+	@media (max-width: 900px) {
+		.workshops-steps-grid {
+			grid-template-columns: 1fr;
+			gap: 32px;
+		}
+	}
+
+	.workshops-details {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 40px;
+		padding: 100px 24px 140px;
+		text-align: center;
+		border-top: 1px solid #e5e7eb;
+	}
+
+	.workshops-details-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 32px;
+		font-weight: 400;
+		letter-spacing: 1px;
+	}
+
+	.workshops-details-grid {
+		display: grid;
+		width: 100%;
+		max-width: 720px;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 32px;
+	}
+
+	.workshops-detail-item {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.workshops-detail-label {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	}
+
+	.workshops-detail-value {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+	}
+
+	.workshops-cta {
+		padding: 16px 40px;
+		border: 1px solid #111827;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		text-decoration: none;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	@media (hover: hover) {
+		.workshops-cta:hover {
+			background: #fff;
+			color: #111827;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.workshops-details-grid {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+	}
+</style>
+
+<style is:global>
+	.workshops-animate-text {
+		max-width: 800px;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: clamp(28px, 6vw, 56px);
+		font-weight: 400;
+		line-height: 1.2;
+	}
+
+	.workshops-photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		opacity: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.workshops-animate-text span,
+		.workshops-photo img {
+			transition: none !important;
+		}
+	}
+</style>
+
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	type Direction = "up" | "down" | "left" | "right";
+	type SplitType = "words" | "letters";
+
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	const containers = document.querySelectorAll<HTMLElement>(".workshops-animate-text");
+
+	containers.forEach((el) => {
+		const text = el.textContent?.trim() ?? "";
+		const type = (el.dataset.type as SplitType) || "words";
+		const dir = (el.dataset.dir as Direction) || "up";
+		const blurAmount = Number(el.dataset.blur || "0");
+		const photoImg = el.closest(".workshops-section")?.querySelector<HTMLImageElement>(".workshops-photo img");
+
+		el.setAttribute("aria-label", text);
+		el.innerHTML = "";
+
+		if (type === "letters") {
+			text.split("").forEach((char) => {
+				const span = document.createElement("span");
+				span.style.display = "inline-block";
+				span.innerHTML = char === " " ? "&nbsp;" : char;
+				el.appendChild(span);
+			});
+		} else {
+			text.split(" ").forEach((word) => {
+				const span = document.createElement("span");
+				span.style.display = "inline-block";
+				span.innerHTML = `${word}&nbsp;`;
+				el.appendChild(span);
+			});
+		}
+
+		if (reduceMotion) {
+			gsap.set(el.children, { opacity: 1, x: 0, y: 0, filter: "none" });
+			if (photoImg) gsap.set(photoImg, { opacity: 1, scale: 1 });
+			return;
+		}
+
+		const from: Record<string, number | string> = { opacity: 0 };
+		if (dir === "up") from.y = 40;
+		if (dir === "down") from.y = -40;
+		if (dir === "left") from.x = 40;
+		if (dir === "right") from.x = -40;
+		if (blurAmount > 0) from.filter = `blur(${blurAmount}px)`;
+
+		gsap.fromTo(el.children, from, {
+			opacity: 1,
+			x: 0,
+			y: 0,
+			filter: "blur(0px)",
+			duration: 0.6,
+			ease: "power3.out",
+			stagger: type === "letters" ? 0.02 : 0.08,
+			scrollTrigger: {
+				trigger: el,
+				start: "top 85%",
+				toggleActions: "play none none reverse",
+			},
+		});
+
+		if (photoImg) {
+			gsap.fromTo(
+				photoImg,
+				{ opacity: 0, scale: 1.08 },
+				{
+					opacity: 1,
+					scale: 1,
+					duration: 0.8,
+					ease: "power3.out",
+					scrollTrigger: {
+						trigger: el,
+						start: "top 85%",
+						toggleActions: "play none none reverse",
+					},
+				}
+			);
+		}
+	});
+</script>
