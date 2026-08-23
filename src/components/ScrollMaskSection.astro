@@ -94,6 +94,14 @@ const {
 	.scroll-mask {
 		position: relative;
 		width: 100%;
+		min-height: 100vh;
+	}
+
+	/* Before the script below runs, the section still holds its raw,
+	   unpositioned children (intro text, reveal quote) — hide everything
+	   except the built pin so there's no flash of unstyled content. */
+	.scroll-mask > *:not(.scroll-mask__pin) {
+		display: none;
 	}
 
 	.scroll-mask__pin {
