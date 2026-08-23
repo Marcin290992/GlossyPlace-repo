@@ -1,5 +1,9 @@
 ---
-import PlaceholderPage from "../layouts/PlaceholderPage.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FaqAccordion from "../components/FaqAccordion.astro";
+import { faqCategories } from "../data/faq";
 ---
 
-<PlaceholderPage title="FAQ" />
+<BaseLayout title="FAQ — Glossy Place">
+	<FaqAccordion categories={faqCategories} headingLevel="h1" />
+</BaseLayout>
