@@ -3,25 +3,27 @@ import { testimonials } from "../data/testimonials";
 ---
 
 <section class="testimonials">
-	<div class="testimonials-header">
-		<h2 class="testimonials-title">Better Heard in Their Own Words</h2>
-		<div class="testimonials-nav">
-			<button type="button" class="testimonials-nav-btn" id="testimonialPrev" aria-label="Previous testimonial">
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M15 18l-6-6 6-6" />
-				</svg>
-			</button>
-			<button type="button" class="testimonials-nav-btn" id="testimonialNext" aria-label="Next testimonial">
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M9 18l6-6-6-6" />
-				</svg>
-			</button>
+	<div class="testimonials-inner">
+		<div class="testimonials-header">
+			<h2 class="testimonials-title">Better Heard in Their Own Words</h2>
+			<div class="testimonials-nav">
+				<button type="button" class="testimonials-nav-btn" id="testimonialPrev" aria-label="Previous testimonial">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M15 18l-6-6 6-6" />
+					</svg>
+				</button>
+				<button type="button" class="testimonials-nav-btn" id="testimonialNext" aria-label="Next testimonial">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M9 18l6-6-6-6" />
+					</svg>
+				</button>
+			</div>
 		</div>
-	</div>
 
-	<div class="testimonials-content">
-		<div class="testimonial-featured" id="testimonialFeatured"></div>
-		<div class="testimonial-list" id="testimonialList"></div>
+		<div class="testimonials-content">
+			<div class="testimonial-featured" id="testimonialFeatured"></div>
+			<div class="testimonial-list" id="testimonialList"></div>
+		</div>
 	</div>
 </section>
 
@@ -30,6 +32,14 @@ import { testimonials } from "../data/testimonials";
 		display: flex;
 		width: 100%;
 		padding: 120px 64px 140px;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.testimonials-inner {
+		display: flex;
+		width: 100%;
+		max-width: 1100px;
 		flex-direction: column;
 		gap: 56px;
 	}
