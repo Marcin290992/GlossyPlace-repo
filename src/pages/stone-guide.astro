@@ -760,7 +760,7 @@ const stoneData = stones.map((stone, index) => ({
 			settleTimer = window.setTimeout(() => activate(index, item), 450);
 		}
 
-		const triggers = Array.from(items).map((item) => {
+		const triggers = Array.from(items).map((item, i) => {
 			const index = Number(item.dataset.index);
 			return ScrollTrigger.create({
 				trigger: item,
@@ -768,6 +768,17 @@ const stoneData = stones.map((stone, index) => ({
 				end: "bottom 65%",
 				onEnter: () => scheduleActivate(index, item),
 				onEnterBack: () => scheduleActivate(index, item),
+				// Scrolling back up past the very first stone means we're
+				// above where the photo is guaranteed to be pinned — hide
+				// the indicator again rather than leave it floating over
+				// whatever the photo is doing at that scroll position.
+				onLeaveBack:
+					i === 0
+						? () => {
+								window.clearTimeout(settleTimer);
+								activeIndicator?.classList.remove("visible");
+							}
+						: undefined,
 			});
 		});
 
