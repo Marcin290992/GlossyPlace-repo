@@ -263,12 +263,23 @@ const Heading = headingLevel;
 </style>
 
 <script>
-	document.querySelectorAll<HTMLButtonElement>(".faq-question").forEach((button) => {
-		button.addEventListener("click", () => {
-			const item = button.closest(".faq-item");
-			const isOpen = button.getAttribute("aria-expanded") === "true";
-			button.setAttribute("aria-expanded", String(!isOpen));
-			item?.classList.toggle("open", !isOpen);
+	document.querySelectorAll<HTMLElement>(".faq-section").forEach((accordion) => {
+		const questions = accordion.querySelectorAll<HTMLButtonElement>(".faq-question");
+
+		questions.forEach((button) => {
+			button.addEventListener("click", () => {
+				const item = button.closest(".faq-item");
+				const isOpen = button.getAttribute("aria-expanded") === "true";
+
+				questions.forEach((otherButton) => {
+					if (otherButton === button) return;
+					otherButton.setAttribute("aria-expanded", "false");
+					otherButton.closest(".faq-item")?.classList.remove("open");
+				});
+
+				button.setAttribute("aria-expanded", String(!isOpen));
+				item?.classList.toggle("open", !isOpen);
+			});
 		});
 	});
 </script>
