@@ -98,6 +98,13 @@ const stoneData = stones.map((stone, index) => ({
 		</svg>
 	</span>
 
+	<button type="button" id="guide-back-to-top" class="guide-back-to-top" aria-label="Back to top">
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M12 19V5M5 12l7-7 7 7" />
+		</svg>
+		Back to Top
+	</button>
+
 	<div id="guide-modal-backdrop" class="guide-modal-backdrop"></div>
 	<div id="guide-modal" class="guide-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="guide-modal-name">
 		<button type="button" id="guide-modal-close" class="guide-modal-close" aria-label="Close">✕</button>
@@ -319,6 +326,10 @@ const stoneData = stones.map((stone, index) => ({
 		display: none;
 	}
 
+	.guide-back-to-top {
+		display: none;
+	}
+
 	.guide-item-name {
 		flex: 1;
 		min-width: 160px;
@@ -453,6 +464,39 @@ const stoneData = stones.map((stone, index) => ({
 
 		.guide-active-indicator.visible {
 			opacity: 1;
+		}
+
+		.guide-back-to-top {
+			display: flex;
+			position: fixed;
+			right: 16px;
+			bottom: 16px;
+			z-index: 10;
+			align-items: center;
+			gap: 6px;
+			padding: 10px 16px;
+			border: none;
+			border-radius: 999px;
+			background: #111827;
+			color: #fff;
+			font-family: "Manrope", sans-serif;
+			font-size: 11px;
+			font-weight: 600;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			box-shadow: 0 4px 16px rgba(17, 24, 39, 0.25);
+			opacity: 0;
+			pointer-events: none;
+			transform: translateY(8px);
+			transition:
+				opacity 0.25s ease,
+				transform 0.25s ease;
+		}
+
+		.guide-back-to-top.visible {
+			opacity: 1;
+			pointer-events: auto;
+			transform: translateY(0);
 		}
 	}
 </style>
@@ -754,4 +798,18 @@ const stoneData = stones.map((stone, index) => ({
 	document.addEventListener("keydown", (event) => {
 		if (event.key === "Escape") closeModal();
 	});
+
+	// --- Back to top (mobile only, CSS handles hiding it on desktop) ---
+	const backToTop = document.getElementById("guide-back-to-top");
+	if (backToTop) {
+		const toggleBackToTop = () => {
+			backToTop.classList.toggle("visible", window.scrollY > 400);
+		};
+		window.addEventListener("scroll", toggleBackToTop, { passive: true });
+		toggleBackToTop();
+
+		backToTop.addEventListener("click", () => {
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		});
+	}
 </script>
