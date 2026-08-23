@@ -653,12 +653,13 @@ const stoneData = stones.map((stone, index) => ({
 			const index = Number(item.dataset.index);
 			let hoverTimer: number | undefined;
 
-			// A quick swipe of the mouse across many rows fires mouseenter on
-			// each one in a few milliseconds — debounce so only the row the
-			// pointer actually settles on triggers a swap.
+			// Require a brief dwell before swapping — otherwise the image
+			// changes on every row the cursor merely passes over while
+			// scanning the list, which reads as flicker rather than a
+			// deliberate hover choice.
 			const onEnter = () => {
 				window.clearTimeout(hoverTimer);
-				hoverTimer = window.setTimeout(() => showImage(index), 40);
+				hoverTimer = window.setTimeout(() => showImage(index), 200);
 			};
 			const onLeave = () => window.clearTimeout(hoverTimer);
 
