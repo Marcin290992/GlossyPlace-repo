@@ -220,7 +220,12 @@ const stoneData = stones.map((stone, index) => ({
 		margin: 0;
 		width: 60%;
 		list-style: none;
-		padding: 8px 64px 120px 24px;
+		/* Bottom padding must be at least the sticky preview pane's own
+		   height — otherwise, near the end of the list, the pane runs out
+		   of room in its containing block and gets pushed off-screen
+		   before the last few stones (and jumps to late letters like W/Y)
+		   can show it in full. */
+		padding: 8px 64px calc(100vh - 111px - var(--guide-header-offset, 0px)) 24px;
 	}
 
 	.guide-closing {
@@ -395,7 +400,7 @@ const stoneData = stones.map((stone, index) => ({
 
 		.guide-list {
 			width: 100%;
-			padding: 8px 24px 100px 48px;
+			padding: 8px 24px 45vh 48px;
 		}
 
 		.guide-closing {
