@@ -210,8 +210,14 @@ const stoneData = stones.map((stone, index) => ({
 
 	.guide-preview-wrapper {
 		position: relative;
-		width: 100%;
-		max-height: 100%;
+		/* max-height alone doesn't reliably recompute width from a clamped
+		   height when width is already definite (100%) — it can leave the
+		   box wider than its 4:3 ratio once height gets squeezed, which
+		   distorts the crop instead of just shrinking it. Compute the
+		   width directly as whichever is smaller: the full column width,
+		   or the width that keeps the box within the pane's actual
+		   available height at a true 4:3 ratio. */
+		width: min(100%, calc((100vh - 111px - var(--guide-header-offset, 0px)) * 4 / 3));
 		aspect-ratio: 4 / 3;
 		overflow: hidden;
 		background: #f4f0ea;
