@@ -1,0 +1,153 @@
+---
+interface Props {
+	variant: "iris" | "wipe" | "curtain" | "slats" | "grid" | "type";
+	src: string;
+	alt?: string;
+	word?: string;
+	feather?: number;
+	columns?: number;
+	originX?: number;
+	originY?: number;
+	angle?: number;
+	stagger?: number;
+	overlay?: number;
+	zoom?: number;
+	fit?: "cover" | "contain";
+	scrollLength?: number;
+	settle?: number;
+	smooth?: number;
+	revealContent?: boolean;
+	calm?: boolean;
+}
+
+const {
+	variant,
+	src,
+	alt = "",
+	word,
+	feather,
+	columns,
+	originX,
+	originY,
+	angle,
+	stagger,
+	overlay,
+	zoom,
+	fit,
+	scrollLength,
+	settle,
+	smooth,
+	revealContent,
+	calm,
+} = Astro.props;
+---
+
+<section
+	class="scroll-mask"
+	data-variant={variant}
+	data-src={src}
+	data-alt={alt}
+	data-word={word}
+	data-feather={feather}
+	data-columns={columns}
+	data-origin-x={originX}
+	data-origin-y={originY}
+	data-angle={angle}
+	data-stagger={stagger}
+	data-overlay={overlay}
+	data-zoom={zoom}
+	data-fit={fit}
+	data-scroll-length={scrollLength}
+	data-settle={settle}
+	data-smooth={smooth}
+	data-reveal-content={revealContent === undefined ? undefined : String(revealContent)}
+	data-calm={calm === undefined ? undefined : String(calm)}
+>
+	<slot />
+</section>
+
+<style is:global>
+	/* Base scroll-mask engine styles — markup is built client-side, so these must be global. */
+	.scroll-mask {
+		position: relative;
+		width: 100%;
+	}
+
+	.scroll-mask__pin {
+		position: sticky;
+		top: 0;
+		display: flex;
+		height: 100vh;
+		width: 100%;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.scroll-mask__stage {
+		position: relative;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.scroll-mask__tiles {
+		position: absolute;
+		inset: 0;
+	}
+
+	.scroll-mask__tile {
+		position: absolute;
+		will-change: transform;
+	}
+
+	.scroll-mask__veil {
+		position: absolute;
+		inset: 0;
+	}
+
+	.scroll-mask__image {
+		position: absolute;
+		inset: 0;
+		height: 100%;
+		width: 100%;
+		user-select: none;
+		-webkit-user-select: none;
+		will-change: transform;
+	}
+
+	.scroll-mask__scrim {
+		pointer-events: none;
+		position: absolute;
+		inset: 0;
+	}
+
+	.scroll-mask__content {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 24px;
+		will-change: transform;
+	}
+
+	@media (min-width: 640px) {
+		.scroll-mask__content {
+			padding: 64px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.scroll-mask__veil,
+		.scroll-mask__image,
+		.scroll-mask__tile,
+		.scroll-mask__content {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { initScrollMasks } from "../lib/scrollMask";
+	initScrollMasks();
+</script>

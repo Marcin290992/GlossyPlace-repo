@@ -1,5 +1,245 @@
 ---
-import PlaceholderPage from "../layouts/PlaceholderPage.astro";
+import { getImage } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ScrollMaskSection from "../components/ScrollMaskSection.astro";
+import ownerPhoto from "../images/about/Owner_glossyplace.webp";
+
+const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 ---
 
-<PlaceholderPage title="Our Story" />
+<BaseLayout title="My Story — Glossy Place">
+	<main class="about">
+		<section class="about-intro">
+			<p class="about-eyebrow">My Story</p>
+			<p class="about-lead">
+				Glossyplace was born from my love for natural beauty, timeless elegance and the unique character of natural
+				gemstones.
+			</p>
+		</section>
+
+		<ScrollMaskSection
+			variant="iris"
+			src={ownerImage.src}
+			alt="Founder of Glossyplace wearing a handmade gemstone necklace and bracelet"
+			originX={50}
+			originY={35}
+			feather={16}
+			overlay={0.4}
+			zoom={1.1}
+		>
+			<p class="reveal-quote">
+				I have always believed that jewellery can be more than something beautiful we wear. It can carry meaning. It
+				can reflect how we feel, what we need and what we want to bring into our lives. That belief became the heart
+				of Glossyplace.
+			</p>
+		</ScrollMaskSection>
+
+		<section class="about-text-section">
+			<div class="about-text-inner">
+				<p class="about-paragraph">
+					I create each piece by hand, carefully choosing gemstones not only for their beauty, but also for their
+					symbolism and the energy traditionally associated with them. Every combination has its own character and
+					intention – from balance and confidence to protection, love or positive energy.
+				</p>
+			</div>
+		</section>
+
+		<ScrollMaskSection variant="type" word="TALISMAN" src="/images/about/placeholder-craft.svg" overlay={0.15} fit="cover">
+			<p class="reveal-quote reveal-quote-dark">
+				For me, a bracelet is not simply an accessory.<br />It is a personal talisman.
+			</p>
+		</ScrollMaskSection>
+
+		<section class="about-text-section">
+			<div class="about-text-inner">
+				<p class="about-paragraph">
+					Something you choose because it speaks to you. Something that can remind you of your strength, your
+					intention and the person you want to be.
+				</p>
+				<p class="about-paragraph">
+					Glossyplace is where elegance meets nature, meaning and emotion. My aim is to create jewellery that makes
+					you feel special, confident and beautifully yourself – pieces you can wear every day while knowing there
+					is a story behind every stone.
+				</p>
+			</div>
+		</section>
+
+		<ScrollMaskSection variant="curtain" src="/images/about/placeholder-lifestyle.svg" feather={14} overlay={0.15} fit="cover">
+			<p class="reveal-quote reveal-quote-dark">
+				Because sometimes we choose jewellery for its beauty.<br />And sometimes, it feels as though it chooses us.
+			</p>
+		</ScrollMaskSection>
+
+		<section class="about-closing">
+			<p class="about-closing-word">Glossyplace</p>
+			<p class="about-closing-tagline">Jewellery with Positive Energy</p>
+			<a href="/shop" class="about-closing-cta">Shop the Collection</a>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	.about {
+		background: #fff;
+	}
+
+	.about-intro {
+		display: flex;
+		min-height: 70vh;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 24px;
+		padding: 160px 24px;
+		text-align: center;
+	}
+
+	.about-eyebrow {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+	}
+
+	.about-lead {
+		margin: 0;
+		max-width: 680px;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 34px;
+		font-weight: 400;
+		line-height: 1.35;
+	}
+
+	.about-text-section {
+		display: flex;
+		justify-content: center;
+		padding: 140px 24px;
+	}
+
+	.about-text-inner {
+		display: flex;
+		max-width: 620px;
+		flex-direction: column;
+		gap: 28px;
+	}
+
+	.about-paragraph {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 24px;
+		font-weight: 400;
+		line-height: 1.6;
+		text-align: center;
+	}
+
+	.about-closing {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 20px;
+		padding: 180px 24px;
+		text-align: center;
+	}
+
+	.about-closing-word {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 48px;
+		font-weight: 400;
+		letter-spacing: 6px;
+		text-transform: uppercase;
+	}
+
+	.about-closing-tagline {
+		margin: 0 0 12px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	}
+
+	.about-closing-cta {
+		padding: 16px 40px;
+		border: 1px solid #111827;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		text-decoration: none;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	@media (hover: hover) {
+		.about-closing-cta:hover {
+			background: #fff;
+			color: #111827;
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.about-intro {
+			min-height: 50vh;
+			padding: 120px 24px;
+		}
+
+		.about-lead {
+			font-size: 26px;
+		}
+
+		.about-text-section {
+			padding: 80px 24px;
+		}
+
+		.about-paragraph {
+			font-size: 20px;
+		}
+
+		.about-closing {
+			padding: 120px 24px;
+		}
+
+		.about-closing-word {
+			font-size: 34px;
+			letter-spacing: 4px;
+		}
+	}
+</style>
+
+<style is:global>
+	.reveal-quote {
+		max-width: 640px;
+		margin: 0;
+		color: #fff;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 34px;
+		font-weight: 400;
+		line-height: 1.4;
+		text-align: center;
+		text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+	}
+
+	.reveal-quote-dark {
+		color: #111827;
+		text-shadow: none;
+	}
+
+	@media (max-width: 1024px) {
+		.reveal-quote {
+			font-size: 24px;
+		}
+	}
+</style>
