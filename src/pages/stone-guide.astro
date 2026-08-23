@@ -93,7 +93,7 @@ const stoneData = stones.map((stone, index) => ({
 	</main>
 
 	<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
-		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 			<path d="M9 6l6 6-6 6" />
 		</svg>
 	</span>
@@ -438,7 +438,6 @@ const stoneData = stones.map((stone, index) => ({
 			position: relative;
 			padding: 20px 16px;
 			margin: 0 -16px;
-			border-radius: 6px;
 			background: transparent;
 			transition:
 				opacity 0.3s ease,
@@ -459,12 +458,16 @@ const stoneData = stones.map((stone, index) => ({
 		.guide-active-indicator {
 			display: flex;
 			position: fixed;
-			left: 20px;
-			top: 65vh;
+			/* Always below the pinned photo (top:111px, 45vh tall once
+			   stuck) so it never sits on top of it — the indicator itself
+			   is only made visible after the first real scroll activation
+			   (see script), which avoids the pre-scroll state where the
+			   photo hasn't reached its stuck position yet either. */
+			left: 12px;
+			top: calc(111px + 45vh + 24px);
 			z-index: 5;
 			align-items: center;
 			justify-content: center;
-			transform: translateY(-50%);
 			color: #b8a68a;
 			opacity: 0;
 			pointer-events: none;
@@ -742,7 +745,9 @@ const stoneData = stones.map((stone, index) => ({
 
 	mm.add("(max-width: 900px)", () => {
 		items[0]?.classList.add("active");
-		activeIndicator?.classList.add("visible");
+		// Not shown yet — only once the user has actually scrolled and the
+		// pinned photo has settled into its stuck position, so the fixed
+		// coordinates below it are guaranteed accurate (see activate()).
 
 		let settleTimer: number | undefined;
 
@@ -770,6 +775,7 @@ const stoneData = stones.map((stone, index) => ({
 			showImage(index);
 			items.forEach((el) => el.classList.remove("active"));
 			item.classList.add("active");
+			activeIndicator?.classList.add("visible");
 		}
 
 		return () => {
