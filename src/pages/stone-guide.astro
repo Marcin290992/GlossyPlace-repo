@@ -757,7 +757,7 @@ const stoneData = stones.map((stone, index) => ({
 		// for a moment, instead of on every row it merely passed through.
 		function scheduleActivate(index: number, item: HTMLButtonElement) {
 			window.clearTimeout(settleTimer);
-			settleTimer = window.setTimeout(() => activate(index, item), 200);
+			settleTimer = window.setTimeout(() => activate(index, item), 450);
 		}
 
 		const triggers = Array.from(items).map((item) => {
