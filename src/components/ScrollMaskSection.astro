@@ -144,6 +144,16 @@ const {
 		}
 	}
 
+	@media (max-width: 640px) {
+		/* Whatever ratio a section uses on desktop (some are landscape, e.g.
+		   the word-mask/wipe sections), a short landscape box on a narrow
+		   phone screen leaves huge empty gaps above and below it. Force a
+		   taller, screen-filling ratio on mobile across every variant. */
+		.scroll-mask__stage {
+			aspect-ratio: 4 / 5;
+		}
+	}
+
 	.scroll-mask__tiles {
 		position: absolute;
 		inset: 0;

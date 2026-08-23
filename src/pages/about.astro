@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ScrollMaskSection from "../components/ScrollMaskSection.astro";
 import ownerPhoto from "../images/about/Owner_glossyplace.webp";
 import monikaPhoto from "../images/about/Monika_photo.webp";
+import "lenis/dist/lenis.css";
 
 const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
@@ -98,7 +99,11 @@ const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 			scrimStyle="bottom"
 			contentAlign="bottom"
 			fit="cover"
+			introFadeTo={0.28}
 		>
+			<div slot="intro" class="about-intro-content">
+				<p class="about-lead">Because&hellip;</p>
+			</div>
 			<p class="reveal-quote">
 				Because sometimes we choose jewellery for its beauty.<br />And sometimes, it feels as though it chooses us.
 			</p>
@@ -279,3 +284,24 @@ const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 		}
 	}
 </style>
+
+<script>
+	import Lenis from "lenis";
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Smooth inertia scrolling for this scroll-driven page. Desktop wheel
+	// input only by default (syncTouch stays off) — mobile keeps native
+	// touch scrolling, which is already tuned (see ScrollMaskSection).
+	const lenis = new Lenis();
+
+	lenis.on("scroll", ScrollTrigger.update);
+
+	gsap.ticker.add((time) => {
+		lenis.raf(time * 1000);
+	});
+
+	gsap.ticker.lagSmoothing(0);
+</script>
