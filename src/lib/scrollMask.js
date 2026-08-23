@@ -3,81 +3,46 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Variant = "iris" | "wipe" | "curtain" | "slats" | "grid" | "type";
-
-type ScrollMaskOptions = {
-	variant: Variant;
-	src: string;
-	alt: string;
-	word: string;
-	scrollLength: number;
-	settle: number;
-	smooth: number;
-	feather: number;
-	stagger: number;
-	columns: number;
-	originX: number;
-	originY: number;
-	angle: number;
-	zoom: number;
-	fit: "cover" | "contain";
-	overlay: number;
-	background: string;
-	revealContent: boolean;
-	calm: boolean;
-};
-
-type Sheet = { image: string; size: string; position: string };
-
-type Piece = {
-	left: number;
-	top: number;
-	width: number;
-	height: number;
-	delay: number;
-	lift: number;
-};
-
-const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
-const glide = (t: number) => t * t * (3 - 2 * t);
-const ramp = (p: number, from: number, to: number) => clamp((p - from) / Math.max(1e-6, to - from), 0, 1);
-const phase = (p: number, delay: number, spread: number) => {
+const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
+const glide = (t) => t * t * (3 - 2 * t);
+const ramp = (p, from, to) => clamp((p - from) / Math.max(1e-6, to - from), 0, 1);
+const phase = (p, delay, spread) => {
 	const s = clamp(spread, 0, 0.92);
 	return glide(clamp((p - delay * s) / Math.max(1e-6, 1 - s), 0, 1));
 };
 
-const escapeText = (raw: string) =>
+const escapeText = (raw) =>
 	raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const VOID: Sheet = {
+const VOID = {
 	image: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0))",
 	size: "100% 100%",
 	position: "0% 0%",
 };
 
-const gather = (rows: [string, string, string][]): Sheet => ({
+const gather = (rows) => ({
 	image: rows.map((r) => r[0]).join(", "),
 	size: rows.map((r) => r[1]).join(", "),
 	position: rows.map((r) => r[2]).join(", "),
 });
 
-const solid = (a: number): [string, string, string] => [
+const solid = (a) => [
 	`linear-gradient(rgba(0,0,0,${a.toFixed(3)}), rgba(0,0,0,${a.toFixed(3)}))`,
 	"100% 100%",
 	"0% 0%",
 ];
 
 const STOPS = 14;
-const ease5 = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
+const ease5 = (t) => t * t * t * (t * (t * 6 - 15) + 10);
 
-const falloff = (p: number, f: number) => {
+const falloff = (p, f) => {
 	const soft = Math.max(0.8, f);
 	const edge = -soft + p * (100 + 2 * soft);
 	const opaque = edge - soft;
 	if (edge <= 0) return null;
 	const span = edge - opaque;
 	const head = clamp(-opaque / span, 0, 1);
-	const stops: string[] = [];
+	const stops = [];
 	for (let i = 0; i <= STOPS; i += 1) {
 		const t = head + (1 - head) * (i / STOPS);
 		stops.push(`rgba(0,0,0,${(1 - ease5(t)).toFixed(4)}) ${(opaque + span * t).toFixed(2)}%`);
@@ -85,19 +50,19 @@ const falloff = (p: number, f: number) => {
 	return stops.join(", ");
 };
 
-const irisSheet = (p: number, f: number, ox: number, oy: number): Sheet => {
+const irisSheet = (p, f, ox, oy) => {
 	const stops = falloff(p, f);
 	if (!stops) return VOID;
 	return gather([[`radial-gradient(circle at ${ox}% ${oy}%, ${stops})`, "100% 100%", "0% 0%"]]);
 };
 
-const wipeSheet = (p: number, f: number, angle: number): Sheet => {
+const wipeSheet = (p, f, angle) => {
 	const stops = falloff(p, f);
 	if (!stops) return VOID;
 	return gather([[`linear-gradient(${angle}deg, ${stops})`, "100% 100%", "0% 0%"]]);
 };
 
-const curtainSheet = (p: number, f: number): Sheet => {
+const curtainSheet = (p, f) => {
 	const stops = falloff(p, f);
 	if (!stops) return VOID;
 	return gather([
@@ -108,16 +73,16 @@ const curtainSheet = (p: number, f: number): Sheet => {
 
 const TYPE_CAP_START = 0.54;
 
-const typeCap = (p: number) => ramp(p, TYPE_CAP_START, 1);
+const typeCap = (p) => ramp(p, TYPE_CAP_START, 1);
 
-const typeSheet = (p: number, stamp: string): Sheet => {
-	const rows: [string, string, string][] = [[stamp, "contain", "50% 50%"]];
+const typeSheet = (p, stamp) => {
+	const rows = [[stamp, "contain", "50% 50%"]];
 	const cap = typeCap(p);
 	if (cap > 0) rows.push(solid(cap));
 	return gather(rows);
 };
 
-function buildStamp(word: string): string {
+function buildStamp(word) {
 	const label = (word || "SCROLL").trim() || "SCROLL";
 	const em = 200;
 	const wide = Math.max(260, label.length * em * 0.6 + em * 0.24);
@@ -131,7 +96,7 @@ function buildStamp(word: string): string {
 	return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
-const DEFAULTS: ScrollMaskOptions = {
+const DEFAULTS = {
 	variant: "iris",
 	src: "",
 	alt: "",
@@ -150,41 +115,35 @@ const DEFAULTS: ScrollMaskOptions = {
 	overlay: 0,
 	background: "transparent",
 	revealContent: true,
+	contentFrom: 0.5,
+	contentTo: 0.94,
+	contentAlign: "center",
+	scrimStyle: "flat",
+	introFadeTo: 0.3,
 	calm: false,
 };
 
 export class ScrollMask {
-	root: HTMLElement;
-	opts: ScrollMaskOptions;
-	tiled: boolean;
-	box = { w: 0, h: 0 };
-	nat = { w: 0, h: 0 };
-	pieces: Piece[] = [];
-	pieceEls: HTMLDivElement[] = [];
-	stamp: string | null;
-
-	stageEl!: HTMLDivElement;
-	tilesEl?: HTMLDivElement;
-	veilEl?: HTMLDivElement;
-	imgEl?: HTMLImageElement;
-	contentEl?: HTMLDivElement;
-
-	trigger?: ScrollTrigger;
-	watcher?: ResizeObserver;
-
-	constructor(root: HTMLElement, options: Partial<ScrollMaskOptions>) {
+	constructor(root, options) {
 		this.root = root;
 		this.opts = Object.assign({}, DEFAULTS, options);
 		this.tiled = this.opts.variant === "slats" || this.opts.variant === "grid";
 		this.stamp = this.opts.variant === "type" ? buildStamp(this.opts.word) : null;
 
+		this.box = { w: 0, h: 0 };
+		this.nat = { w: 0, h: 0 };
+		this.pieces = [];
+		this.pieceEls = [];
+
 		this._build();
 		this._bind();
 	}
 
-	private _build() {
+	_build() {
 		const o = this.opts;
-		const originalChildren = Array.from(this.root.children);
+		const allChildren = Array.from(this.root.children);
+		const introSlot = allChildren.find((c) => c.classList.contains("scroll-mask-intro-slot"));
+		const originalChildren = allChildren.filter((c) => c !== introSlot);
 		this.root.innerHTML = "";
 		this.root.classList.add("scroll-mask");
 		this.root.style.height = `${(1 + Math.max(0.25, o.scrollLength)) * 100}vh`;
@@ -220,9 +179,13 @@ export class ScrollMask {
 			veil.appendChild(img);
 
 			if (o.overlay > 0) {
+				const a = clamp(o.overlay, 0, 1);
 				const scrim = document.createElement("div");
 				scrim.className = "scroll-mask__scrim";
-				scrim.style.background = `rgba(0,0,0,${clamp(o.overlay, 0, 1)})`;
+				scrim.style.background =
+					o.scrimStyle === "bottom"
+						? `linear-gradient(to top, rgba(0,0,0,${a}) 0%, rgba(0,0,0,${(a * 0.35).toFixed(3)}) 40%, transparent 70%)`
+						: `rgba(0,0,0,${a})`;
 				veil.appendChild(scrim);
 			}
 
@@ -231,9 +194,18 @@ export class ScrollMask {
 			this.imgEl = img;
 		}
 
+		if (introSlot && introSlot.childNodes.length) {
+			const intro = document.createElement("div");
+			intro.className = "scroll-mask__intro";
+			Array.from(introSlot.childNodes).forEach((c) => intro.appendChild(c));
+			stage.appendChild(intro);
+			this.introEl = intro;
+		}
+
 		if (originalChildren.length) {
 			const content = document.createElement("div");
-			content.className = "scroll-mask__content";
+			content.className =
+				o.contentAlign === "bottom" ? "scroll-mask__content scroll-mask__content--bottom" : "scroll-mask__content";
 			content.style.opacity = o.revealContent ? "0" : "1";
 			originalChildren.forEach((c) => content.appendChild(c));
 			stage.appendChild(content);
@@ -245,7 +217,7 @@ export class ScrollMask {
 		this.stageEl = stage;
 	}
 
-	private _computeFrame() {
+	_computeFrame() {
 		const { box, nat, opts } = this;
 		if (!box.w || !box.h) return null;
 		const iw = nat.w || box.w;
@@ -260,7 +232,7 @@ export class ScrollMask {
 		};
 	}
 
-	private _computePieces() {
+	_computePieces() {
 		const { tiled, box, opts } = this;
 		if (!tiled || !box.w || !box.h) {
 			this.pieces = [];
@@ -270,7 +242,7 @@ export class ScrollMask {
 		const rows = opts.variant === "slats" ? 1 : clamp(Math.round(cols * (box.h / box.w) * 0.92), 1, 18);
 		const cw = box.w / cols;
 		const ch = box.h / rows;
-		const out: Piece[] = [];
+		const out = [];
 		let far = 1e-6;
 		for (let r = 0; r < rows; r += 1) {
 			for (let c = 0; c < cols; c += 1) {
@@ -296,7 +268,7 @@ export class ScrollMask {
 		this.pieces = out;
 	}
 
-	private _renderTiles() {
+	_renderTiles() {
 		if (!this.tiled || !this.tilesEl) return;
 		this._computePieces();
 		const frame = this._computeFrame();
@@ -321,12 +293,12 @@ export class ScrollMask {
 					frame ? `${(frame.x - piece.left).toFixed(2)}px ${(frame.y - piece.top).toFixed(2)}px` : "center"
 				}`;
 			}
-			this.tilesEl!.appendChild(div);
+			this.tilesEl.appendChild(div);
 			return div;
 		});
 	}
 
-	private _paint(raw: number) {
+	_paint(raw) {
 		const o = this.opts;
 		const finish = clamp(o.settle, 0.35, 1);
 		const soft = clamp(o.feather, 0, 45);
@@ -336,10 +308,10 @@ export class ScrollMask {
 		let lens = 1;
 
 		if (!this.tiled && this.veilEl) {
-			let sheet: Sheet;
+			let sheet;
 			if (o.variant === "wipe") sheet = wipeSheet(p, soft, o.angle);
 			else if (o.variant === "curtain") sheet = curtainSheet(p, soft);
-			else if (o.variant === "type") sheet = typeSheet(p, this.stamp as string);
+			else if (o.variant === "type") sheet = typeSheet(p, this.stamp);
 			else sheet = irisSheet(p, soft, ox, oy);
 
 			this.veilEl.style.setProperty("-webkit-mask-image", sheet.image);
@@ -382,14 +354,21 @@ export class ScrollMask {
 			if (o.revealContent) {
 				// "type" reveals the word as a mask first — content must wait until the
 				// letter shape has mostly dissolved into a solid reveal, or the two overlap.
-				e = o.variant === "type" ? glide(ramp(typeCap(p), 0.35, 1)) : glide(ramp(p, 0.5, 0.94));
+				e = o.variant === "type" ? glide(ramp(typeCap(p), 0.35, 1)) : glide(ramp(p, o.contentFrom, o.contentTo));
 			}
 			this.contentEl.style.opacity = e.toFixed(3);
 			this.contentEl.style.transform = `translate3d(0, ${((1 - e) * 20).toFixed(2)}px, 0)`;
 		}
+
+		if (this.introEl) {
+			// Fades out early so it's fully gone well before the reveal itself
+			// becomes prominent — avoids a moment where both are visible at once.
+			const introFade = 1 - glide(ramp(p, 0, o.introFadeTo));
+			this.introEl.style.opacity = introFade.toFixed(3);
+		}
 	}
 
-	private _gauge = () => {
+	_gauge = () => {
 		const rect = this.stageEl.getBoundingClientRect();
 		if (Math.abs(this.box.w - rect.width) > 0.5 || Math.abs(this.box.h - rect.height) > 0.5) {
 			this.box = { w: rect.width, h: rect.height };
@@ -397,7 +376,7 @@ export class ScrollMask {
 		}
 	};
 
-	private _bind() {
+	_bind() {
 		this._gauge();
 		this._paint(0);
 
@@ -435,12 +414,12 @@ export class ScrollMask {
 	}
 }
 
-function readOptionsFromDataset(el: HTMLElement): Partial<ScrollMaskOptions> {
+function readOptionsFromDataset(el) {
 	const ds = el.dataset;
-	const num = (v: string | undefined) => (v !== undefined ? parseFloat(v) : undefined);
-	const bool = (v: string | undefined) => (v === undefined ? undefined : v === "true");
+	const num = (v) => (v !== undefined ? parseFloat(v) : undefined);
+	const bool = (v) => (v === undefined ? undefined : v === "true");
 	const opts = {
-		variant: ds.variant as Variant | undefined,
+		variant: ds.variant,
 		src: ds.src,
 		alt: ds.alt,
 		word: ds.word,
@@ -454,26 +433,31 @@ function readOptionsFromDataset(el: HTMLElement): Partial<ScrollMaskOptions> {
 		originY: num(ds.originY),
 		angle: num(ds.angle),
 		zoom: num(ds.zoom),
-		fit: ds.fit as "cover" | "contain" | undefined,
+		fit: ds.fit,
 		overlay: num(ds.overlay),
 		background: ds.background,
 		revealContent: bool(ds.revealContent),
+		contentFrom: num(ds.contentFrom),
+		contentTo: num(ds.contentTo),
+		contentAlign: ds.contentAlign,
+		scrimStyle: ds.scrimStyle,
+		introFadeTo: num(ds.introFadeTo),
 		calm: bool(ds.calm),
 	};
-	const out: Partial<ScrollMaskOptions> = {};
-	(Object.keys(opts) as (keyof typeof opts)[]).forEach((key) => {
+	const out = {};
+	Object.keys(opts).forEach((key) => {
 		const value = opts[key];
-		if (value !== undefined) (out as Record<string, unknown>)[key] = value;
+		if (value !== undefined) out[key] = value;
 	});
 	return out;
 }
 
-export function initScrollMasks(root?: ParentNode) {
+export function initScrollMasks(root) {
 	const scope = root ?? document;
-	const els = scope.querySelectorAll<HTMLElement>(".scroll-mask");
+	const els = scope.querySelectorAll(".scroll-mask");
 	els.forEach((el) => {
-		if ((el as HTMLElement & { _scrollMaskInstance?: ScrollMask })._scrollMaskInstance) return;
+		if (el._scrollMaskInstance) return;
 		const instance = new ScrollMask(el, readOptionsFromDataset(el));
-		(el as HTMLElement & { _scrollMaskInstance?: ScrollMask })._scrollMaskInstance = instance;
+		el._scrollMaskInstance = instance;
 	});
 }

@@ -17,7 +17,14 @@ interface Props {
 	settle?: number;
 	smooth?: number;
 	revealContent?: boolean;
+	contentFrom?: number;
+	contentTo?: number;
+	contentAlign?: "center" | "bottom";
+	scrimStyle?: "flat" | "bottom";
+	introFadeTo?: number;
 	calm?: boolean;
+	maxWidth?: number;
+	ratio?: string;
 }
 
 const {
@@ -38,12 +45,20 @@ const {
 	settle,
 	smooth,
 	revealContent,
+	contentFrom,
+	contentTo,
+	contentAlign,
+	scrimStyle,
+	introFadeTo,
 	calm,
+	maxWidth = 1000,
+	ratio = "3 / 2",
 } = Astro.props;
 ---
 
 <section
 	class="scroll-mask"
+	style={`--mask-max-width: ${maxWidth}px; --mask-ratio: ${ratio};`}
 	data-variant={variant}
 	data-src={src}
 	data-alt={alt}
@@ -61,8 +76,16 @@ const {
 	data-settle={settle}
 	data-smooth={smooth}
 	data-reveal-content={revealContent === undefined ? undefined : String(revealContent)}
+	data-content-from={contentFrom}
+	data-content-align={contentAlign}
+	data-scrim-style={scrimStyle}
+	data-content-to={contentTo}
+	data-intro-fade-to={introFadeTo}
 	data-calm={calm === undefined ? undefined : String(calm)}
 >
+	<div class="scroll-mask-intro-slot">
+		<slot name="intro" />
+	</div>
 	<slot />
 </section>
 
@@ -75,19 +98,37 @@ const {
 
 	.scroll-mask__pin {
 		position: sticky;
-		top: 0;
+		/* Matches the sticky announcement bar (35px) + navbar (76px) above it,
+		   so the pin locks in place immediately instead of drifting up the
+		   first ~111px of scroll before it engages. */
+		top: 111px;
 		display: flex;
-		height: 100vh;
+		height: calc(100vh - 111px);
 		width: 100%;
 		align-items: center;
 		justify-content: center;
+		padding: 24px;
+	}
+
+	@media (min-width: 640px) {
+		.scroll-mask__pin {
+			padding: 64px;
+		}
 	}
 
 	.scroll-mask__stage {
 		position: relative;
-		height: 100%;
 		width: 100%;
+		max-width: var(--mask-max-width, 1000px);
+		max-height: calc(100vh - 48px);
+		aspect-ratio: var(--mask-ratio, 3 / 2);
 		overflow: hidden;
+	}
+
+	@media (min-width: 640px) {
+		.scroll-mask__stage {
+			max-height: calc(100vh - 128px);
+		}
 	}
 
 	.scroll-mask__tiles {
@@ -131,8 +172,33 @@ const {
 		will-change: transform;
 	}
 
+	.scroll-mask__content--bottom {
+		align-items: flex-end;
+		padding-bottom: 32px;
+	}
+
+	.scroll-mask__intro {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 24px;
+		text-align: center;
+		will-change: opacity, transform;
+	}
+
 	@media (min-width: 640px) {
 		.scroll-mask__content {
+			padding: 64px;
+		}
+
+		.scroll-mask__content--bottom {
+			padding-bottom: 48px;
+		}
+
+		.scroll-mask__intro {
 			padding: 64px;
 		}
 	}

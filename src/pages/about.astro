@@ -9,25 +9,32 @@ const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 
 <BaseLayout title="My Story — Glossy Place">
 	<main class="about">
-		<section class="about-intro">
-			<p class="about-eyebrow">My Story</p>
-			<p class="about-lead">
-				Glossyplace was born from my love for natural beauty, timeless elegance and the unique character of natural
-				gemstones.
-			</p>
-		</section>
-
 		<ScrollMaskSection
 			variant="iris"
 			src={ownerImage.src}
 			alt="Founder of Glossyplace wearing a handmade gemstone necklace and bracelet"
 			originX={50}
-			originY={35}
+			originY={38}
 			feather={16}
-			overlay={0.4}
-			zoom={1.1}
+			overlay={0.55}
+			scrimStyle="bottom"
+			contentAlign="bottom"
+			zoom={1.02}
+			ratio="4 / 5"
+			maxWidth={640}
+			scrollLength={1.15}
+			introFadeTo={0.32}
+			contentFrom={0.72}
+			contentTo={0.97}
 		>
-			<p class="reveal-quote">
+			<div slot="intro" class="about-intro-content">
+				<p class="about-eyebrow">My Story</p>
+				<p class="about-lead">
+					Glossyplace was born from my love for natural beauty, timeless elegance and the unique character of
+					natural gemstones.
+				</p>
+			</div>
+			<p class="reveal-quote reveal-quote-compact">
 				I have always believed that jewellery can be more than something beautiful we wear. It can carry meaning. It
 				can reflect how we feel, what we need and what we want to bring into our lives. That belief became the heart
 				of Glossyplace.
@@ -83,15 +90,11 @@ const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 		background: #fff;
 	}
 
-	.about-intro {
+	.about-intro-content {
 		display: flex;
-		min-height: 70vh;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
 		gap: 24px;
-		padding: 160px 24px;
-		text-align: center;
 	}
 
 	.about-eyebrow {
@@ -237,9 +240,20 @@ const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 		text-shadow: none;
 	}
 
+	.reveal-quote-compact {
+		max-width: 460px;
+		font-size: 22px;
+		line-height: 1.5;
+	}
+
 	@media (max-width: 1024px) {
 		.reveal-quote {
 			font-size: 24px;
+		}
+
+		.reveal-quote-compact {
+			font-size: 16px;
+			line-height: 1.45;
 		}
 	}
 </style>
