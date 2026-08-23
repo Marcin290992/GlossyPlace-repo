@@ -436,11 +436,20 @@ const stoneData = stones.map((stone, index) => ({
 			gap: 10px;
 			opacity: 0.4;
 			position: relative;
-			transition: opacity 0.3s ease;
+			padding: 20px 16px;
+			margin: 0 -16px;
+			border-radius: 12px;
+			background: transparent;
+			transition:
+				opacity 0.3s ease,
+				background-color 0.3s ease,
+				border-color 0.3s ease;
 		}
 
 		.guide-item.active {
 			opacity: 1;
+			background: #f4f0ea;
+			border-color: transparent;
 		}
 
 		/* A single indicator fixed to the viewport (in the list's left
