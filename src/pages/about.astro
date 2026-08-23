@@ -3,8 +3,10 @@ import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ScrollMaskSection from "../components/ScrollMaskSection.astro";
 import ownerPhoto from "../images/about/Owner_glossyplace.webp";
+import monikaPhoto from "../images/about/Monika_photo.webp";
 
 const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
+const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 ---
 
 <BaseLayout title="My Story — Glossy Place">
@@ -51,28 +53,53 @@ const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 			</div>
 		</section>
 
-		<ScrollMaskSection variant="type" word="TALISMAN" src="/images/about/placeholder-craft.svg" overlay={0.15} fit="cover">
-			<p class="reveal-quote reveal-quote-dark">
+		<ScrollMaskSection
+			variant="type"
+			word="TALISMAN"
+			src="https://images.unsplash.com/photo-1523252012848-c22188792c27?fm=jpg&q=80&w=1600&auto=format&fit=crop"
+			overlay={0.15}
+			fit="cover"
+		>
+			<p class="reveal-quote">
 				For me, a bracelet is not simply an accessory.<br />It is a personal talisman.
 			</p>
 		</ScrollMaskSection>
 
-		<section class="about-text-section">
-			<div class="about-text-inner">
-				<p class="about-paragraph">
-					Something you choose because it speaks to you. Something that can remind you of your strength, your
-					intention and the person you want to be.
-				</p>
+		<ScrollMaskSection
+			variant="wipe"
+			src="https://images.unsplash.com/photo-1668365179846-3333fe14f552?fm=jpg&q=80&w=1600&auto=format&fit=crop"
+			angle={115}
+			feather={16}
+			overlay={0.15}
+			fit="cover"
+			introFadeTo={0.3}
+		>
+			<div slot="intro" class="about-intro-content">
 				<p class="about-paragraph">
 					Glossyplace is where elegance meets nature, meaning and emotion. My aim is to create jewellery that makes
 					you feel special, confident and beautifully yourself – pieces you can wear every day while knowing there
 					is a story behind every stone.
 				</p>
 			</div>
-		</section>
+			<p class="reveal-quote">
+				Something you choose because it speaks to you. Something that can remind you of your strength, your
+				intention and the person you want to be.
+			</p>
+		</ScrollMaskSection>
 
-		<ScrollMaskSection variant="curtain" src="/images/about/placeholder-lifestyle.svg" feather={14} overlay={0.15} fit="cover">
-			<p class="reveal-quote reveal-quote-dark">
+		<ScrollMaskSection
+			variant="curtain"
+			src={monikaImage.src}
+			alt="Glossyplace bracelet and necklace styled on a model"
+			ratio="4 / 5"
+			maxWidth={640}
+			feather={3}
+			overlay={0.5}
+			scrimStyle="bottom"
+			contentAlign="bottom"
+			fit="cover"
+		>
+			<p class="reveal-quote">
 				Because sometimes we choose jewellery for its beauty.<br />And sometimes, it feels as though it chooses us.
 			</p>
 		</ScrollMaskSection>
@@ -235,15 +262,10 @@ const ownerImage = await getImage({ src: ownerPhoto, width: 1600 });
 		text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
 	}
 
-	.reveal-quote-dark {
-		color: #111827;
-		text-shadow: none;
-	}
-
 	.reveal-quote-compact {
-		max-width: 460px;
-		font-size: 22px;
-		line-height: 1.5;
+		max-width: 540px;
+		font-size: 27px;
+		line-height: 1.45;
 	}
 
 	@media (max-width: 1024px) {

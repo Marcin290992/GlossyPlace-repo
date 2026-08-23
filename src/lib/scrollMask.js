@@ -82,16 +82,37 @@ const typeSheet = (p, stamp) => {
 	return gather(rows);
 };
 
+function measureTextWidth(label, em, letterSpacing) {
+	try {
+		const canvas = document.createElement("canvas");
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return null;
+		ctx.font = `600 ${em}px "Cormorant Garamond", Georgia, serif`;
+		const base = ctx.measureText(label).width;
+		// measureText doesn't account for letter-spacing, so add it back per gap.
+		return base + letterSpacing * Math.max(0, label.length - 1);
+	} catch {
+		return null;
+	}
+}
+
 function buildStamp(word) {
 	const label = (word || "SCROLL").trim() || "SCROLL";
 	const em = 200;
-	const wide = Math.max(260, label.length * em * 0.6 + em * 0.24);
+	const letterSpacing = -em * 0.01;
+	const measured = measureTextWidth(label, em, letterSpacing);
+	// Fall back to a generous per-character estimate if canvas measurement
+	// isn't available, then pad well beyond either figure — the SVG's own
+	// viewBox clips its content before mask-size:contain ever gets a chance
+	// to scale it down, so under-estimating here crops the outer letters.
+	const estimated = label.length * em * 0.72 + em * 0.3;
+	const wide = Math.max(260, (measured ?? 0) + em * 0.3, estimated);
 	const high = em * 1.34;
 	const svg =
 		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${wide.toFixed(0)} ${high.toFixed(0)}">` +
 		`<text x="${(wide / 2).toFixed(0)}" y="${(high * 0.74).toFixed(0)}" text-anchor="middle" ` +
 		`font-family="Cormorant Garamond,Georgia,serif" ` +
-		`font-size="${em}" font-weight="600" letter-spacing="${(-em * 0.01).toFixed(1)}" fill="#000">` +
+		`font-size="${em}" font-weight="600" letter-spacing="${letterSpacing.toFixed(1)}" fill="#000">` +
 		`${escapeText(label)}</text></svg>`;
 	return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
