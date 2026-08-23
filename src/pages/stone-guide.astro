@@ -32,24 +32,26 @@ const stoneData = stones.map((stone, index) => ({
 
 <BaseLayout title="Gemstone Guide — Glossy Place">
 	<main class="guide">
-		<section class="guide-intro">
-			<p class="guide-eyebrow">Gemstone Guide</p>
-			<h1 class="guide-title">The Meaning Behind Every Stone</h1>
-			<p class="guide-lead">
-				Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
-				stone to see it up close.
-			</p>
-		</section>
+		<div class="guide-sticky-header" id="guide-sticky-header">
+			<section class="guide-intro">
+				<p class="guide-eyebrow">Gemstone Guide</p>
+				<h1 class="guide-title">The Meaning Behind Every Stone</h1>
+				<p class="guide-lead">
+					Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
+					stone to see it up close.
+				</p>
+			</section>
 
-		<nav class="guide-az-nav" aria-label="Jump to letter">
-			{
-				availableLetters.map((letter) => (
-					<a href={`#guide-letter-${letter}`} class="guide-az-link">
-						{letter}
-					</a>
-				))
-			}
-		</nav>
+			<nav class="guide-az-nav" aria-label="Jump to letter">
+				{
+					availableLetters.map((letter) => (
+						<a href={`#guide-letter-${letter}`} class="guide-az-link">
+							{letter}
+						</a>
+					))
+				}
+			</nav>
+		</div>
 
 		<div class="guide-layout">
 			<div class="guide-preview-pane">
@@ -141,6 +143,13 @@ const stoneData = stones.map((stone, index) => ({
 		line-height: 1.7;
 	}
 
+	.guide-sticky-header {
+		position: sticky;
+		top: 111px;
+		z-index: 3;
+		background: #fff;
+	}
+
 	.guide-az-nav {
 		display: flex;
 		flex-wrap: wrap;
@@ -177,10 +186,10 @@ const stoneData = stones.map((stone, index) => ({
 
 	.guide-preview-pane {
 		position: sticky;
-		top: 111px;
+		top: calc(111px + var(--guide-header-offset, 0px));
 		z-index: 2;
 		width: 40%;
-		height: calc(100vh - 111px);
+		height: calc(100vh - 111px - var(--guide-header-offset, 0px));
 		padding: 40px 24px 40px 64px;
 		display: flex;
 		align-items: center;
@@ -209,7 +218,7 @@ const stoneData = stones.map((stone, index) => ({
 		font-weight: 600;
 		letter-spacing: 2px;
 		text-transform: uppercase;
-		scroll-margin-top: 140px;
+		scroll-margin-top: calc(111px + var(--guide-header-offset, 0px) + 24px);
 	}
 
 	.guide-item {
@@ -282,6 +291,10 @@ const stoneData = stones.map((stone, index) => ({
 	}
 
 	@media (max-width: 900px) {
+		.guide-sticky-header {
+			position: static;
+		}
+
 		.guide-intro {
 			padding: 100px 24px 0;
 		}
@@ -299,6 +312,7 @@ const stoneData = stones.map((stone, index) => ({
 		}
 
 		.guide-preview-pane {
+			top: 111px;
 			width: 100%;
 			height: 45vh;
 			padding: 16px 24px;
@@ -468,6 +482,19 @@ const stoneData = stones.map((stone, index) => ({
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 	gsap.registerPlugin(ScrollTrigger);
+
+	// On desktop the intro + A-Z nav bar is pinned above the preview image,
+	// so the preview pane's own sticky offset needs to sit below it. Track
+	// its real height (fonts/content can shift it) instead of guessing a
+	// fixed pixel value.
+	const stickyHeader = document.getElementById("guide-sticky-header");
+	if (stickyHeader) {
+		const syncHeaderOffset = () => {
+			document.documentElement.style.setProperty("--guide-header-offset", `${stickyHeader.offsetHeight}px`);
+		};
+		syncHeaderOffset();
+		new ResizeObserver(syncHeaderOffset).observe(stickyHeader);
+	}
 
 	type StoneRecord = { name: string; symbol: string; meaning: string[]; image: string };
 
