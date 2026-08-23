@@ -38,17 +38,14 @@ const statements: Statement[] = [
 
 const steps = [
 	{
-		number: "01",
 		title: "Choose Your Stones",
 		description: "Browse a curated selection of natural gemstones and pick the ones that speak to you.",
 	},
 	{
-		number: "02",
 		title: "Learn & Create",
 		description: "With hands-on guidance, learn simple techniques and design your own piece of jewellery.",
 	},
 	{
-		number: "03",
 		title: "Take It Home",
 		description: "Leave with a finished piece made entirely by you — and the skills to make more.",
 	},
@@ -66,7 +63,12 @@ const details = [
 	<main class="workshops">
 		<section class="workshops-hero">
 			<p class="workshops-eyebrow">Workshops</p>
-			<h1 class="workshops-title">Scroll Down</h1>
+			<h1 class="workshops-title">Make Something Truly Your Own</h1>
+			<p class="workshops-lead">
+				Join a hands-on jewellery-making workshop and create a piece that's uniquely yours — guided every step of
+				the way.
+			</p>
+			<p class="workshops-scroll-hint">Scroll to explore ↓</p>
 		</section>
 
 		{
@@ -97,7 +99,6 @@ const details = [
 				{
 					steps.map((step) => (
 						<div class="workshops-step">
-							<p class="workshops-step-number">{step.number}</p>
 							<p class="workshops-step-title">{step.title}</p>
 							<p class="workshops-step-description">{step.description}</p>
 						</div>
@@ -153,8 +154,27 @@ const details = [
 		margin: 0;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
-		font-size: clamp(32px, 6vw, 56px);
+		font-size: 42px;
 		font-weight: 400;
+	}
+
+	.workshops-lead {
+		margin: 0;
+		max-width: 520px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 15px;
+		line-height: 1.7;
+	}
+
+	.workshops-scroll-hint {
+		margin: 16px 0 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
 	}
 
 	.workshops-section {
@@ -234,7 +254,7 @@ const details = [
 		margin: 0;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
-		font-size: 32px;
+		font-size: 28px;
 		font-weight: 400;
 		letter-spacing: 1px;
 	}
@@ -253,21 +273,13 @@ const details = [
 		gap: 8px;
 	}
 
-	.workshops-step-number {
-		margin: 0;
-		color: #b8a68a;
-		font-family: "Cormorant Garamond", serif;
-		font-size: 32px;
-		font-weight: 400;
-	}
-
 	.workshops-step-title {
 		margin: 0;
 		color: #111827;
 		font-family: "Manrope", sans-serif;
-		font-size: 14px;
+		font-size: 11px;
 		font-weight: 600;
-		letter-spacing: 1px;
+		letter-spacing: 2px;
 		text-transform: uppercase;
 	}
 
@@ -280,6 +292,10 @@ const details = [
 	}
 
 	@media (max-width: 900px) {
+		.workshops-title {
+			font-size: 30px;
+		}
+
 		.workshops-steps-grid {
 			grid-template-columns: 1fr;
 			gap: 32px;
@@ -300,7 +316,7 @@ const details = [
 		margin: 0;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
-		font-size: 32px;
+		font-size: 28px;
 		font-weight: 400;
 		letter-spacing: 1px;
 	}
@@ -372,9 +388,15 @@ const details = [
 		max-width: 800px;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
-		font-size: clamp(28px, 6vw, 56px);
+		font-size: 42px;
 		font-weight: 400;
 		line-height: 1.2;
+	}
+
+	@media (max-width: 900px) {
+		.workshops-animate-text {
+			font-size: 30px;
+		}
 	}
 
 	.workshops-photo img {
