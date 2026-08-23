@@ -67,8 +67,8 @@ const stoneData = stones.map((stone, index) => ({
 							<li>
 								<button type="button" class="guide-item" data-index={entry.index}>
 									<span class="guide-item-indicator" aria-hidden="true">
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-											<path d="M5 12h14M12 5l7 7-7 7" />
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M9 6l6 6-6 6" />
 										</svg>
 									</span>
 									<span class="guide-item-name">{entry.name}</span>
@@ -178,6 +178,7 @@ const stoneData = stones.map((stone, index) => ({
 	.guide-preview-pane {
 		position: sticky;
 		top: 111px;
+		z-index: 2;
 		width: 40%;
 		height: calc(100vh - 111px);
 		padding: 40px 24px 40px 64px;
@@ -308,6 +309,12 @@ const stoneData = stones.map((stone, index) => ({
 			aspect-ratio: auto;
 		}
 
+		.guide-letter-marker {
+			/* The pinned preview image covers the top 45vh on mobile, so a jump
+			   target needs to land below it, not just below the site header. */
+			scroll-margin-top: calc(45vh + 111px + 16px);
+		}
+
 		.guide-list {
 			width: 100%;
 			padding: 8px 24px 100px 48px;
@@ -329,16 +336,14 @@ const stoneData = stones.map((stone, index) => ({
 		.guide-item-indicator {
 			display: block;
 			position: absolute;
-			left: -32px;
+			left: -28px;
 			top: 24px;
 			opacity: 0;
-			transform: translateX(-8px);
-			transition: all 0.3s ease;
+			transition: opacity 0.3s ease;
 		}
 
 		.guide-item.active .guide-item-indicator {
 			opacity: 1;
-			transform: translateX(0);
 		}
 	}
 </style>
@@ -497,6 +502,12 @@ const stoneData = stones.map((stone, index) => ({
 		const prevImg = currentIndex !== -1 ? images[currentIndex] : null;
 		const direction = currentIndex === -1 || index > currentIndex ? 1 : -1;
 
+		// Fast hovering across many rows can queue up several tweens on the
+		// same image faster than they finish — kill anything in flight so a
+		// stale tween never leaves an image stuck mid-transition.
+		gsap.killTweensOf(nextImg);
+		if (prevImg) gsap.killTweensOf(prevImg);
+
 		gsap.set(nextImg, { zIndex: 2 });
 		if (prevImg) gsap.set(prevImg, { zIndex: 1 });
 
@@ -529,9 +540,24 @@ const stoneData = stones.map((stone, index) => ({
 		const listeners: Array<() => void> = [];
 		items.forEach((item) => {
 			const index = Number(item.dataset.index);
-			const onEnter = () => showImage(index);
+			let hoverTimer: number | undefined;
+
+			// A quick swipe of the mouse across many rows fires mouseenter on
+			// each one in a few milliseconds — debounce so only the row the
+			// pointer actually settles on triggers a swap.
+			const onEnter = () => {
+				window.clearTimeout(hoverTimer);
+				hoverTimer = window.setTimeout(() => showImage(index), 40);
+			};
+			const onLeave = () => window.clearTimeout(hoverTimer);
+
 			item.addEventListener("mouseenter", onEnter);
-			listeners.push(() => item.removeEventListener("mouseenter", onEnter));
+			item.addEventListener("mouseleave", onLeave);
+			listeners.push(() => {
+				item.removeEventListener("mouseenter", onEnter);
+				item.removeEventListener("mouseleave", onLeave);
+				window.clearTimeout(hoverTimer);
+			});
 		});
 
 		return () => listeners.forEach((cleanup) => cleanup());
