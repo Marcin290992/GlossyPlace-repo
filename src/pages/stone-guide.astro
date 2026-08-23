@@ -57,6 +57,11 @@ const stoneData = stones.map((stone, index) => ({
 			<div class="guide-layout">
 				<div class="guide-preview-pane">
 					<div class="guide-preview-wrapper" id="guide-preview"></div>
+					<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
+						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M9 6l6 6-6 6" />
+						</svg>
+					</span>
 				</div>
 
 				<ul class="guide-list" id="guide-list">
@@ -91,12 +96,6 @@ const stoneData = stones.map((stone, index) => ({
 			<a href="/shop" class="guide-closing-cta">Shop the Collection</a>
 		</section>
 	</main>
-
-	<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
-		<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-			<path d="M9 6l6 6-6 6" />
-		</svg>
-	</span>
 
 	<button type="button" id="guide-back-to-top" class="guide-back-to-top" aria-label="Back to top">
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -451,31 +450,21 @@ const stoneData = stones.map((stone, index) => ({
 			border-color: transparent;
 		}
 
-		/* A single indicator fixed to the viewport (in the list's left
-		   gutter, not on the photo) rather than one per row — it never
-		   moves, it just lights up once scrolling has picked out a stone
-		   to show, roughly level with where a row activates. */
+		/* A single indicator attached to the pinned photo itself (not one
+		   per row) rather than fixed to the viewport — as a child of the
+		   sticky pane it inherits the exact same sticky behaviour, so it
+		   sits right below the photo whether the pane is stuck or still
+		   in normal flow, and is simply always there, no show/hide logic
+		   needed. */
 		.guide-active-indicator {
 			display: flex;
-			position: fixed;
-			/* Always below the pinned photo (top:111px, 45vh tall once
-			   stuck) so it never sits on top of it — the indicator itself
-			   is only made visible after the first real scroll activation
-			   (see script), which avoids the pre-scroll state where the
-			   photo hasn't reached its stuck position yet either. */
-			left: 12px;
-			top: calc(111px + 45vh + 24px);
+			position: absolute;
+			left: 0;
+			bottom: -8px;
 			z-index: 5;
 			align-items: center;
 			justify-content: center;
 			color: #b8a68a;
-			opacity: 0;
-			pointer-events: none;
-			transition: opacity 0.3s ease;
-		}
-
-		.guide-active-indicator.visible {
-			opacity: 1;
 		}
 
 		.guide-back-to-top {
@@ -653,7 +642,6 @@ const stoneData = stones.map((stone, index) => ({
 	const stoneData: StoneRecord[] = dataEl ? JSON.parse(dataEl.dataset.stones || "[]") : [];
 
 	const previewContainer = document.getElementById("guide-preview");
-	const activeIndicator = document.getElementById("guide-active-indicator");
 	const items = document.querySelectorAll<HTMLButtonElement>(".guide-item");
 
 	const images: HTMLImageElement[] = [];
@@ -760,7 +748,7 @@ const stoneData = stones.map((stone, index) => ({
 			settleTimer = window.setTimeout(() => activate(index, item), 450);
 		}
 
-		const triggers = Array.from(items).map((item, i) => {
+		const triggers = Array.from(items).map((item) => {
 			const index = Number(item.dataset.index);
 			return ScrollTrigger.create({
 				trigger: item,
@@ -768,17 +756,6 @@ const stoneData = stones.map((stone, index) => ({
 				end: "bottom 65%",
 				onEnter: () => scheduleActivate(index, item),
 				onEnterBack: () => scheduleActivate(index, item),
-				// Scrolling back up past the very first stone means we're
-				// above where the photo is guaranteed to be pinned — hide
-				// the indicator again rather than leave it floating over
-				// whatever the photo is doing at that scroll position.
-				onLeaveBack:
-					i === 0
-						? () => {
-								window.clearTimeout(settleTimer);
-								activeIndicator?.classList.remove("visible");
-							}
-						: undefined,
 			});
 		});
 
@@ -786,12 +763,10 @@ const stoneData = stones.map((stone, index) => ({
 			showImage(index);
 			items.forEach((el) => el.classList.remove("active"));
 			item.classList.add("active");
-			activeIndicator?.classList.add("visible");
 		}
 
 		return () => {
 			triggers.forEach((trigger) => trigger.kill());
-			activeIndicator?.classList.remove("visible");
 			window.clearTimeout(settleTimer);
 		};
 	});
