@@ -56,13 +56,7 @@ const stoneData = stones.map((stone, index) => ({
 
 			<div class="guide-layout">
 				<div class="guide-preview-pane">
-					<div class="guide-preview-wrapper" id="guide-preview">
-						<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M9 6l6 6-6 6" />
-							</svg>
-						</span>
-					</div>
+					<div class="guide-preview-wrapper" id="guide-preview"></div>
 				</div>
 
 				<ul class="guide-list" id="guide-list">
@@ -97,6 +91,12 @@ const stoneData = stones.map((stone, index) => ({
 			<a href="/shop" class="guide-closing-cta">Shop the Collection</a>
 		</section>
 	</main>
+
+	<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M9 6l6 6-6 6" />
+		</svg>
+	</span>
 
 	<div id="guide-modal-backdrop" class="guide-modal-backdrop"></div>
 	<div id="guide-modal" class="guide-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="guide-modal-name">
@@ -420,23 +420,22 @@ const stoneData = stones.map((stone, index) => ({
 			opacity: 1;
 		}
 
-		/* A single fixed indicator on the pinned photo itself, rather than
-		   one per row — it never moves, it just lights up once scrolling
-		   has picked out a stone to show. */
+		/* A single indicator fixed to the viewport (in the list's left
+		   gutter, not on the photo) rather than one per row — it never
+		   moves, it just lights up once scrolling has picked out a stone
+		   to show, roughly level with where a row activates. */
 		.guide-active-indicator {
 			display: flex;
-			position: absolute;
-			left: 12px;
-			bottom: 12px;
-			z-index: 3;
+			position: fixed;
+			left: 20px;
+			top: 65vh;
+			z-index: 5;
 			align-items: center;
 			justify-content: center;
-			width: 28px;
-			height: 28px;
-			border-radius: 50%;
-			background: rgba(255, 255, 255, 0.85);
+			transform: translateY(-50%);
 			color: #b8a68a;
 			opacity: 0;
+			pointer-events: none;
 			transition: opacity 0.3s ease;
 		}
 
