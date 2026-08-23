@@ -7,7 +7,10 @@ import ShopByCategory from "../components/ShopByCategory.astro";
 import MoreToExplore from "../components/MoreToExplore.astro";
 import AtYourService from "../components/AtYourService.astro";
 import Newsletter from "../components/Newsletter.astro";
+import FaqAccordion from "../components/FaqAccordion.astro";
+import Testimonials from "../components/Testimonials.astro";
 import { womensImageUrl } from "../data/collectionImages";
+import { faqHighlights } from "../data/faq";
 ---
 
 <BaseLayout title="Glossy Place">
@@ -23,7 +26,9 @@ import { womensImageUrl } from "../data/collectionImages";
 	<CollectionBanner title="Men's Collection" href="/shop" />
 	<ProductGrid title="Discover Collection" collection="discover-collection" />
 	<CollectionBanner title="Kids' Collection" href="/shop" />
+	<Testimonials />
 	<MoreToExplore />
 	<AtYourService />
+	<FaqAccordion categories={[{ title: "", items: faqHighlights }]} viewAllHref="/faq" />
 	<Newsletter />
 </BaseLayout>
