@@ -314,6 +314,11 @@ export class ScrollMask {
 			else if (o.variant === "type") sheet = typeSheet(p, this.stamp);
 			else sheet = irisSheet(p, soft, ox, oy);
 
+			// A fully transparent mask (nothing revealed yet) can still leave a
+			// hairline seam along its edge in some browsers — hide the veil
+			// outright instead of relying on the mask alone at that point.
+			this.veilEl.style.visibility = sheet === VOID ? "hidden" : "visible";
+
 			this.veilEl.style.setProperty("-webkit-mask-image", sheet.image);
 			this.veilEl.style.setProperty("mask-image", sheet.image);
 			this.veilEl.style.setProperty("-webkit-mask-size", sheet.size);

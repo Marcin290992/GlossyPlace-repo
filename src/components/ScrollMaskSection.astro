@@ -131,6 +131,11 @@ const {
 		max-height: calc(100vh - 48px);
 		aspect-ratio: var(--mask-ratio, 3 / 2);
 		overflow: hidden;
+		/* Promotes the clipping box to its own compositing layer so its edge
+		   is pixel-snapped consistently with the animated children inside it
+		   — without this, fractional device pixel ratios (common on Android)
+		   can show a hairline seam along the bottom edge during scroll. */
+		transform: translateZ(0);
 	}
 
 	@media (min-width: 640px) {
@@ -194,7 +199,7 @@ const {
 		justify-content: center;
 		padding: 24px;
 		text-align: center;
-		will-change: opacity, transform;
+		will-change: opacity;
 	}
 
 	@media (min-width: 640px) {
