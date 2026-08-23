@@ -32,28 +32,29 @@ const stoneData = stones.map((stone, index) => ({
 
 <BaseLayout title="Gemstone Guide — Glossy Place">
 	<main class="guide">
-		<div class="guide-sticky-header" id="guide-sticky-header">
-			<section class="guide-intro">
-				<p class="guide-eyebrow">Gemstone Guide</p>
-				<h1 class="guide-title">The Meaning Behind Every Stone</h1>
-				<p class="guide-lead">
-					Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
-					stone to see it up close.
-				</p>
-			</section>
+		<div class="guide-body">
+			<div class="guide-sticky-header" id="guide-sticky-header">
+				<section class="guide-intro">
+					<p class="guide-eyebrow">Gemstone Guide</p>
+					<h1 class="guide-title">The Meaning Behind Every Stone</h1>
+					<p class="guide-lead">
+						Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
+						stone to see it up close.
+					</p>
+				</section>
 
-			<nav class="guide-az-nav" aria-label="Jump to letter">
-				{
-					availableLetters.map((letter) => (
-						<a href={`#guide-letter-${letter}`} class="guide-az-link">
-							{letter}
-						</a>
-					))
-				}
-			</nav>
-		</div>
+				<nav class="guide-az-nav" aria-label="Jump to letter">
+					{
+						availableLetters.map((letter) => (
+							<a href={`#guide-letter-${letter}`} class="guide-az-link">
+								{letter}
+							</a>
+						))
+					}
+				</nav>
+			</div>
 
-		<div class="guide-layout">
+			<div class="guide-layout">
 			<div class="guide-preview-pane">
 				<div class="guide-preview-wrapper" id="guide-preview"></div>
 			</div>
@@ -86,7 +87,14 @@ const stoneData = stones.map((stone, index) => ({
 					)
 				}
 			</ul>
+			</div>
 		</div>
+
+		<section class="guide-closing">
+			<p class="guide-closing-word">Glossyplace</p>
+			<p class="guide-closing-tagline">Jewellery with Positive Energy</p>
+			<a href="/shop" class="guide-closing-cta">Shop the Collection</a>
+		</section>
 	</main>
 
 	<div id="guide-modal-backdrop" class="guide-modal-backdrop"></div>
@@ -193,6 +201,10 @@ const stoneData = stones.map((stone, index) => ({
 		padding: 40px 24px 40px 64px;
 		display: flex;
 		align-items: center;
+		/* Opaque so the padding around the image isn't a transparent gap
+		   the scrolling list can show through — only the wrapper had a
+		   background before, leaving this box's own padding see-through. */
+		background: #fff;
 	}
 
 	.guide-preview-wrapper {
@@ -208,6 +220,59 @@ const stoneData = stones.map((stone, index) => ({
 		width: 60%;
 		list-style: none;
 		padding: 8px 64px 120px 24px;
+	}
+
+	.guide-closing {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 20px;
+		padding: 180px 24px;
+		text-align: center;
+	}
+
+	.guide-closing-word {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 48px;
+		font-weight: 400;
+		letter-spacing: 6px;
+		text-transform: uppercase;
+	}
+
+	.guide-closing-tagline {
+		margin: 0 0 12px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	}
+
+	.guide-closing-cta {
+		padding: 16px 40px;
+		border: 1px solid #111827;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		text-decoration: none;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	@media (hover: hover) {
+		.guide-closing-cta:hover {
+			background: #fff;
+			color: #111827;
+		}
 	}
 
 	.guide-letter-marker {
@@ -332,6 +397,15 @@ const stoneData = stones.map((stone, index) => ({
 		.guide-list {
 			width: 100%;
 			padding: 8px 24px 100px 48px;
+		}
+
+		.guide-closing {
+			padding: 120px 24px;
+		}
+
+		.guide-closing-word {
+			font-size: 34px;
+			letter-spacing: 4px;
 		}
 
 		.guide-item {
