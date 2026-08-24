@@ -73,7 +73,11 @@ const stoneData = stones.map((stone, index) => ({
 								</li>
 							) : (
 								<li>
-									<button type="button" class="guide-item" data-index={entry.index}>
+									<button
+										type="button"
+										class={`guide-item${entry.index === 0 ? " active" : ""}`}
+										data-index={entry.index}
+									>
 										<span class="guide-item-name">{entry.name}</span>
 									<span class="guide-item-desc">{entry.symbol}</span>
 									<span class="guide-item-tags">
@@ -741,10 +745,9 @@ const stoneData = stones.map((stone, index) => ({
 	});
 
 	mm.add("(max-width: 900px)", () => {
-		items[0]?.classList.add("active");
-		// Not shown yet — only once the user has actually scrolled and the
-		// pinned photo has settled into its stuck position, so the fixed
-		// coordinates below it are guaranteed accurate (see activate()).
+		// The first stone already ships marked active in the server-rendered
+		// markup (see the template), so there's no gap where it can flash
+		// unstyled before this script has even finished loading GSAP.
 
 		let settleTimer: number | undefined;
 
