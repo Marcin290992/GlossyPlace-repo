@@ -1,6 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
+// TODO(Sender.net): once you've created a "Workshops waitlist" form in Sender,
+// paste its action URL here. Dashboard: Forms -> your form -> Embed -> copy
+// the <form action="..."> value.
+const WAITLIST_FORM_ACTION = "";
+
 type Statement = {
 	text: string;
 	type: "words" | "letters";
@@ -62,12 +67,35 @@ const details = [
 <BaseLayout title="Workshops — Glossy Place">
 	<main class="workshops">
 		<section class="workshops-hero">
-			<p class="workshops-eyebrow">Workshops</p>
+			<div class="workshops-hero-tags">
+				<p class="workshops-eyebrow">Workshops</p>
+				<span class="workshops-coming-soon">Coming Soon</span>
+			</div>
 			<h1 class="workshops-title">Make Something Truly Your Own</h1>
 			<p class="workshops-lead">
-				Join a hands-on jewellery-making workshop and create a piece that's uniquely yours — guided every step of
-				the way.
+				Hands-on jewellery-making workshops are on their way to Glossyplace. Leave your email and be the first to
+				know when dates open.
 			</p>
+
+			<form
+				class="workshops-waitlist-form"
+				method="post"
+				action={WAITLIST_FORM_ACTION || undefined}
+				data-waitlist-form
+				data-configured={WAITLIST_FORM_ACTION ? "true" : "false"}
+			>
+				<input
+					type="email"
+					name="email"
+					required
+					placeholder="Enter your email address"
+					class="workshops-waitlist-input"
+					aria-label="Email address"
+				/>
+				<button type="submit" class="workshops-waitlist-submit">Join the Waitlist</button>
+			</form>
+			<p class="workshops-waitlist-message" data-waitlist-message role="status" hidden></p>
+
 			<p class="workshops-scroll-hint">Scroll to explore ↓</p>
 		</section>
 
@@ -175,6 +203,77 @@ const details = [
 		font-weight: 600;
 		letter-spacing: 2px;
 		text-transform: uppercase;
+	}
+
+	.workshops-hero-tags {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+	}
+
+	.workshops-coming-soon {
+		padding: 4px 12px;
+		border: 1px solid #b8a68a;
+		border-radius: 999px;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 1.5px;
+		text-transform: uppercase;
+	}
+
+	.workshops-waitlist-form {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+		justify-content: center;
+		gap: 12px;
+		margin-top: 8px;
+	}
+
+	.workshops-waitlist-input {
+		width: 240px;
+		max-width: 100%;
+		padding: 14px 20px;
+		border: 1px solid #ccc7bf;
+		background: #fff;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
+	}
+
+	.workshops-waitlist-input::placeholder {
+		color: #99948c;
+	}
+
+	.workshops-waitlist-submit {
+		padding: 14px 28px;
+		border: none;
+		background: #111827;
+		color: #fff;
+		font-family: "Manrope", sans-serif;
+		font-weight: 600;
+		font-size: 11px;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: opacity 0.2s ease;
+		white-space: nowrap;
+	}
+
+	@media (hover: hover) {
+		.workshops-waitlist-submit:hover {
+			opacity: 0.85;
+		}
+	}
+
+	.workshops-waitlist-message {
+		margin: 8px 0 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 13px;
 	}
 
 	.workshops-section {
@@ -550,5 +649,21 @@ const details = [
 				},
 			}
 		);
+	});
+
+	// --- Waitlist form ---
+	const waitlistForm = document.querySelector<HTMLFormElement>("[data-waitlist-form]");
+	const waitlistMessage = document.querySelector<HTMLElement>("[data-waitlist-message]");
+
+	waitlistForm?.addEventListener("submit", (event) => {
+		if (waitlistForm.dataset.configured !== "true") {
+			event.preventDefault();
+			if (waitlistMessage) {
+				waitlistMessage.textContent = "Waitlist signup isn't connected yet — check back soon.";
+				waitlistMessage.hidden = false;
+			}
+			return;
+		}
+		// Sender.net form action is configured: let the native submit go through.
 	});
 </script>
