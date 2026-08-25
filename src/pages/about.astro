@@ -358,8 +358,27 @@ const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 			start: 0,
 			end: "max",
 			onUpdate: (self) => {
-				gsap.set(progressFill, { scaleY: self.progress });
+				// A short tween instead of an instant set smooths over any
+				// abrupt jumps — e.g. a fast mobile flick reporting several
+				// scroll positions in one frame, or the rubber-band bounce
+				// at the very bottom of the page.
+				gsap.to(progressFill, { scaleY: self.progress, duration: 0.2, ease: "power1.out", overwrite: "auto" });
 			},
+		});
+	}
+
+	// Fade the whole bar out once the site footer comes into view — it's
+	// fixed to the viewport, so without this it keeps floating on top of
+	// the footer for the rest of the scroll instead of stopping where
+	// the page's own content ends.
+	const progressBar = document.querySelector<HTMLElement>(".about-progress");
+	const footer = document.querySelector(".site-footer");
+	if (progressBar && footer) {
+		ScrollTrigger.create({
+			trigger: footer,
+			start: "top bottom",
+			onEnter: () => gsap.to(progressBar, { opacity: 0, duration: 0.3, overwrite: "auto" }),
+			onLeaveBack: () => gsap.to(progressBar, { opacity: 1, duration: 0.3, overwrite: "auto" }),
 		});
 	}
 </script>
