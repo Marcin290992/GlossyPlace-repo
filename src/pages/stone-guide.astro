@@ -402,12 +402,6 @@ const stoneData = await Promise.all(
 		transition: background-color 0.4s ease;
 	}
 
-	/* Briefly highlights the letter a jump landed on, so it's obvious
-	   where the A-Z nav actually took you. */
-	.guide-letter-marker.flash {
-		background: #f4f0ea;
-	}
-
 	.guide-item {
 		display: flex;
 		align-items: center;
@@ -458,6 +452,14 @@ const stoneData = await Promise.all(
 
 
 	@media (min-width: 901px) {
+		/* Briefly highlights the letter a jump landed on, so it's obvious
+		   where the A-Z nav actually took you. Desktop only — on mobile
+		   the letter you tap is already right at the top of the screen,
+		   so the flash is just noise. */
+		.guide-letter-marker.flash {
+			background: #f4f0ea;
+		}
+
 		.guide-list:hover .guide-item {
 			opacity: 0.35;
 		}
