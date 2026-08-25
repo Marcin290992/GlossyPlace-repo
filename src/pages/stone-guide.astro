@@ -198,6 +198,7 @@ const stoneData = await Promise.all(
 		<div class="guide-modal-body">
 			<p class="guide-modal-name" id="guide-modal-name"></p>
 			<p class="guide-modal-symbol" id="guide-modal-symbol"></p>
+			<p class="guide-modal-description" id="guide-modal-description"></p>
 			<div class="guide-modal-tags" id="guide-modal-tags"></div>
 		</div>
 	</div>
@@ -736,6 +737,19 @@ const stoneData = await Promise.all(
 		text-transform: uppercase;
 	}
 
+	.guide-modal-description {
+		margin: 0;
+		max-width: 420px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		line-height: 1.65;
+	}
+
+	.guide-modal-description:empty {
+		display: none;
+	}
+
 	.guide-modal-tags {
 		display: flex;
 		flex-wrap: wrap;
@@ -792,7 +806,7 @@ const stoneData = await Promise.all(
 		new ResizeObserver(syncPaneHeight).observe(previewPane);
 	}
 
-	type StoneRecord = { name: string; symbol: string; meaning: string[]; image: string };
+	type StoneRecord = { name: string; symbol: string; meaning: string[]; image: string; description?: string };
 
 	const dataEl = document.getElementById("guide-stone-data");
 	const stoneData: StoneRecord[] = dataEl ? JSON.parse(dataEl.dataset.stones || "[]") : [];
@@ -948,15 +962,18 @@ const stoneData = await Promise.all(
 	const modalImage = document.getElementById("guide-modal-image");
 	const modalName = document.getElementById("guide-modal-name");
 	const modalSymbol = document.getElementById("guide-modal-symbol");
+	const modalDescription = document.getElementById("guide-modal-description");
 	const modalTags = document.getElementById("guide-modal-tags");
 
 	function openModal(index: number) {
 		const stone = stoneData[index];
-		if (!stone || !modal || !modalBackdrop || !modalImage || !modalName || !modalSymbol || !modalTags) return;
+		if (!stone || !modal || !modalBackdrop || !modalImage || !modalName || !modalSymbol || !modalDescription || !modalTags)
+			return;
 
 		modalImage.innerHTML = `<img src="${stone.image}" alt="${stone.name}">`;
 		modalName.textContent = stone.name;
 		modalSymbol.textContent = stone.symbol;
+		modalDescription.textContent = stone.description ?? "";
 		modalTags.innerHTML = stone.meaning.map((tag) => `<span class="guide-tag">${tag}</span>`).join("");
 
 		modal.classList.add("open");

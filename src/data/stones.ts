@@ -2,16 +2,29 @@ export type Stone = {
 	name: string;
 	symbol: string;
 	meaning: string[];
+	description?: string;
 };
 
 export const stones: Stone[] = [
 	{ name: "African Turquoise", symbol: "Stone of Transformation", meaning: ["Growth", "New opportunities", "Positive change"] },
 	{ name: "Amazonite", symbol: "Stone of Balance", meaning: ["Harmony", "Communication", "Inner peace"] },
-	{ name: "Amethyst", symbol: "Stone of Calm", meaning: ["Tranquillity", "Intuition", "Balance"] },
+	{
+		name: "Amethyst",
+		symbol: "Stone of Calm",
+		meaning: ["Tranquillity", "Intuition", "Balance"],
+		description:
+			"Amethyst has long been valued as a stone of quiet clarity, believed to soothe an overactive mind and restore a sense of inner balance. Its gentle violet tone is traditionally associated with intuition, helping you tune into your own thoughts rather than the noise around you. Worn close to the skin, it's said to bring a calmer, steadier presence to the day.",
+	},
 	{ name: "Apatite", symbol: "Stone of Motivation", meaning: ["Inspiration", "Action", "Growth"] },
 	{ name: "Aquamarine", symbol: "Stone of Harmony", meaning: ["Calm", "Communication", "Clarity"] },
 	{ name: "Aventurine", symbol: "Stone of Luck", meaning: ["Prosperity", "Opportunities", "Optimism"] },
-	{ name: "Baltic Amber", symbol: "Stone of Energy", meaning: ["Energy", "Protection", "Optimism"] },
+	{
+		name: "Baltic Amber",
+		symbol: "Stone of Energy",
+		meaning: ["Energy", "Protection", "Optimism"],
+		description:
+			"Baltic Amber isn't a mineral at all but fossilised tree resin, carrying millions of years of natural history in its warm glow. It's traditionally worn for its protective, grounding energy, believed to shield against negativity while lifting the mood. A warm, sunlit stone with a story as old as the forests it came from.",
+	},
 	{ name: "Black Onyx", symbol: "Stone of Strength", meaning: ["Stability", "Resilience", "Protection"] },
 	{ name: "Black Tourmaline", symbol: "Stone of Protection", meaning: ["Protection", "Grounding", "Energy cleansing"] },
 	{ name: "Blue Agate", symbol: "Stone of Serenity", meaning: ["Calm", "Gentleness", "Communication"] },
@@ -53,12 +66,24 @@ export const stones: Stone[] = [
 	{ name: "Red Sandstone", symbol: "Stone of Energy", meaning: ["Energy", "Motivation", "Confidence"] },
 	{ name: "Rhodonite", symbol: "Stone of the Heart", meaning: ["Love", "Emotional balance", "Forgiveness"] },
 	{ name: "River Stone", symbol: "Stone of Peace", meaning: ["Peace", "Harmony", "Inner balance"] },
-	{ name: "Rose Quartz", symbol: "Stone of Love", meaning: ["Love", "Tenderness", "Emotional harmony"] },
+	{
+		name: "Rose Quartz",
+		symbol: "Stone of Love",
+		meaning: ["Love", "Tenderness", "Emotional harmony"],
+		description:
+			"Rose Quartz is often called the stone of unconditional love, prized for its soft, nurturing energy. It's traditionally worn to open the heart — to love more freely, forgive more easily, and treat yourself with the same tenderness you offer others. A gentle companion for anyone seeking more warmth and emotional balance in daily life.",
+	},
 	{ name: "Ruby", symbol: "Stone of Love", meaning: ["Love", "Passion", "Courage"] },
 	{ name: "Sapphire", symbol: "Stone of Wisdom", meaning: ["Wisdom", "Inner peace", "Strength"] },
 	{ name: "Smoky Quartz", symbol: "Stone of Grounding", meaning: ["Stability", "Calm", "Energy cleansing"] },
 	{ name: "Sunstone", symbol: "Stone of Life", meaning: ["Joy", "Vitality", "Optimism", "Energy"] },
-	{ name: "Tiger's Eye", symbol: "Stone of Courage", meaning: ["Strength", "Confidence", "Determination"] },
+	{
+		name: "Tiger's Eye",
+		symbol: "Stone of Courage",
+		meaning: ["Strength", "Confidence", "Determination"],
+		description:
+			"Tiger's Eye carries a warm, golden shimmer that's long been linked to inner strength and steady confidence. It's traditionally worn as a grounding reminder to trust your own judgement, especially in moments that call for courage or a clear head under pressure. A favourite for anyone stepping into a new challenge.",
+	},
 	{ name: "Turquoise", symbol: "Stone of Protection", meaning: ["Protection", "Communication", "Luck"] },
 	{ name: "White Coral", symbol: "Stone of Harmony", meaning: ["Calm", "Balance", "Protection"] },
 	{ name: "White Jade", symbol: "Stone of Harmony", meaning: ["Calm", "Balance", "Positive energy"] },
