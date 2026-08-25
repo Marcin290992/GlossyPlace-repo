@@ -115,29 +115,29 @@ const stoneData = await Promise.all(
 
 <BaseLayout title="Gemstone Guide — Glossy Place">
 	<main class="guide">
-		<div class="guide-body">
-			<div class="guide-sticky-header" id="guide-sticky-header">
-				<section class="guide-intro">
-					<p class="guide-eyebrow">Gemstone Guide</p>
-					<h1 class="guide-title">The Meaning Behind Every Stone</h1>
-					<p class="guide-lead">
-						Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
-						stone to see it up close.
-					</p>
-				</section>
+		<div class="guide-layout">
+			<div class="guide-sidebar">
+				<div class="guide-sticky-header">
+					<section class="guide-intro">
+						<p class="guide-eyebrow">Gemstone Guide</p>
+						<h1 class="guide-title">The Meaning Behind Every Stone</h1>
+						<p class="guide-lead">
+							Discover the traditional meaning and energy behind each gemstone used in Glossyplace jewellery. Tap any
+							stone to see it up close.
+						</p>
+					</section>
 
-				<nav class="guide-az-nav" aria-label="Jump to letter">
-					{
-						availableLetters.map((letter) => (
-							<a href={`#guide-letter-${letter}`} class="guide-az-link">
-								{letter}
-							</a>
-						))
-					}
-				</nav>
-			</div>
+					<nav class="guide-az-nav" aria-label="Jump to letter">
+						{
+							availableLetters.map((letter) => (
+								<a href={`#guide-letter-${letter}`} class="guide-az-link">
+									{letter}
+								</a>
+							))
+						}
+					</nav>
+				</div>
 
-			<div class="guide-layout">
 				<div class="guide-preview-pane">
 					<div class="guide-preview-wrapper" id="guide-preview"></div>
 					<span class="guide-active-indicator" id="guide-active-indicator" aria-hidden="true">
@@ -146,22 +146,23 @@ const stoneData = await Promise.all(
 						</svg>
 					</span>
 				</div>
+			</div>
 
-				<ul class="guide-list" id="guide-list">
-					{
-						listEntries.map((entry) =>
-							entry.type === "marker" ? (
-								<li class="guide-letter-marker" id={`guide-letter-${entry.letter}`} aria-hidden="true">
-									{entry.letter}
-								</li>
-							) : (
-								<li>
-									<button
-										type="button"
-										class={`guide-item${entry.index === 0 ? " active" : ""}`}
-										data-index={entry.index}
-									>
-										<span class="guide-item-name">{entry.name}</span>
+			<ul class="guide-list" id="guide-list">
+				{
+					listEntries.map((entry) =>
+						entry.type === "marker" ? (
+							<li class="guide-letter-marker" id={`guide-letter-${entry.letter}`} aria-hidden="true">
+								{entry.letter}
+							</li>
+						) : (
+							<li>
+								<button
+									type="button"
+									class={`guide-item${entry.index === 0 ? " active" : ""}`}
+									data-index={entry.index}
+								>
+									<span class="guide-item-name">{entry.name}</span>
 									<span class="guide-item-desc">{entry.symbol}</span>
 									<span class="guide-item-tags">
 										{entry.meaning.map((tag) => (
@@ -174,7 +175,6 @@ const stoneData = await Promise.all(
 					)
 				}
 			</ul>
-			</div>
 		</div>
 
 		<section class="guide-closing">
@@ -215,7 +215,7 @@ const stoneData = await Promise.all(
 		flex-direction: column;
 		gap: 16px;
 		max-width: 720px;
-		padding: 120px 64px 0;
+		padding: 64px 64px 0;
 	}
 
 	.guide-eyebrow {
@@ -245,10 +245,18 @@ const stoneData = await Promise.all(
 		line-height: 1.7;
 	}
 
-	.guide-sticky-header {
+	.guide-sidebar {
 		position: sticky;
 		top: 111px;
-		z-index: 3;
+		z-index: 2;
+		display: flex;
+		width: 40%;
+		height: calc(100vh - 111px);
+		flex-direction: column;
+	}
+
+	.guide-sticky-header {
+		flex-shrink: 0;
 		background: #fff;
 	}
 
@@ -287,14 +295,13 @@ const stoneData = await Promise.all(
 	}
 
 	.guide-preview-pane {
-		position: sticky;
-		top: calc(111px + var(--guide-header-offset, 0px));
-		z-index: 2;
-		width: 40%;
-		height: calc(100vh - 111px - var(--guide-header-offset, 0px));
+		flex: 1;
+		min-height: 0;
+		width: 100%;
 		padding: 40px 24px 40px 64px;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		/* Opaque so the padding around the image isn't a transparent gap
 		   the scrolling list can show through — only the wrapper had a
 		   background before, leaving this box's own padding see-through. */
@@ -303,13 +310,14 @@ const stoneData = await Promise.all(
 
 	.guide-preview-wrapper {
 		position: relative;
-		/* Keep a true 4:3 box — the surrounding whitespace when the pane's
-		   own proportions don't match 4:3 is intentional, not a bug (it's
-		   what makes it look right at the wide reference size). Compute
-		   the width directly so the ratio holds exactly rather than
-		   relying on max-height to clamp it, which can leave the box
-		   wider than 4:3 once squeezed instead of shrinking it whole. */
-		width: min(100%, calc((100vh - 111px - var(--guide-header-offset, 0px)) * 4 / 3));
+		/* width:auto + aspect-ratio only works like an <img>'s "shrink to
+		   fit" when the element has real intrinsic content to size from —
+		   this is an empty div whose only children are position:absolute
+		   (so they don't count), which collapses it to 0×0. Compute the
+		   width directly from the pane's actual measured height instead
+		   (see script) so it holds a true 4:3 ratio without ever exceeding
+		   either the column width or the pane's available height. */
+		width: min(100%, calc(var(--guide-pane-height, 400px) * 4 / 3));
 		aspect-ratio: 4 / 3;
 		overflow: hidden;
 		background: #f4f0ea;
@@ -319,12 +327,12 @@ const stoneData = await Promise.all(
 		margin: 0;
 		width: 60%;
 		list-style: none;
-		/* Bottom padding must be at least the sticky preview pane's own
-		   height — otherwise, near the end of the list, the pane runs out
-		   of room in its containing block and gets pushed off-screen
-		   before the last few stones (and jumps to late letters like W/Y)
-		   can show it in full. */
-		padding: 8px 64px calc(100vh - 111px - var(--guide-header-offset, 0px)) 24px;
+		/* Bottom padding must be at least the sticky sidebar's own height
+		   — otherwise, near the end of the list, the sidebar runs out of
+		   room in its containing block and gets pushed off-screen before
+		   the last few stones (and jumps to late letters like W/Y) can
+		   show it in full. */
+		padding: 8px 64px calc(100vh - 111px) 24px;
 	}
 
 	.guide-closing {
@@ -381,14 +389,14 @@ const stoneData = await Promise.all(
 	}
 
 	.guide-letter-marker {
-		padding: 24px 0 8px;
+		padding: 28px 0 8px;
 		color: #b8a68a;
-		font-family: "Manrope", sans-serif;
-		font-size: 11px;
-		font-weight: 600;
-		letter-spacing: 2px;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 28px;
+		font-weight: 400;
+		letter-spacing: 1px;
 		text-transform: uppercase;
-		scroll-margin-top: calc(111px + var(--guide-header-offset, 0px) + 24px);
+		scroll-margin-top: 135px;
 	}
 
 	.guide-item {
@@ -453,6 +461,16 @@ const stoneData = await Promise.all(
 	}
 
 	@media (max-width: 900px) {
+		/* The sidebar wrapper only exists to give desktop a single sticky
+		   left column (header + photo stacked together). On mobile it
+		   needs to disappear from the box model entirely so its two
+		   children fall back to being plain stacked items in
+		   .guide-layout's column flow, each keeping its own existing
+		   mobile behaviour below. */
+		.guide-sidebar {
+			display: contents;
+		}
+
 		.guide-sticky-header {
 			position: static;
 		}
@@ -474,7 +492,9 @@ const stoneData = await Promise.all(
 		}
 
 		.guide-preview-pane {
+			position: sticky;
 			top: 111px;
+			z-index: 2;
 			width: 100%;
 			height: 45vh;
 			padding: 16px 24px;
@@ -730,17 +750,17 @@ const stoneData = await Promise.all(
 
 	gsap.registerPlugin(ScrollTrigger);
 
-	// On desktop the intro + A-Z nav bar is pinned above the preview image,
-	// so the preview pane's own sticky offset needs to sit below it. Track
-	// its real height (fonts/content can shift it) instead of guessing a
-	// fixed pixel value.
-	const stickyHeader = document.getElementById("guide-sticky-header");
-	if (stickyHeader) {
-		const syncHeaderOffset = () => {
-			document.documentElement.style.setProperty("--guide-header-offset", `${stickyHeader.offsetHeight}px`);
+	// The preview wrapper's width is computed from this pane's real
+	// rendered height (see the CSS) — it's the remaining space in the
+	// sidebar after the intro/A-Z header, which flexbox already sizes
+	// correctly but which no static CSS formula can express on its own.
+	const previewPane = document.querySelector<HTMLElement>(".guide-preview-pane");
+	if (previewPane) {
+		const syncPaneHeight = () => {
+			document.documentElement.style.setProperty("--guide-pane-height", `${previewPane.clientHeight}px`);
 		};
-		syncHeaderOffset();
-		new ResizeObserver(syncHeaderOffset).observe(stickyHeader);
+		syncPaneHeight();
+		new ResizeObserver(syncPaneHeight).observe(previewPane);
 	}
 
 	type StoneRecord = { name: string; symbol: string; meaning: string[]; image: string };
