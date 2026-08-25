@@ -909,8 +909,19 @@ const stoneData = await Promise.all(
 
 		const triggers = Array.from(items).map((item) => {
 			const index = Number(item.dataset.index);
+			// The first stone after a letter marker leaves a gap between the
+			// previous stone's trigger ending and this one's starting — the
+			// marker's own height (bigger now that it's a large section
+			// divider) sits in between, un-tracked by either. Anchor the
+			// trigger to the marker itself when present, so the new letter's
+			// first stone activates right as its divider comes into range
+			// instead of leaving the previous stone stuck active over a
+			// blank gap.
+			const li = item.closest("li");
+			const previous = li?.previousElementSibling;
+			const marker = previous?.classList.contains("guide-letter-marker") ? previous : null;
 			return ScrollTrigger.create({
-				trigger: item,
+				trigger: marker ?? item,
 				start: "top 65%",
 				end: "bottom 65%",
 				onEnter: () => scheduleActivate(index, item),
