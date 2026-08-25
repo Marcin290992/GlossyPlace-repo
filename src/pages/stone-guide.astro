@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { stones } from "../data/stones";
 
@@ -7,6 +8,82 @@ const placeholderImages = [
 	"/images/about/placeholder-lifestyle.svg",
 	"/images/about/placeholder-detail.svg",
 ];
+
+// Real client photos, keyed by exact filename in that folder. A handful of
+// filenames don't match the stone name 1:1 (typos, "jadeite" vs "jade",
+// missing apostrophes) — mapped explicitly below rather than guessed at
+// runtime. Stones with no entry here (or no matching file) fall back to a
+// placeholder until a real photo is supplied.
+const stonePhotoFiles = import.meta.glob<{ default: ImageMetadata }>("../images/Kamienie Webfile/*.webp", {
+	eager: true,
+});
+
+function getStonePhoto(filename: string) {
+	return stonePhotoFiles[`../images/Kamienie Webfile/${filename}`]?.default;
+}
+
+const stonePhotoFilenames: Record<string, string> = {
+	"African Turquoise": "African Turquoise.webp",
+	Amazonite: "Amazonite.webp",
+	Amethyst: "Amethyst.webp",
+	Apatite: "Apatite.webp",
+	Aquamarine: "Aquamarine.webp",
+	Aventurine: "Green Aventurine.webp",
+	"Baltic Amber": "Baltic Amber.webp",
+	"Black Onyx": "Black Onyx.webp",
+	"Black Tourmaline": "Black tourmaline.webp",
+	"Blue Agate": "Blue Agate.webp",
+	"Blue Sandstone": "Blue Sandstone.webp",
+	"Blue Tiger's Eye": "Blue Tiger Eye.webp",
+	Bronzite: "Bronzite.webp",
+	"Burma Jade": "Burma jadeite.webp",
+	Carnelian: "Carnelian.webp",
+	Citrine: "Citrine.webp",
+	"Clear Quartz": "Clear quartz.webp",
+	"Dalmatian Stone": "Dalmatian Stone.webp",
+	Garnet: "Garnet.webp",
+	Howlite: "Howlite.webp",
+	"Indian Agate": "Indian agat.webp",
+	Jade: "Green jadeite.webp",
+	Jasper: "Jasper.webp",
+	Kunzite: "Kunzite.webp",
+	"Lapis Lazuli": "Lapis Lazuli.webp",
+	Larimar: "Larimar.webp",
+	"Lava Stone": "Lava Stone.webp",
+	Magnesite: "Magnesite.webp",
+	"Mahogany Obsidian": "Mahogany Obsidian.webp",
+	Malachite: "Malachite.webp",
+	Moonstone: "Moonstone.webp",
+	Mookaite: "Mookaite.webp",
+	Morganite: "Morganite.webp",
+	"Moss Agate": "Moss Agate.webp",
+	"Mother of Pearl": "Mother of Pearl.webp",
+	Olivine: "Olivine.webp",
+	Opalite: "Opalite.webp",
+	Pearl: "Pearl.webp",
+	Peridot: "Peridot.webp",
+	"Picture Jasper": "Picture Jasper.webp",
+	"Pink Jade": "Pink jadeite.webp",
+	"Pink Tourmaline": "Pink turmalin.webp",
+	"Red Agate": "Red Agate.webp",
+	"Red Sandstone": "Red sandstone.webp",
+	Rhodonite: "Rhodonite.webp",
+	"River Stone": "River stone.webp",
+	"Rose Quartz": "Rose Quartz.webp",
+	Ruby: "Ruby.webp",
+	Sapphire: "Sapphire.webp",
+	"Smoky Quartz": "Smoky quartz.webp",
+	Sunstone: "Sunstone.webp",
+	"Tiger's Eye": "Tiger’s Eye.webp",
+	Turquoise: "Turquoise.webp",
+	"White Coral": "White coral.webp",
+	"White Jade": "White Jade.webp",
+	"White Porcelain Jade": "White Porcelain Jade.webp",
+	"White Turquoise": "White turquise.webp",
+	"Yellow Calcite": "Yellow Calcite.webp",
+	"Yellow Jade": "Yellow Jadeite.webp",
+	Zircon: "Zircon.webp",
+};
 
 type ListEntry = { type: "marker"; letter: string } | { type: "item"; index: number; name: string; symbol: string; meaning: string[] };
 
@@ -24,10 +101,16 @@ stones.forEach((stone, index) => {
 
 const availableLetters = [...seenLetters];
 
-const stoneData = stones.map((stone, index) => ({
-	...stone,
-	image: stone.image ?? placeholderImages[index % placeholderImages.length],
-}));
+const stoneData = await Promise.all(
+	stones.map(async (stone, index) => {
+		const filename = stonePhotoFilenames[stone.name];
+		const photo = filename ? getStonePhoto(filename) : undefined;
+		const image = photo
+			? (await getImage({ src: photo, width: 1200 })).src
+			: placeholderImages[index % placeholderImages.length];
+		return { ...stone, image };
+	})
+);
 ---
 
 <BaseLayout title="Gemstone Guide — Glossy Place">
