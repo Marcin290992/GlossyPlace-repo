@@ -757,7 +757,13 @@ const stoneData = await Promise.all(
 	const previewPane = document.querySelector<HTMLElement>(".guide-preview-pane");
 	if (previewPane) {
 		const syncPaneHeight = () => {
-			document.documentElement.style.setProperty("--guide-pane-height", `${previewPane.clientHeight}px`);
+			// clientHeight includes the pane's own top/bottom padding —
+			// subtract it so the var reflects the actual content area the
+			// photo has to fit in, not the pane's full box height.
+			const style = getComputedStyle(previewPane);
+			const available =
+				previewPane.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+			document.documentElement.style.setProperty("--guide-pane-height", `${available}px`);
 		};
 		syncPaneHeight();
 		new ResizeObserver(syncPaneHeight).observe(previewPane);
