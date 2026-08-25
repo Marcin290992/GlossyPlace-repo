@@ -439,16 +439,6 @@ const stoneData = await Promise.all(
 		gap: 8px;
 	}
 
-	.guide-tag {
-		padding: 4px 10px;
-		border: 1px solid #e5e7eb;
-		border-radius: 20px;
-		color: #6b7280;
-		font-family: "Manrope", sans-serif;
-		font-size: 10px;
-		letter-spacing: 0.5px;
-		text-transform: uppercase;
-	}
 
 	@media (min-width: 901px) {
 		.guide-list:hover .guide-item {
@@ -679,15 +669,17 @@ const stoneData = await Promise.all(
 	.guide-modal-body {
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-		padding: 28px 28px 32px;
+		align-items: center;
+		gap: 14px;
+		padding: 32px 28px 36px;
+		text-align: center;
 	}
 
 	.guide-modal-name {
 		margin: 0;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
-		font-size: 28px;
+		font-size: 30px;
 		font-weight: 400;
 	}
 
@@ -697,20 +689,40 @@ const stoneData = await Promise.all(
 		font-family: "Manrope", sans-serif;
 		font-size: 12px;
 		font-weight: 600;
-		letter-spacing: 1px;
+		letter-spacing: 2px;
 		text-transform: uppercase;
 	}
 
 	.guide-modal-tags {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: center;
 		gap: 8px;
-		margin-top: 8px;
+		margin-top: 4px;
+	}
+
+	/* Base pill styling for .guide-tag lives here (global), not in the
+	   scoped <style> block above — the modal's tags are built client-side
+	   via innerHTML, so they never receive Astro's scoping attribute and
+	   a scoped rule would silently never match them (same class of bug
+	   as Testimonials/CartDrawer elsewhere in this project). The list's
+	   own server-rendered tags match this fine too, since global rules
+	   don't care about scope either way. */
+	.guide-tag {
+		padding: 4px 10px;
+		border: 1px solid #e5e7eb;
+		border-radius: 20px;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 10px;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
 	}
 
 	.guide-modal-tags .guide-tag {
 		font-size: 11px;
 	}
+
 </style>
 
 <script>
