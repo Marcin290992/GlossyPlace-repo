@@ -234,14 +234,20 @@ const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 	/* Fixed at the right edge for the whole page — the site hides its
 	   native scrollbar everywhere (see global.css), so on a long,
 	   section-by-section page like this one there's otherwise no visual
-	   sense of how much is left. */
+	   sense of how much is left. Anchored to the large-viewport unit
+	   (with plain vh as a fallback) rather than the live viewport: on
+	   mobile the browser's address bar collapses right as scrolling
+	   starts, growing the live viewport height, which would otherwise
+	   shift a plain top:50%/vh center downward mid-scroll. */
 	.about-progress {
 		position: fixed;
-		top: 50%;
+		top: 50vh;
+		top: 50lvh;
 		right: 24px;
 		z-index: 15;
 		transform: translateY(-50%);
 		height: 40vh;
+		height: 40lvh;
 		pointer-events: none;
 	}
 
@@ -267,6 +273,7 @@ const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 		.about-progress {
 			right: 14px;
 			height: 30vh;
+			height: 30lvh;
 		}
 	}
 
