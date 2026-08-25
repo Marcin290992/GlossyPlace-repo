@@ -272,11 +272,11 @@ const stoneData = await Promise.all(
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
-		color: #6b7280;
+		width: 34px;
+		height: 34px;
+		color: #b8a68a;
 		font-family: "Manrope", sans-serif;
-		font-size: 11px;
+		font-size: 14px;
 		font-weight: 600;
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
@@ -389,7 +389,8 @@ const stoneData = await Promise.all(
 	}
 
 	.guide-letter-marker {
-		padding: 28px 0 8px;
+		padding: 28px 10px 8px;
+		margin: 0 -10px;
 		color: #b8a68a;
 		font-family: "Cormorant Garamond", serif;
 		font-size: 28px;
@@ -397,6 +398,13 @@ const stoneData = await Promise.all(
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		scroll-margin-top: 135px;
+		transition: background-color 0.4s ease;
+	}
+
+	/* Briefly highlights the letter a jump landed on, so it's obvious
+	   where the A-Z nav actually took you. */
+	.guide-letter-marker.flash {
+		background: #f4f0ea;
 	}
 
 	.guide-item {
@@ -961,4 +969,15 @@ const stoneData = await Promise.all(
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		});
 	}
+
+	// --- A-Z nav: briefly flash the letter a jump landed on ---
+	document.querySelectorAll<HTMLAnchorElement>(".guide-az-link").forEach((link) => {
+		link.addEventListener("click", () => {
+			const targetId = link.getAttribute("href")?.slice(1);
+			const target = targetId ? document.getElementById(targetId) : null;
+			if (!target) return;
+			target.classList.add("flash");
+			window.setTimeout(() => target.classList.remove("flash"), 1200);
+		});
+	});
 </script>
