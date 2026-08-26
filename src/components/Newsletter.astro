@@ -84,7 +84,7 @@ const SENDER_FORM_ACTION = "";
 
 	.newsletter-submit {
 		padding: 16px 36px;
-		border: none;
+		border: 1px solid #111827;
 		background: #111827;
 		color: #fff;
 		font-family: "Manrope", sans-serif;
@@ -93,12 +93,15 @@ const SENDER_FORM_ACTION = "";
 		letter-spacing: 2.5px;
 		text-transform: uppercase;
 		cursor: pointer;
-		transition: opacity 0.2s ease;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
 	}
 
 	@media (hover: hover) {
 		.newsletter-submit:hover {
-			opacity: 0.85;
+			background: #fff;
+			color: #111827;
 		}
 	}
 
