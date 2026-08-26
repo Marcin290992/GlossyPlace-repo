@@ -943,6 +943,12 @@ const stoneData = await Promise.all(
 				trigger: marker ?? item,
 				start: "top 65%",
 				end: "bottom 65%",
+				// Each trigger's active zone is only as tall as its own row, so
+				// a fast flick can skip clean over it in a single scroll tick —
+				// GSAP normally just drops that callback. fastScrollEnd forces
+				// it to fire once the fast scroll settles, which is what was
+				// making the highlight "lose track" on quick upward scrolls.
+				fastScrollEnd: true,
 				onEnter: () => scheduleActivate(index, item),
 				onEnterBack: () => scheduleActivate(index, item),
 			});
