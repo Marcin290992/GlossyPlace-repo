@@ -1,8 +1,6 @@
-@import "@fontsource/cormorant-garamond/400.css";
-@import "@fontsource/cormorant-garamond/500.css";
-@import "@fontsource/manrope/400.css";
-@import "@fontsource/manrope/500.css";
-@import "@fontsource/manrope/600.css";
+/* @font-face rules for these weights live in BaseLayout.astro (latin-only,
+   font-display: block — see the comment there for why they're not just the
+   default @fontsource imports). */
 
 *,
 *::before,

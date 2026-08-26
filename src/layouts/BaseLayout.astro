@@ -5,7 +5,9 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import CartDrawer from "../components/CartDrawer.astro";
 import cormorantRegular from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-400-normal.woff2?url";
+import cormorantMedium from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url";
 import manropeRegular from "@fontsource/manrope/files/manrope-latin-400-normal.woff2?url";
+import manropeMedium from "@fontsource/manrope/files/manrope-latin-500-normal.woff2?url";
 import manropeSemibold from "@fontsource/manrope/files/manrope-latin-600-normal.woff2?url";
 
 interface Props {
@@ -23,11 +25,32 @@ const { title } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<!-- Preload the most-used font weights so they're in place before
-		     first paint, instead of flashing a fallback font first. -->
+		<!-- Preload every weight in use so they're in place before first
+		     paint, instead of flashing a fallback font first. -->
 		<link rel="preload" href={cormorantRegular} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={cormorantMedium} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={manropeRegular} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={manropeMedium} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={manropeSemibold} as="font" type="font/woff2" crossorigin />
+		<!-- Own @font-face rules (latin subset only — this site is
+		     English-only) instead of importing @fontsource's default CSS,
+		     which hardcodes font-display: swap. swap paints the fallback
+		     font immediately and always re-flows once the webfont arrives —
+		     visible on every load, even with the preload above. block
+		     paints nothing for a brief moment instead, so the preloaded
+		     font (which lands well within that window) is what actually
+		     gets seen first. CSS custom properties don't resolve inside
+		     @font-face src, so the URLs are interpolated directly via
+		     set:html rather than define:vars. -->
+		<style
+			set:html={`
+				@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 400; font-display: block; src: url(${cormorantRegular}) format("woff2"); }
+				@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: block; src: url(${cormorantMedium}) format("woff2"); }
+				@font-face { font-family: "Manrope"; font-style: normal; font-weight: 400; font-display: block; src: url(${manropeRegular}) format("woff2"); }
+				@font-face { font-family: "Manrope"; font-style: normal; font-weight: 500; font-display: block; src: url(${manropeMedium}) format("woff2"); }
+				@font-face { font-family: "Manrope"; font-style: normal; font-weight: 600; font-display: block; src: url(${manropeSemibold}) format("woff2"); }
+			`}
+		/>
 	</head>
 	<body>
 		<AnnouncementBar />
