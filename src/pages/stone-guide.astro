@@ -931,11 +931,15 @@ const stoneData = await Promise.all(
 			// The first stone after a letter marker leaves a gap between the
 			// previous stone's trigger ending and this one's starting — the
 			// marker's own height (bigger now that it's a large section
-			// divider) sits in between, un-tracked by either. Anchor the
-			// trigger to the marker itself when present, so the new letter's
-			// first stone activates right as its divider comes into range
-			// instead of leaving the previous stone stuck active over a
-			// blank gap.
+			// divider) sits in between, un-tracked by either. Starting the
+			// zone at the marker (instead of the stone itself) closes that
+			// gap scrolling down. But scrolling up, the zone still has to
+			// reach all the way down to the stone's own row — anchoring
+			// *only* to the marker made the highlight freeze on the previous
+			// letter until the scroll passed the marker too, well after the
+			// stone itself was already on screen. endTrigger stretches the
+			// zone across both elements so either direction activates as
+			// soon as either one reaches the line.
 			const li = item.closest("li");
 			const previous = li?.previousElementSibling;
 			const marker = previous?.classList.contains("guide-letter-marker") ? previous : null;
@@ -943,6 +947,7 @@ const stoneData = await Promise.all(
 				trigger: marker ?? item,
 				start: "top 65%",
 				end: "bottom 65%",
+				endTrigger: marker ? item : undefined,
 				// Each trigger's active zone is only as tall as its own row, so
 				// a fast flick can skip clean over it in a single scroll tick —
 				// GSAP normally just drops that callback. fastScrollEnd forces
