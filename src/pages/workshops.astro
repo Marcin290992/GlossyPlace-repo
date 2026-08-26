@@ -250,7 +250,7 @@ const details = [
 
 	.workshops-waitlist-submit {
 		padding: 14px 28px;
-		border: none;
+		border: 1px solid #111827;
 		background: #111827;
 		color: #fff;
 		font-family: "Manrope", sans-serif;
@@ -259,13 +259,16 @@ const details = [
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		cursor: pointer;
-		transition: opacity 0.2s ease;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
 		white-space: nowrap;
 	}
 
 	@media (hover: hover) {
 		.workshops-waitlist-submit:hover {
-			opacity: 0.85;
+			background: #fff;
+			color: #111827;
 		}
 	}
 

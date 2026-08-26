@@ -325,6 +325,7 @@ const stoneData = await Promise.all(
 		aspect-ratio: 4 / 3;
 		overflow: hidden;
 		background: #f4f0ea;
+		cursor: pointer;
 	}
 
 	.guide-list {
@@ -600,6 +601,7 @@ const stoneData = await Promise.all(
 			align-items: center;
 			justify-content: center;
 			color: #b8a68a;
+			pointer-events: none;
 		}
 
 		.guide-back-to-top {
@@ -1007,6 +1009,12 @@ const stoneData = await Promise.all(
 
 	items.forEach((item) => {
 		item.addEventListener("click", () => openModal(Number(item.dataset.index)));
+	});
+
+	// Tapping/clicking the preview photo itself opens the modal too, for
+	// whichever stone it's currently showing — not just the list row.
+	previewContainer?.addEventListener("click", () => {
+		if (currentIndex !== -1) openModal(currentIndex);
 	});
 
 	modalClose?.addEventListener("click", closeModal);
