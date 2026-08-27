@@ -27,9 +27,17 @@ export default defineType({
 		defineField({
 			name: "coverImage",
 			title: "Cover image",
+			description: "Shown as the thumbnail on the Journal listing page.",
 			type: "image",
 			options: { hotspot: true },
 			validation: (rule) => rule.required(),
+		}),
+		defineField({
+			name: "headerImage",
+			title: "Header image",
+			description: "Shown as the large banner at the top of the post itself. Optional — leave empty to reuse the cover image.",
+			type: "image",
+			options: { hotspot: true },
 		}),
 		defineField({
 			name: "excerpt",

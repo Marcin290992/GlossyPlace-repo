@@ -29,6 +29,7 @@ type Post = {
 	title: string;
 	category: string | null;
 	coverImage: unknown;
+	headerImage: unknown | null;
 	body: unknown;
 	publishedAt: string;
 	related: RelatedPost[];
@@ -39,6 +40,7 @@ const post = await sanityClient.fetch<Post | null>(
 		title,
 		category,
 		coverImage,
+		headerImage,
 		body,
 		publishedAt,
 		"related": *[_type == "post" && slug.current != $slug] | order(publishedAt desc)[0...3]{
@@ -67,18 +69,24 @@ const components = {
 	type: { image: BodyImage },
 };
 
-// A fixed wide/short hero box forces a hard crop on portrait cover photos —
-// the box's own ratio now follows the source image instead, clamped so a
-// very tall or very wide original still stays reasonable (max-height in the
-// CSS below is the other half of that safety net, for desktop widths).
-const { aspectRatio } = getImageDimensions(post.coverImage as Parameters<typeof getImageDimensions>[0]);
+// The header banner reuses the cover image unless a separate one was
+// uploaded — the cover is picked for how it crops as a small listing
+// thumbnail, which isn't necessarily the best photo for the big banner
+// shown when the post is actually open.
+const heroImage = post.headerImage ?? post.coverImage;
+
+// A fixed wide/short hero box forces a hard crop on portrait photos — the
+// box's own ratio now follows the source image instead, clamped so a very
+// tall or very wide original still stays reasonable (max-height in the CSS
+// below is the other half of that safety net, for desktop widths).
+const { aspectRatio } = getImageDimensions(heroImage as Parameters<typeof getImageDimensions>[0]);
 const heroRatio = Math.min(Math.max(aspectRatio, 1), 2);
 ---
 
 <BaseLayout title={`${post.title} — Glossy Place Journal`}>
 	<article class="journal-post">
 		<div class="journal-post-hero" style={`--hero-ratio: ${heroRatio};`}>
-			<img class="journal-post-hero-image" src={urlFor(post.coverImage).width(1800).url()} alt="" />
+			<img class="journal-post-hero-image" src={urlFor(heroImage).width(1800).url()} alt="" />
 			<div class="journal-post-hero-scrim"></div>
 			<div class="journal-post-hero-content">
 				{post.category && <p class="journal-post-category">{post.category}</p>}
