@@ -1,95 +1,34 @@
 ---
-// Temporary "coming soon" gate for the homepage while the shop isn't fully
-// open yet — deliberately standalone (no BaseLayout, no header/nav/footer)
-// so there's genuinely nowhere else to click from here. The real homepage
-// this replaces is still intact in git history; swap it back once launched.
-import cormorantMedium from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url";
-import manropeRegular from "@fontsource/manrope/files/manrope-latin-400-normal.woff2?url";
-import manropeSemibold from "@fontsource/manrope/files/manrope-latin-600-normal.woff2?url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import CollectionBanner from "../components/CollectionBanner.astro";
+import ShopByCategory from "../components/ShopByCategory.astro";
+import MoreToExplore from "../components/MoreToExplore.astro";
+import AtYourService from "../components/AtYourService.astro";
+import Newsletter from "../components/Newsletter.astro";
+import FaqAccordion from "../components/FaqAccordion.astro";
+import Testimonials from "../components/Testimonials.astro";
+import { womensImageUrl } from "../data/collectionImages";
+import { faqHighlights } from "../data/faq";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<title>Glossyplace — Coming Soon</title>
-		<link rel="preload" href={cormorantMedium} as="font" type="font/woff2" crossorigin />
-		<link rel="preload" href={manropeRegular} as="font" type="font/woff2" crossorigin />
-		<link rel="preload" href={manropeSemibold} as="font" type="font/woff2" crossorigin />
-		<style
-			set:html={`
-				@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: block; src: url(${cormorantMedium}) format("woff2"); }
-				@font-face { font-family: "Manrope"; font-style: normal; font-weight: 400; font-display: block; src: url(${manropeRegular}) format("woff2"); }
-				@font-face { font-family: "Manrope"; font-style: normal; font-weight: 600; font-display: block; src: url(${manropeSemibold}) format("woff2"); }
-			`}
-		/>
-	</head>
-	<body>
-		<main class="coming-soon">
-			<p class="coming-soon-wordmark">GLOSSYPLACE</p>
-			<p class="coming-soon-eyebrow">Coming Soon</p>
-			<p class="coming-soon-lead">We're putting the finishing touches on something beautiful.</p>
-		</main>
-	</body>
-</html>
-
-<style>
-	* {
-		box-sizing: border-box;
-	}
-
-	html,
-	body {
-		margin: 0;
-		height: 100%;
-	}
-
-	.coming-soon {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 20px;
-		background: #fff;
-		text-align: center;
-		padding: 24px;
-	}
-
-	.coming-soon-wordmark {
-		margin: 0;
-		color: #111827;
-		font-family: "Cormorant Garamond", serif;
-		font-size: 40px;
-		font-weight: 500;
-		letter-spacing: 5px;
-	}
-
-	.coming-soon-eyebrow {
-		margin: 0;
-		color: #b8a68a;
-		font-family: "Manrope", sans-serif;
-		font-size: 12px;
-		font-weight: 600;
-		letter-spacing: 3px;
-		text-transform: uppercase;
-	}
-
-	.coming-soon-lead {
-		margin: 0;
-		max-width: 400px;
-		color: #6b7280;
-		font-family: "Manrope", sans-serif;
-		font-size: 15px;
-		line-height: 1.7;
-	}
-
-	@media (min-width: 640px) {
-		.coming-soon-wordmark {
-			font-size: 54px;
-			letter-spacing: 7px;
-		}
-	}
-</style>
+<BaseLayout title="Glossy Place">
+	<Hero />
+	<ProductGrid title="Find Your Ritual" collection="our-collections" />
+	<CollectionBanner
+		title="Women's Collection"
+		href="/shop"
+		imageUrl={womensImageUrl}
+		imageAlt="Woman relaxing in silk loungewear wearing a Glossy Place bracelet"
+	/>
+	<ShopByCategory />
+	<CollectionBanner title="Men's Collection" href="/shop" />
+	<ProductGrid title="Discover Collection" collection="discover-collection" />
+	<CollectionBanner title="Kids' Collection" href="/shop" />
+	<Testimonials />
+	<MoreToExplore />
+	<AtYourService />
+	<FaqAccordion categories={[{ title: "", items: faqHighlights }]} viewAllHref="/faq" />
+	<Newsletter />
+</BaseLayout>
