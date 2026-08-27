@@ -1,0 +1,145 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sanityClient } from "sanity:client";
+import { urlFor } from "../../lib/sanityImage";
+import { PortableText } from "astro-portabletext";
+
+export async function getStaticPaths() {
+	const posts = await sanityClient.fetch<{ slug: string }[]>(
+		`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`
+	);
+	return posts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+
+type Post = {
+	title: string;
+	coverImage: unknown;
+	body: unknown;
+	publishedAt: string;
+};
+
+const post = await sanityClient.fetch<Post | null>(
+	`*[_type == "post" && slug.current == $slug][0]{ title, coverImage, body, publishedAt }`,
+	{ slug }
+);
+
+if (!post) {
+	return Astro.redirect("/journal");
+}
+
+const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-GB", {
+	day: "numeric",
+	month: "long",
+	year: "numeric",
+});
+---
+
+<BaseLayout title={`${post.title} — Glossy Place Journal`}>
+	<article class="journal-post">
+		<div class="journal-post-header">
+			<p class="journal-post-date">{formattedDate}</p>
+			<h1 class="journal-post-title">{post.title}</h1>
+		</div>
+		<div class="journal-post-cover">
+			<img src={urlFor(post.coverImage).width(1600).url()} alt="" />
+		</div>
+		<div class="journal-post-body">
+			<PortableText value={post.body} />
+		</div>
+		<a href="/journal" class="journal-post-back">← Back to Journal</a>
+	</article>
+</BaseLayout>
+
+<style>
+	.journal-post {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 64px 24px 100px;
+	}
+
+	.journal-post-header {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		text-align: center;
+		margin-bottom: 32px;
+	}
+
+	.journal-post-date {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 1.5px;
+		text-transform: uppercase;
+	}
+
+	.journal-post-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 34px;
+		font-weight: 400;
+	}
+
+	@media (min-width: 640px) {
+		.journal-post-title {
+			font-size: 42px;
+		}
+	}
+
+	.journal-post-cover {
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		background: #f4f0ea;
+		margin-bottom: 40px;
+	}
+
+	.journal-post-cover img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.journal-post-body {
+		color: #374151;
+		font-family: "Manrope", sans-serif;
+		font-size: 16px;
+		line-height: 1.8;
+	}
+
+	.journal-post-body :global(h2) {
+		margin: 40px 0 12px;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 26px;
+		font-weight: 500;
+	}
+
+	.journal-post-body :global(p) {
+		margin: 0 0 20px;
+	}
+
+	.journal-post-body :global(img) {
+		width: 100%;
+		height: auto;
+		margin: 32px 0;
+	}
+
+	.journal-post-back {
+		display: inline-block;
+		margin-top: 48px;
+		color: #111827;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		text-decoration: underline;
+	}
+</style>

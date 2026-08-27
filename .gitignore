@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# Sanity Studio local build/deploy cache
+.sanity/
+
 # dependencies
 node_modules/
 

@@ -1,5 +1,204 @@
 ---
-import PlaceholderPage from "../layouts/PlaceholderPage.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanityClient } from "sanity:client";
+import { urlFor } from "../lib/sanityImage";
+
+type PostSummary = {
+	title: string;
+	slug: string;
+	excerpt: string;
+	coverImage: unknown;
+	publishedAt: string;
+};
+
+const posts = await sanityClient.fetch<PostSummary[]>(
+	`*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+		title,
+		"slug": slug.current,
+		excerpt,
+		coverImage,
+		publishedAt
+	}`
+);
+
+function formatDate(iso: string) {
+	return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
 ---
 
-<PlaceholderPage title="Journal" />
+<BaseLayout title="Journal — Glossy Place">
+	<main class="journal">
+		<section class="journal-intro">
+			<p class="journal-eyebrow">Journal</p>
+			<h1 class="journal-title">Stories, Rituals & Gemstone Wisdom</h1>
+			<p class="journal-lead">Notes on meaning, making, and the stones behind every Glossyplace piece.</p>
+		</section>
+
+		{
+			posts.length === 0 ? (
+				<p class="journal-empty">New stories are on their way — check back soon.</p>
+			) : (
+				<ul class="journal-grid">
+					{posts.map((post) => (
+						<li class="journal-card">
+							<a href={`/journal/${post.slug}`} class="journal-card-link">
+								<div class="journal-card-image">
+									<img src={urlFor(post.coverImage).width(800).height(600).fit("crop").url()} alt="" loading="lazy" />
+								</div>
+								<p class="journal-card-date">{formatDate(post.publishedAt)}</p>
+								<h2 class="journal-card-title">{post.title}</h2>
+								<p class="journal-card-excerpt">{post.excerpt}</p>
+							</a>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</main>
+</BaseLayout>
+
+<style>
+	.journal {
+		background: #fff;
+	}
+
+	.journal-intro {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		max-width: 720px;
+		padding: 64px 24px 40px;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	@media (min-width: 640px) {
+		.journal-intro {
+			padding: 80px 24px 56px;
+		}
+	}
+
+	.journal-eyebrow {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	}
+
+	.journal-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 36px;
+		font-weight: 400;
+	}
+
+	@media (min-width: 640px) {
+		.journal-title {
+			font-size: 42px;
+		}
+	}
+
+	.journal-lead {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 15px;
+		line-height: 1.7;
+	}
+
+	.journal-empty {
+		max-width: 480px;
+		margin: 0 auto;
+		padding: 40px 24px 120px;
+		text-align: center;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 15px;
+	}
+
+	.journal-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 40px;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 24px 100px;
+		list-style: none;
+	}
+
+	@media (min-width: 640px) {
+		.journal-grid {
+			grid-template-columns: repeat(2, 1fr);
+			padding: 0 40px 120px;
+		}
+	}
+
+	@media (min-width: 1025px) {
+		.journal-grid {
+			grid-template-columns: repeat(3, 1fr);
+			padding: 0 64px 140px;
+		}
+	}
+
+	.journal-card {
+		list-style: none;
+	}
+
+	.journal-card-link {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		text-decoration: none;
+	}
+
+	.journal-card-image {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: #f4f0ea;
+	}
+
+	.journal-card-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.4s ease;
+	}
+
+	@media (hover: hover) {
+		.journal-card-link:hover .journal-card-image img {
+			transform: scale(1.04);
+		}
+	}
+
+	.journal-card-date {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.journal-card-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 24px;
+		font-weight: 500;
+	}
+
+	.journal-card-excerpt {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		line-height: 1.6;
+	}
+</style>
