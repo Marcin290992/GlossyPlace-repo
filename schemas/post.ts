@@ -19,6 +19,12 @@ export default defineType({
 			validation: (rule) => rule.required(),
 		}),
 		defineField({
+			name: "category",
+			title: "Category",
+			description: "Short label shown above the title on the post page, e.g. Rituals, Gemstones.",
+			type: "string",
+		}),
+		defineField({
 			name: "coverImage",
 			title: "Cover image",
 			type: "image",

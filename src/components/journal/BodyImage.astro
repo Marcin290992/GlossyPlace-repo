@@ -1,0 +1,18 @@
+---
+import type { TypedObjectProps } from "astro-portabletext/types";
+import { urlFor } from "../../lib/sanityImage";
+
+type Props = TypedObjectProps;
+const { node } = Astro.props;
+---
+
+<img class="body-image" src={urlFor(node).width(1200).url()} alt="" loading="lazy" />
+
+<style>
+	.body-image {
+		display: block;
+		width: 100%;
+		height: auto;
+		margin: 32px 0;
+	}
+</style>

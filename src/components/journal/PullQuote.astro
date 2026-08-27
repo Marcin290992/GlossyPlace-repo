@@ -1,0 +1,32 @@
+---
+import type { BlockProps } from "astro-portabletext/types";
+
+type Props = BlockProps;
+const { node, index, isInline, ...attrs } = Astro.props;
+---
+
+<blockquote class="pull-quote" {...attrs}>
+	<slot />
+</blockquote>
+
+<style>
+	.pull-quote {
+		margin: 40px 0;
+		padding: 0 32px;
+		border: none;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-style: italic;
+		font-size: 26px;
+		font-weight: 500;
+		line-height: 1.5;
+		text-align: center;
+	}
+
+	@media (min-width: 640px) {
+		.pull-quote {
+			font-size: 30px;
+			padding: 0 48px;
+		}
+	}
+</style>

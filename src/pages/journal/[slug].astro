@@ -1,5 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import JournalCard from "../../components/JournalCard.astro";
+import PullQuote from "../../components/journal/PullQuote.astro";
+import BodyImage from "../../components/journal/BodyImage.astro";
 import { sanityClient } from "sanity:client";
 import { urlFor } from "../../lib/sanityImage";
 import { PortableText } from "astro-portabletext";
@@ -13,15 +16,38 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 
-type Post = {
+type RelatedPost = {
 	title: string;
+	slug: string;
+	excerpt: string;
 	coverImage: unknown;
-	body: unknown;
 	publishedAt: string;
 };
 
+type Post = {
+	title: string;
+	category: string | null;
+	coverImage: unknown;
+	body: unknown;
+	publishedAt: string;
+	related: RelatedPost[];
+};
+
 const post = await sanityClient.fetch<Post | null>(
-	`*[_type == "post" && slug.current == $slug][0]{ title, coverImage, body, publishedAt }`,
+	`*[_type == "post" && slug.current == $slug][0]{
+		title,
+		category,
+		coverImage,
+		body,
+		publishedAt,
+		"related": *[_type == "post" && slug.current != $slug] | order(publishedAt desc)[0...3]{
+			title,
+			"slug": slug.current,
+			excerpt,
+			coverImage,
+			publishedAt
+		}
+	}`,
 	{ slug }
 );
 
@@ -34,106 +60,151 @@ const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-GB", {
 	month: "long",
 	year: "numeric",
 });
+
+const components = {
+	block: { blockquote: PullQuote },
+	type: { image: BodyImage },
+};
 ---
 
 <BaseLayout title={`${post.title} — Glossy Place Journal`}>
 	<article class="journal-post">
-		<div class="journal-post-header">
-			<p class="journal-post-date">{formattedDate}</p>
-			<h1 class="journal-post-title">{post.title}</h1>
+		<div class="journal-post-hero">
+			<img class="journal-post-hero-image" src={urlFor(post.coverImage).width(1800).url()} alt="" />
+			<div class="journal-post-hero-scrim"></div>
+			<div class="journal-post-hero-content">
+				{post.category && <p class="journal-post-category">{post.category}</p>}
+				<h1 class="journal-post-title">{post.title}</h1>
+				<p class="journal-post-date">{formattedDate}</p>
+			</div>
 		</div>
-		<div class="journal-post-cover">
-			<img src={urlFor(post.coverImage).width(1600).url()} alt="" />
-		</div>
+
 		<div class="journal-post-body">
-			<PortableText value={post.body} />
+			<PortableText value={post.body} {components} />
 		</div>
+
 		<a href="/journal" class="journal-post-back">← Back to Journal</a>
+
+		{
+			post.related.length > 0 && (
+				<section class="journal-continue">
+					<p class="journal-continue-heading">Continue Reading</p>
+					<ul class="journal-continue-grid">
+						{post.related.map((related) => (
+							<JournalCard {...related} />
+						))}
+					</ul>
+				</section>
+			)
+		}
 	</article>
 </BaseLayout>
 
 <style>
-	.journal-post {
-		max-width: 720px;
-		margin: 0 auto;
-		padding: 64px 24px 100px;
+	.journal-post-hero {
+		position: relative;
+		width: 100%;
+		height: 60vh;
+		min-height: 380px;
+		overflow: hidden;
 	}
 
-	.journal-post-header {
+	.journal-post-hero-image {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.journal-post-hero-scrim {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgba(17, 24, 39, 0.75) 0%, rgba(17, 24, 39, 0.25) 45%, transparent 75%);
+	}
+
+	.journal-post-hero-content {
+		position: relative;
+		z-index: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
+		gap: 10px;
+		height: 100%;
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 0 24px 40px;
+		justify-content: flex-end;
 		text-align: center;
-		margin-bottom: 32px;
+		align-items: center;
 	}
 
-	.journal-post-date {
+	@media (min-width: 640px) {
+		.journal-post-hero-content {
+			padding: 0 24px 56px;
+		}
+	}
+
+	.journal-post-category {
 		margin: 0;
-		color: #b8a68a;
+		color: #d9c9a8;
 		font-family: "Manrope", sans-serif;
-		font-size: 11px;
+		font-size: 12px;
 		font-weight: 600;
-		letter-spacing: 1.5px;
+		letter-spacing: 2px;
 		text-transform: uppercase;
 	}
 
 	.journal-post-title {
 		margin: 0;
-		color: #111827;
+		color: #fff;
 		font-family: "Cormorant Garamond", serif;
 		font-size: 34px;
 		font-weight: 400;
+		line-height: 1.15;
 	}
 
 	@media (min-width: 640px) {
 		.journal-post-title {
-			font-size: 42px;
+			font-size: 46px;
 		}
 	}
 
-	.journal-post-cover {
-		width: 100%;
-		aspect-ratio: 16 / 10;
-		overflow: hidden;
-		background: #f4f0ea;
-		margin-bottom: 40px;
-	}
-
-	.journal-post-cover img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		display: block;
+	.journal-post-date {
+		margin: 0;
+		color: rgba(255, 255, 255, 0.75);
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 1px;
+		text-transform: uppercase;
 	}
 
 	.journal-post-body {
+		max-width: 650px;
+		margin: 0 auto;
+		padding: 56px 24px 0;
 		color: #374151;
 		font-family: "Manrope", sans-serif;
-		font-size: 16px;
-		line-height: 1.8;
+		font-size: 17px;
+		line-height: 1.9;
 	}
 
 	.journal-post-body :global(h2) {
 		margin: 40px 0 12px;
 		color: #111827;
 		font-family: "Cormorant Garamond", serif;
-		font-size: 26px;
+		font-size: 28px;
 		font-weight: 500;
 	}
 
 	.journal-post-body :global(p) {
-		margin: 0 0 20px;
-	}
-
-	.journal-post-body :global(img) {
-		width: 100%;
-		height: auto;
-		margin: 32px 0;
+		margin: 0 0 22px;
 	}
 
 	.journal-post-back {
-		display: inline-block;
-		margin-top: 48px;
+		display: block;
+		width: fit-content;
+		margin: 24px auto 0;
 		color: #111827;
 		font-family: "Manrope", sans-serif;
 		font-size: 12px;
@@ -141,5 +212,43 @@ const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-GB", {
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		text-decoration: underline;
+	}
+
+	.journal-continue {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 80px 24px 100px;
+	}
+
+	@media (min-width: 640px) {
+		.journal-continue {
+			padding: 96px 40px 120px;
+		}
+	}
+
+	.journal-continue-heading {
+		margin: 0 0 32px;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		text-align: center;
+	}
+
+	.journal-continue-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 40px;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	@media (min-width: 640px) {
+		.journal-continue-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 </style>

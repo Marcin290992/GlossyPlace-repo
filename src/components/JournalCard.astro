@@ -1,0 +1,90 @@
+---
+import { urlFor } from "../lib/sanityImage";
+
+interface Props {
+	title: string;
+	slug: string;
+	excerpt: string;
+	coverImage: unknown;
+	publishedAt: string;
+}
+
+const { title, slug, excerpt, coverImage, publishedAt } = Astro.props;
+
+const formattedDate = new Date(publishedAt).toLocaleDateString("en-GB", {
+	day: "numeric",
+	month: "long",
+	year: "numeric",
+});
+---
+
+<li class="journal-card">
+	<a href={`/journal/${slug}`} class="journal-card-link">
+		<div class="journal-card-image">
+			<img src={urlFor(coverImage).width(800).height(600).fit("crop").url()} alt="" loading="lazy" />
+		</div>
+		<p class="journal-card-date">{formattedDate}</p>
+		<h2 class="journal-card-title">{title}</h2>
+		<p class="journal-card-excerpt">{excerpt}</p>
+	</a>
+</li>
+
+<style>
+	.journal-card {
+		list-style: none;
+	}
+
+	.journal-card-link {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		text-decoration: none;
+	}
+
+	.journal-card-image {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: #f4f0ea;
+	}
+
+	.journal-card-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.4s ease;
+	}
+
+	@media (hover: hover) {
+		.journal-card-link:hover .journal-card-image img {
+			transform: scale(1.04);
+		}
+	}
+
+	.journal-card-date {
+		margin: 0;
+		color: #b8a68a;
+		font-family: "Manrope", sans-serif;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.journal-card-title {
+		margin: 0;
+		color: #111827;
+		font-family: "Cormorant Garamond", serif;
+		font-size: 24px;
+		font-weight: 500;
+	}
+
+	.journal-card-excerpt {
+		margin: 0;
+		color: #6b7280;
+		font-family: "Manrope", sans-serif;
+		font-size: 14px;
+		line-height: 1.6;
+	}
+</style>
