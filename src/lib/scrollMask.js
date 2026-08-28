@@ -124,7 +124,12 @@ const DEFAULTS = {
 	word: "SCROLL",
 	scrollLength: 1.7,
 	settle: 0.84,
-	smooth: 0.4,
+	// Lower than before (was 0.4) — this is GSAP scrub lag in seconds, so
+	// it governs how tightly the reveal tracks real scroll position on
+	// BOTH mobile and desktop (mobile has no Lenis to add/remove weight,
+	// so this is the only lever there). A smaller value means less float
+	// between "how far I scrolled" and "how much changed on screen".
+	smooth: 0.18,
 	feather: 14,
 	stagger: 0.55,
 	columns: 9,

@@ -347,7 +347,11 @@ const monikaImage = await getImage({ src: monikaPhoto, width: 1600 });
 	// Smooth inertia scrolling for this scroll-driven page. Desktop wheel
 	// input only by default (syncTouch stays off) — mobile keeps native
 	// touch scrolling, which is already tuned (see ScrollMaskSection).
-	const lenis = new Lenis();
+	// lerp raised from Lenis's default (0.1) — the stock value catches up
+	// to the target scroll position slowly enough that it reads as
+	// floaty/slippery; a higher value tracks the actual input more
+	// tightly, giving scrolling more felt weight/resistance.
+	const lenis = new Lenis({ lerp: 0.15 });
 
 	lenis.on("scroll", ScrollTrigger.update);
 
