@@ -482,6 +482,28 @@ const stoneData = await Promise.all(
 		}
 	}
 
+	@media (min-width: 901px) and (max-height: 820px) {
+		/* The sidebar's own height is tied to the viewport (100vh - 111px),
+		   but the intro text + A-Z nav above the photo don't shrink with
+		   it — on a shorter laptop screen they eat most of that height,
+		   squeezing the photo down to a small box with empty space around
+		   it. Trimming this header's own spacing on short viewports gives
+		   the photo most of its room back. */
+		.guide-intro {
+			padding-top: 32px;
+			gap: 8px;
+		}
+
+		.guide-lead {
+			display: none;
+		}
+
+		.guide-az-nav {
+			padding-top: 16px;
+			padding-bottom: 16px;
+		}
+	}
+
 	@media (max-width: 900px) {
 		/* The sidebar wrapper only exists to give desktop a single sticky
 		   left column (header + photo stacked together). On mobile it
