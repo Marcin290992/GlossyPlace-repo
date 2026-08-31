@@ -314,15 +314,19 @@ const stoneData = await Promise.all(
 
 	.guide-preview-wrapper {
 		position: relative;
-		/* width:auto + aspect-ratio only works like an <img>'s "shrink to
-		   fit" when the element has real intrinsic content to size from —
-		   this is an empty div whose only children are position:absolute
-		   (so they don't count), which collapses it to 0×0. Compute the
-		   width directly from the pane's actual measured height instead
-		   (see script) so it holds a true 4:3 ratio without ever exceeding
-		   either the column width or the pane's available height. */
-		width: min(100%, calc(var(--guide-pane-height, 400px) * 4 / 3));
+		/* Always fill the pane's full width — .guide-preview-pane's height
+		   is set by flexbox (flex:1 in a fixed-height sidebar column), which
+		   counts as a definite size, so max-height:100% resolves against it
+		   without needing JS. On tall viewports the box gets its preferred
+		   4:3 height in full; on short "laptop" viewports, where the intro
+		   text + A-Z nav eat more of the sidebar's height, aspect-ratio's
+		   preferred height gets capped short instead of the whole box
+		   shrinking — the photo stays edge-to-edge and just crops a bit
+		   tighter (via object-fit: cover below) rather than leaving empty
+		   space beside a narrower box. */
+		width: 100%;
 		aspect-ratio: 4 / 3;
+		max-height: 100%;
 		overflow: hidden;
 		background: #f4f0ea;
 		cursor: pointer;
@@ -815,25 +819,6 @@ const stoneData = await Promise.all(
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 	gsap.registerPlugin(ScrollTrigger);
-
-	// The preview wrapper's width is computed from this pane's real
-	// rendered height (see the CSS) — it's the remaining space in the
-	// sidebar after the intro/A-Z header, which flexbox already sizes
-	// correctly but which no static CSS formula can express on its own.
-	const previewPane = document.querySelector<HTMLElement>(".guide-preview-pane");
-	if (previewPane) {
-		const syncPaneHeight = () => {
-			// clientHeight includes the pane's own top/bottom padding —
-			// subtract it so the var reflects the actual content area the
-			// photo has to fit in, not the pane's full box height.
-			const style = getComputedStyle(previewPane);
-			const available =
-				previewPane.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
-			document.documentElement.style.setProperty("--guide-pane-height", `${available}px`);
-		};
-		syncPaneHeight();
-		new ResizeObserver(syncPaneHeight).observe(previewPane);
-	}
 
 	type StoneRecord = { name: string; symbol: string; meaning: string[]; image: string; description?: string };
 
